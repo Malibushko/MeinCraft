@@ -1,4 +1,4 @@
 #pragma once
-#include <entt/entity/entity.h>
+#include <entt/entity/entity.hpp>
 
-using entity_t = entt::entity::entity_t;
+using entity_t = entt::entity;

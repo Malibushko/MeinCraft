@@ -10,15 +10,188 @@
     <Filter Include="core\entity">
       <UniqueIdentifier>{fb1b2056-53f1-4c82-a942-35c2dc72c8db}</UniqueIdentifier>
     </Filter>
+    <Filter Include="core\components">
+      <UniqueIdentifier>{a1459e41-ec00-4cd1-82e7-292386e1297e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core\components\render">
+      <UniqueIdentifier>{db256181-13c9-47f1-bcab-f136d1086e65}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core\components\render\GL">
+      <UniqueIdentifier>{1459b5cf-c21f-4529-85c0-df93a881bdd6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\components">
+      <UniqueIdentifier>{a39607e5-3fe9-44df-8354-54083146740c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\systems">
+      <UniqueIdentifier>{4ca4965c-2ec5-4809-b17d-92619d00e3b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\components\display">
+      <UniqueIdentifier>{fd045d50-4b1a-4212-84d9-54ddab55d891}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\components\camera">
+      <UniqueIdentifier>{b361777e-6ea5-4e54-bbed-361e8b8aa942}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\systems\display">
+      <UniqueIdentifier>{499ab71f-ba30-4630-9b67-be97f65f2c5d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\systems\render">
+      <UniqueIdentifier>{f1adf3cd-4775-482d-8ee3-70a61d0ec2ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\systems\camera">
+      <UniqueIdentifier>{b3832c47-4678-4fb9-82db-4519b6c616ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\components\input">
+      <UniqueIdentifier>{94aaa8f7-e74d-4890-9d24-42f7a51f7ea1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\components\render">
+      <UniqueIdentifier>{6179321e-2e8f-4cfe-8aa2-11dc232261e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\systems\resources">
+      <UniqueIdentifier>{17c79e29-6be5-4f52-a3ee-8616b0b733a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\utils">
+      <UniqueIdentifier>{bf37b09f-32e7-42dd-a01d-0e3e51aedf9e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="res">
+      <UniqueIdentifier>{1e621242-58fa-4cca-b6e9-17aeb676e37b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="res\textures">
+      <UniqueIdentifier>{9b9cd587-429d-4912-b448-ca4216ef75e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="res\shaders">
+      <UniqueIdentifier>{ead8c0ad-abfa-4cb9-82c6-a0a749b3e5e3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Entity.h">
+    <ClInclude Include="core\entity\Entity.h">
+      <Filter>core\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="core\entity\Registry.h">
+      <Filter>core\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="core\entity\System.h">
+      <Filter>core\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="core\components\render\GL\GLMeshComponent.h">
+      <Filter>core\components\render\GL</Filter>
+    </ClInclude>
+    <ClInclude Include="core\components\TransformComponent.h">
+      <Filter>core\components</Filter>
+    </ClInclude>
+    <ClInclude Include="core\components\PositionComponent.h">
+      <Filter>core\components</Filter>
+    </ClInclude>
+    <ClInclude Include="game\World.h">
+      <Filter>game</Filter>
+    </ClInclude>
+    <ClInclude Include="core\entity\Component.h">
+      <Filter>core\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="game\components\camera\CameraComponent.h">
+      <Filter>game\components\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="game\components\camera\PerspectiveCameraComponent.h">
+      <Filter>game\components\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="game\components\display\DisplayComponent.h">
+      <Filter>game\components\display</Filter>
+    </ClInclude>
+    <ClInclude Include="game\components\display\GLFWWindowComponent.h">
+      <Filter>game\components\display</Filter>
+    </ClInclude>
+    <ClInclude Include="game\systems\display\GLFWWindowSystem.h">
+      <Filter>game\systems\display</Filter>
+    </ClInclude>
+    <ClInclude Include="game\systems\render\GLRenderSystem.h">
+      <Filter>game\systems\render</Filter>
+    </ClInclude>
+    <ClInclude Include="game\systems\camera\CameraSystem.h">
+      <Filter>game\systems\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="game\components\input\KeyboardState.h">
+      <Filter>game\components\input</Filter>
+    </ClInclude>
+    <ClInclude Include="game\components\input\MouseMovementData.h">
+      <Filter>game\components\input</Filter>
+    </ClInclude>
+    <ClInclude Include="game\components\input\MouseWheelData.h">
+      <Filter>game\components\input</Filter>
+    </ClInclude>
+    <ClInclude Include="game\components\render\GLMeshComponent.h">
+      <Filter>game\components\render</Filter>
+    </ClInclude>
+    <ClInclude Include="game\systems\render\GLMeshSystem.h">
+      <Filter>game\systems\render</Filter>
+    </ClInclude>
+    <ClInclude Include="game\components\render\GLUnbakedMeshComponent.h">
+      <Filter>game\components\render</Filter>
+    </ClInclude>
+    <ClInclude Include="game\components\render\GLShaderComponent.h">
+      <Filter>game\components\render</Filter>
+    </ClInclude>
+    <ClInclude Include="game\resources\ShaderLibrary.h">
+      <Filter>game\systems\resources</Filter>
+    </ClInclude>
+    <ClInclude Include="game\resources\TextureLibrary.h">
+      <Filter>game\systems\resources</Filter>
+    </ClInclude>
+    <ClInclude Include="game\utils\FileUtils.h">
+      <Filter>game\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="game\components\render\GLTextureComponent.h">
+      <Filter>game\components\render</Filter>
+    </ClInclude>
+    <ClInclude Include="core\entity\FrameListenerSystem.h">
       <Filter>core\entity</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="game\Main.cpp">
       <Filter>game</Filter>
     </ClCompile>
+    <ClCompile Include="game\World.cpp">
+      <Filter>game</Filter>
+    </ClCompile>
+    <ClCompile Include="game\systems\display\GLFWWindowSystem.cpp">
+      <Filter>game\systems\display</Filter>
+    </ClCompile>
+    <ClCompile Include="game\systems\render\GLRenderSystem.cpp">
+      <Filter>game\systems\render</Filter>
+    </ClCompile>
+    <ClCompile Include="game\systems\camera\CameraSystem.cpp">
+      <Filter>game\systems\camera</Filter>
+    </ClCompile>
+    <ClCompile Include="game\systems\render\GLMeshSystem.cpp">
+      <Filter>game\systems\render</Filter>
+    </ClCompile>
+    <ClCompile Include="game\resources\ShaderLibrary.cpp">
+      <Filter>game\systems\resources</Filter>
+    </ClCompile>
+    <ClCompile Include="game\resources\TextureLibrary.cpp">
+      <Filter>game\systems\resources</Filter>
+    </ClCompile>
+    <ClCompile Include="game\utils\FileUtils.cpp">
+      <Filter>game\utils</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\shaders\basic_vert.vert" />
+    <None Include="res\textures\mosaic.png" />
+    <None Include="res\shaders\basic_vert.vert" />
+    <None Include="res\textures\mosaic.png" />
+    <None Include="res\shaders\basic_vert.vert">
+      <Filter>res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\basic.frag">
+      <Filter>res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\basic.vert">
+      <Filter>res\shaders</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\textures\mosaic.png">
+      <Filter>res\textures</Filter>
+    </Image>
   </ItemGroup>
 </Project>
