@@ -1,8 +1,12 @@
 #include <iostream>
 #include <core/entity/entity.h>
+#include <glm/trigonometric.hpp>
+#include <glm/ext/matrix_transform.hpp>
+
 #include "core/components/PositionComponent.h"
 
 #include "World.h"
+#include "components/camera/PerspectiveCameraBundle.h"
 #include "components/camera/PerspectiveCameraComponent.h"
 #include "components/display/DisplayComponent.h"
 #include "components/display/GLFWWindowComponent.h"
@@ -36,20 +40,31 @@ int main()
 
 void InitCamera(World & World_)
 {
-  World_.Spawn(TPerspectiveCameraComponent
+  TPerspectiveCameraBundle Bundle;
+
+  World_.SpawnBundle(TPerspectiveCameraBundle
   {
-    .Camera = TCameraComponent
+    .Camera = TCameraBundle
     {
       .Position = TPositionComponent
       {
-        .Position = { 0.0f, -3.0f, 0.0f }
+        .Position = { 0.0f, 0.0f, -3.0f }
+      },
+
+      .Basis = TCameraBasisComponent
+      {
+        .Up    = { 0.0f, 1.0f, 0.0f  },
+        .Front = { 0.0f, 0.0f, -1.0f },
+        .Right = { 1.0f, 0.0f, 0.0f  }
       }
     },
-
-    .FOV         = 45.0f,
-    .AspectRatio = QueryFirst<TDisplayComponent>(World_.Registry()).GetAspectRatio(),
-    .Near        = 0.1f,
-    .Far         = 100.f,
+    .Perspective =
+    {
+      .FOV         = 45.0f,
+      .AspectRatio = QueryFirst<TDisplayComponent>(World_.Registry()).GetAspectRatio(),
+      .Near        = 0.1f,
+      .Far         = 100.f,
+    }
   });
 }
 
@@ -93,7 +108,6 @@ void InitTerrain(World & World_)
 
       Triangle.Shader.ShaderID   = CShaderLibrary::Load("res/shaders/basic").ShaderID;
       Triangle.Texture.TextureID = CTextureLibrary::Load("res/textures/mosaic.png").TextureID;
-      Triangle.Position.Position = { 0.0f, 0.0f, 0.0f };
       Triangle.Mesh.Vertices     =
       {
         { -0.5f, -0.5f, 0.0f },
@@ -112,6 +126,8 @@ void InitTerrain(World & World_)
         { 1.0f, 0.0f },
         { 0.5f, 1.0f }
       };
+
+      Triangle.Position.Position = { 0.0f, 0.0f, -1.0f };
 
       SpawnBundle(Registry_, std::move(Triangle));
     }

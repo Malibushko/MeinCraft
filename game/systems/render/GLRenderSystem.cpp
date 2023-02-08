@@ -2,7 +2,10 @@
 
 #include <glad/glad.h>
 #include <spdlog/spdlog.h>
+#include <glm/gtc/matrix_transform.hpp>
+#include "core/components/PositionComponent.h"
 
+#include "game/components/camera/GlobalTransformComponent.h"
 #include "game/components/display/DisplayComponent.h"
 #include "game/components/render/GLMeshComponent.h"
 #include "game/components/render/GLShaderComponent.h"
@@ -36,14 +39,25 @@ void GLRenderSystem::OnUpdate(registry_t & Registry_, float Delta_)
   glClearColor(0.52f, 0.807f, 0.92f, 1.f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+  glm::mat4 Transform = QueryOrCreate<TGlobalTransformComponent>(Registry_).second.Transform;
+
   for (const auto & [Entity, Mesh] : Registry_.view<TGLMeshComponent>().each())
   {
     assert(Mesh.IsBaked());
 
     if (const TGLShaderComponent * Shader = Registry_.try_get<TGLShaderComponent>(Entity); Shader)
     {
+      const TPositionComponent * Position = Registry_.try_get<TPositionComponent>(Entity);
+
       assert(Shader->IsValid());
       glUseProgram(Shader->ShaderID);
+
+      glUniformMatrix4fv(
+        glGetUniformLocation(Shader->ShaderID, "u_Transform"),
+        1,
+        GL_FALSE,
+        &(Position ? Transform : glm::translate(Transform, Position->Position))[0][0]
+      );
     }
 
     if (const TGLTextureComponent * Texture = Registry_.try_get<TGLTextureComponent>(Entity); Texture)

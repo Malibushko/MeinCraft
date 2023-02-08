@@ -78,6 +78,8 @@ public: // Interface
   template<class T>
   World & SpawnBundle(T && Bundle_)
   {
+    static_assert(details::is_bundle<T> || "T must be a bundle");
+
     ::SpawnBundle(m_Registry, std::forward<T>(Bundle_));
 
     return *this;

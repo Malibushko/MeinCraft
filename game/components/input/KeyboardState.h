@@ -134,4 +134,9 @@ enum class EKeyState : uint8_t
 struct TKeyboardState
 {
   std::array<EKeyState, static_cast<size_t>(EKeyboardKey::KEY_MENU) + 1> KeyStates{};
+
+  EKeyState operator[](EKeyboardKey Key) const
+  {
+    return KeyStates[static_cast<size_t>(Key)];
+  }
 };

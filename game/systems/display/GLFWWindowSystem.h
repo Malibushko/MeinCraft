@@ -26,7 +26,7 @@ public: // ISystem
 
 protected: // Service
 
-  void InitGLFWWindow(TGLFWWindowComponent & Window, const TDisplayComponent & Display);
+  void InitGLFWWindow(registry_t & Registry, TGLFWWindowComponent & Window, const TDisplayComponent & Display);
 
   void SendInput(registry_t & Registry_);
 

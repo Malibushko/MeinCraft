@@ -2,10 +2,19 @@
 #include <entt/entity/registry.hpp>
 #include <boost/pfr/ops.hpp>
 
+#include "Bundle.h"
 #include "core/entity/Entity.h"
 #include "core/entity/Component.h"
 
 using registry_t = entt::registry;
+
+namespace details
+{
+  template<class T>
+  concept is_bundle = requires {
+    T::BundleTag;
+  };
+}
 
 template<class T>
 T & QueryFirst(registry_t & Registry_)
@@ -21,6 +30,14 @@ std::pair<entity_t, T &> QueryOrCreate(registry_t & Registry_)
   if (auto View = Registry_.view<T>(); View.size() >= 1)
     return { View.front(), Registry_.get<T>(View.front()) };
 
+  auto Entity = Registry_.create();
+
+  return { Entity, Registry_.emplace<T>(Entity) };
+}
+
+template<class T>
+std::pair<entity_t, T &> Create(registry_t & Registry_)
+{
   auto Entity = Registry_.create();
 
   return { Entity, Registry_.emplace<T>(Entity) };
@@ -43,9 +60,14 @@ void AddBundle(registry_t & Registry_ ,entity_t Entity_, T && Bundle_)
 {
   boost::pfr::for_each_field(std::forward<T>(Bundle_), [&](auto && Field_)
   {
-    static_assert(std::is_base_of_v<IComponent, std::decay_t<decltype(Field_)>>);
+    using field_t = std::decay_t<decltype(Field_)>;
 
-    Registry_.emplace<std::decay_t<decltype(Field_)>>(Entity_, decltype(Field_)(Field_));
+    if constexpr (std::is_base_of_v<IComponent, field_t>)
+      Registry_.emplace<field_t>(Entity_, decltype(Field_)(Field_));
+    else if constexpr(details::is_bundle<field_t>)
+      AddBundle(Registry_, Entity_, decltype(Field_)(Field_));
+    else
+      static_assert([]{}, "Bundle must contain only components or other bundles!");
   });
 }
 

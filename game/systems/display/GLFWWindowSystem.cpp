@@ -6,10 +6,15 @@
 #include <glad/glad.h>
 #include <spdlog/spdlog.h>
 #include <magic_enum.hpp>
+#include <glm/vec2.hpp>
 
 #include "game/components/display/GLFWWindowComponent.h"
 #include "game/components/display/DisplayComponent.h"
 #include "game/components/input/KeyboardState.h"
+#include "game/components/input/MouseMovementData.h"
+#include "game/components/input/MouseWheelData.h"
+
+struct TMouseMovementData;
 
 static int KeyboardKeyToGLFWKey(EKeyboardKey Key)
 {
@@ -158,6 +163,7 @@ void CGLFWWindowSystem::OnCreate(registry_t & Registry_)
   glfwInit();
 
   InitGLFWWindow(
+      Registry_,
       QueryFirst<TGLFWWindowComponent>(Registry_),
       QueryFirst<TDisplayComponent>(Registry_)
     );
@@ -181,6 +187,9 @@ void CGLFWWindowSystem::OnFrameBegin(registry_t & Registry_)
 
 void CGLFWWindowSystem::OnFrameEnd(registry_t & Registry_)
 {
+  Registry_.clear<TMouseMovementData>();
+  Registry_.clear<TMouseWheelData>();
+
   glfwPollEvents();
   glfwSwapBuffers(m_Window);
 }
@@ -189,7 +198,7 @@ void CGLFWWindowSystem::OnFrameEnd(registry_t & Registry_)
 // Service
 //
 
-void CGLFWWindowSystem::InitGLFWWindow(TGLFWWindowComponent & Window, const TDisplayComponent& Display)
+void CGLFWWindowSystem::InitGLFWWindow(registry_t & Registry, TGLFWWindowComponent & Window, const TDisplayComponent & Display)
 {
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -214,8 +223,35 @@ void CGLFWWindowSystem::InitGLFWWindow(TGLFWWindowComponent & Window, const TDis
   m_Window = Window.Window;
 
   glfwMakeContextCurrent(Window.Window);
+  glfwSetWindowUserPointer(Window.Window, &Registry);
 
   glfwSetInputMode(Window.Window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+  glfwSetCursorPosCallback(Window.Window, [](GLFWwindow * Window_, double PositionX_, double PositionY_)
+  {
+    static double LastPositionX_ = PositionX_;
+    static double LastPositionY_ = PositionY_;
+
+    const auto Registry = static_cast<registry_t *>(glfwGetWindowUserPointer(Window_));
+
+    const auto & [Entity, Mouse] = Create<TMouseMovementData>(*Registry);
+
+    Mouse.DeltaX = PositionX_ - LastPositionX_;
+    Mouse.DeltaY = LastPositionY_ - PositionY_;
+
+    LastPositionX_ = PositionX_;
+    LastPositionY_ = PositionY_;
+  });
+
+  glfwSetScrollCallback(Window.Window, [](GLFWwindow * Window_, double OffsetX_, double OffsetY_)
+  {
+    const auto Registry = static_cast<registry_t *>(glfwGetWindowUserPointer(Window_));
+
+    const auto & [Entity, Mouse] = Create<TMouseWheelData>(*Registry);
+
+    Mouse.DeltaX = OffsetX_;
+    Mouse.DeltaY = OffsetY_;
+  });
 
   glfwSetErrorCallback([](int Error_, const char * Description_)
   {

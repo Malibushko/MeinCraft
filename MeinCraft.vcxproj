@@ -138,12 +138,16 @@
     <ClInclude Include="core\components\PositionComponent.h" />
     <ClInclude Include="core\components\render\GL\GLMeshComponent.h" />
     <ClInclude Include="core\components\TransformComponent.h" />
+    <ClInclude Include="core\entity\Bundle.h" />
     <ClInclude Include="core\entity\Component.h" />
     <ClInclude Include="core\entity\Entity.h" />
     <ClInclude Include="core\entity\FrameListenerSystem.h" />
     <ClInclude Include="core\entity\Registry.h" />
     <ClInclude Include="core\entity\System.h" />
-    <ClInclude Include="game\components\camera\CameraComponent.h" />
+    <ClInclude Include="game\components\camera\CameraBasisComponent.h" />
+    <ClInclude Include="game\components\camera\CameraBundle.h" />
+    <ClInclude Include="game\components\camera\GlobalTransformComponent.h" />
+    <ClInclude Include="game\components\camera\PerspectiveCameraBundle.h" />
     <ClInclude Include="game\components\camera\PerspectiveCameraComponent.h" />
     <ClInclude Include="game\components\display\DisplayComponent.h" />
     <ClInclude Include="game\components\display\GLFWWindowComponent.h" />

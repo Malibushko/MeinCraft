@@ -87,7 +87,7 @@
     <ClInclude Include="core\entity\Component.h">
       <Filter>core\entity</Filter>
     </ClInclude>
-    <ClInclude Include="game\components\camera\CameraComponent.h">
+    <ClInclude Include="game\components\camera\CameraBundle.h">
       <Filter>game\components\camera</Filter>
     </ClInclude>
     <ClInclude Include="game\components\camera\PerspectiveCameraComponent.h">
@@ -144,6 +144,18 @@
     <ClInclude Include="core\entity\FrameListenerSystem.h">
       <Filter>core\entity</Filter>
     </ClInclude>
+    <ClInclude Include="game\components\camera\GlobalTransformComponent.h">
+      <Filter>game\components\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="game\components\camera\PerspectiveCameraBundle.h">
+      <Filter>game\components\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="game\components\camera\CameraBasisComponent.h">
+      <Filter>game\components\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="core\entity\Bundle.h">
+      <Filter>core\entity</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="game\Main.cpp">
@@ -175,8 +187,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\shaders\basic_vert.vert" />
-    <None Include="res\textures\mosaic.png" />
     <None Include="res\shaders\basic_vert.vert" />
     <None Include="res\textures\mosaic.png" />
     <None Include="res\shaders\basic_vert.vert">

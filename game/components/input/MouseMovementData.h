@@ -1,7 +1,7 @@
 #pragma once
 
-struct TMouseMovementData 
+struct TMouseMovementData
 {
-  float PositionX;
-  float PositionY;
+  float DeltaX;
+  float DeltaY;
 };

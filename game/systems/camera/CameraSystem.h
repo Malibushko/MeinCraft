@@ -16,4 +16,8 @@ public: // ISystem
   void OnUpdate(registry_t & Registry_, float Delta_) override;
 
   void OnDestroy(registry_t & Registry_) override;
+
+protected: // Service
+
+  void UpdateCameraTransforms(registry_t & Registry);
 };
