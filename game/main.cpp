@@ -55,9 +55,6 @@ void InitCamera(World & World_)
 
 void InitDisplay(World & World_)
 {
-  constexpr size_t Width  = 800;
-  constexpr size_t Height = 600;
-
   World_.Spawn(TDisplayComponent
   {
     .Width  = 800,
