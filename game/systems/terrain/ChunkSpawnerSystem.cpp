@@ -12,7 +12,7 @@
 // Config
 //
 
-static constexpr int        CHUNK_SPAWN_DISTANCE = 1;
+static constexpr int        CHUNK_SPAWN_DISTANCE = 2;
 static constexpr std::array DIRECTIONS           =
 {
   glm::ivec2(-1, 1),  glm::ivec2(0, 1),  glm::ivec2(1, 1),
@@ -112,6 +112,9 @@ void CChunkSpawnerSystem::UpdateBlocksFaces(registry_t & Registry, TChunkCompone
         const int Index = X + TChunkComponent::CHUNK_SIZE_X * (Y + TChunkComponent::CHUNK_SIZE_Y * Z);
 
         TVisibleBlockFacesComponent Faces{ .Faces = EBlockFace::None };
+
+        if (TBlockComponent & Block = Registry.get<TBlockComponent>(Chunk.Blocks[Index]); !Block.IsVisible())
+          continue;
 
         if (X == 0)
           Faces.Faces = Faces.Faces | EBlockFace::Front;

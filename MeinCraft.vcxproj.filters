@@ -238,9 +238,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\shaders\basic_vert.vert">
-      <Filter>res\shaders</Filter>
-    </None>
     <None Include="res\shaders\basic.frag">
       <Filter>res\shaders</Filter>
     </None>

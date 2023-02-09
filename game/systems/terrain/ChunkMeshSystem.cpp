@@ -1,5 +1,6 @@
 #include "ChunkMeshSystem.h"
 
+#include "game/components/terrain/BlockComponent.h"
 #include "game/components/terrain/ChunkComponent.h"
 #include "game/factory/BlockMeshFactory.h"
 
@@ -30,7 +31,10 @@ void CChunkMeshSystem::OnUpdate(registry_t & Registry_, float Delta_)
       continue;
 
     for (const auto & BlockEntity : Chunk.Blocks)
-      Factory.InitBlock(Registry_, BlockEntity);
+    {
+      if (auto * Block = Registry_.try_get<TBlockComponent>(BlockEntity); Block && Block->IsVisible())
+        Factory.InitBlock(Registry_, BlockEntity);
+    }
 
     Chunk.State = EChunkState::Clear;
   }

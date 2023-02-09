@@ -5,7 +5,7 @@
 #include "core/entity/Entity.h"
 #include "core/entity/Component.h"
 
-using registry_t = entt::registry;
+using registry_t = entt::basic_registry<entity_t>;
 
 namespace details
 {

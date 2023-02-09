@@ -18,7 +18,7 @@ struct TChunkComponent
   static constexpr ComponentTag ComponentTag{};
 
   static constexpr int CHUNK_SIZE_X = 16;
-  static constexpr int CHUNK_SIZE_Y = 1;
+  static constexpr int CHUNK_SIZE_Y = 384;
   static constexpr int CHUNK_SIZE_Z = 16;
 
   EChunkState State{EChunkState::Dirty};
