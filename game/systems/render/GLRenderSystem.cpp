@@ -56,7 +56,7 @@ void GLRenderSystem::OnUpdate(registry_t & Registry_, float Delta_)
         glGetUniformLocation(Shader->ShaderID, "u_Transform"),
         1,
         GL_FALSE,
-        &(Position ? Transform : glm::translate(Transform, Position->Position))[0][0]
+        &(Position ? glm::translate(Transform, Position->Position) : Transform)[0][0]
       );
     }
 

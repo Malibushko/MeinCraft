@@ -138,7 +138,6 @@
     <ClInclude Include="core\components\PositionComponent.h" />
     <ClInclude Include="core\components\render\GL\GLMeshComponent.h" />
     <ClInclude Include="core\components\TransformComponent.h" />
-    <ClInclude Include="core\entity\Bundle.h" />
     <ClInclude Include="core\entity\Component.h" />
     <ClInclude Include="core\entity\Entity.h" />
     <ClInclude Include="core\entity\FrameListenerSystem.h" />
@@ -158,28 +157,39 @@
     <ClInclude Include="game\components\render\GLShaderComponent.h" />
     <ClInclude Include="game\components\render\GLTextureComponent.h" />
     <ClInclude Include="game\components\render\GLUnbakedMeshComponent.h" />
+    <ClInclude Include="game\components\requests\BlockMeshRequest.h" />
+    <ClInclude Include="game\components\terrain\VisibleBlockFacesComponent.h" />
+    <ClInclude Include="game\components\terrain\BlockComponent.h" />
+    <ClInclude Include="game\components\terrain\ChunkComponent.h" />
+    <ClInclude Include="game\components\terrain\TerrainComponent.h" />
+    <ClInclude Include="game\factory\BlockMeshFactory.h" />
     <ClInclude Include="game\resources\ShaderLibrary.h" />
     <ClInclude Include="game\resources\TextureLibrary.h" />
     <ClInclude Include="game\systems\camera\CameraSystem.h" />
     <ClInclude Include="game\systems\display\GLFWWindowSystem.h" />
     <ClInclude Include="game\systems\render\GLMeshSystem.h" />
     <ClInclude Include="game\systems\render\GLRenderSystem.h" />
+    <ClInclude Include="game\systems\terrain\ChunkDespawnerSystem.h" />
+    <ClInclude Include="game\systems\terrain\ChunkMeshSystem.h" />
+    <ClInclude Include="game\systems\terrain\ChunkSpawnerSystem.h" />
     <ClInclude Include="game\utils\FileUtils.h" />
+    <ClInclude Include="game\utils\NumericUtils.h" />
     <ClInclude Include="game\World.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="game\factory\BlockMeshFactory.cpp" />
     <ClCompile Include="game\resources\ShaderLibrary.cpp" />
     <ClCompile Include="game\resources\TextureLibrary.cpp" />
     <ClCompile Include="game\systems\camera\CameraSystem.cpp" />
     <ClCompile Include="game\systems\display\GLFWWindowSystem.cpp" />
     <ClCompile Include="game\systems\render\GLMeshSystem.cpp" />
     <ClCompile Include="game\systems\render\GLRenderSystem.cpp" />
+    <ClCompile Include="game\systems\terrain\ChunkDespawnerSystem.cpp" />
+    <ClCompile Include="game\systems\terrain\ChunkMeshSystem.cpp" />
+    <ClCompile Include="game\systems\terrain\ChunkSpawnerSystem.cpp" />
     <ClCompile Include="game\utils\FileUtils.cpp" />
     <ClCompile Include="game\World.cpp" />
     <ClCompile Include="game\Main.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="res\textures\mosaic.png" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="res\**">
@@ -189,6 +199,9 @@
   <ItemGroup>
     <None Include="res\shaders\basic.frag" />
     <None Include="res\shaders\basic.vert" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\textures\blocks.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

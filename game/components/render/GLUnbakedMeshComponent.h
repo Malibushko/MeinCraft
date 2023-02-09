@@ -5,8 +5,10 @@
 
 #include "core/entity/Component.h"
 
-struct TGLUnbakedMeshComponent : IComponent
+struct TGLUnbakedMeshComponent
 {
+  static constexpr ComponentTag ComponentTag{};
+
   std::vector<glm::vec3> Vertices;
   std::vector<int>       Indices;
 

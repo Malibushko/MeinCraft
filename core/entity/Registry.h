@@ -2,7 +2,6 @@
 #include <entt/entity/registry.hpp>
 #include <boost/pfr/ops.hpp>
 
-#include "Bundle.h"
 #include "core/entity/Entity.h"
 #include "core/entity/Component.h"
 
@@ -13,6 +12,11 @@ namespace details
   template<class T>
   concept is_bundle = requires {
     T::BundleTag;
+  };
+
+  template<class T>
+  concept is_component = requires {
+    T::ComponentTag;
   };
 }
 
@@ -48,7 +52,7 @@ void AddComponent(registry_t & Registry_, entity_t Entity_, T && Component_)
 {
   boost::pfr::for_each_field(Component_, [&](auto && Field_)
   {
-    if constexpr (std::is_base_of_v<IComponent, std::decay_t<decltype(Field_)>>)
+    if constexpr (details::is_component<std::decay_t<decltype(Field_)>>)
       AddComponent(Entity_, Field_);
   });
 
@@ -62,7 +66,7 @@ void AddBundle(registry_t & Registry_ ,entity_t Entity_, T && Bundle_)
   {
     using field_t = std::decay_t<decltype(Field_)>;
 
-    if constexpr (std::is_base_of_v<IComponent, field_t>)
+    if constexpr (details::is_component<field_t>)
       Registry_.emplace<field_t>(Entity_, decltype(Field_)(Field_));
     else if constexpr(details::is_bundle<field_t>)
       AddBundle(Registry_, Entity_, decltype(Field_)(Field_));
@@ -89,4 +93,10 @@ registry_t & SpawnBundle(registry_t & Registry_, T && Bundle_)
   AddBundle(Registry_, Entity, std::forward<T>(Bundle_));
 
   return Registry_;
+}
+
+template<class T>
+bool HasComponent(registry_t & Registry_, entity_t Entity_)
+{
+  return Registry_.try_get<T>(Entity_) != nullptr;
 }

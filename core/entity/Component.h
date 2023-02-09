@@ -1,6 +1,11 @@
 #pragma once
 
-struct IComponent
+struct ComponentTag
+{
+
+};
+
+struct BundleTag
 {
 
 };

@@ -61,6 +61,18 @@
     <Filter Include="res\shaders">
       <UniqueIdentifier>{ead8c0ad-abfa-4cb9-82c6-a0a749b3e5e3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="game\components\terrain">
+      <UniqueIdentifier>{ce46708e-d4f0-47c1-a00a-fc7727c8d650}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\systems\terrain">
+      <UniqueIdentifier>{8ae5224e-6dc9-425c-8738-a07b0192e8a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\components\request">
+      <UniqueIdentifier>{c89c94a8-ddcd-4c85-98dd-68b4e25a9192}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\factory">
+      <UniqueIdentifier>{686b03d4-4408-40a6-8254-2ad03fc6ddff}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\entity\Entity.h">
@@ -153,8 +165,35 @@
     <ClInclude Include="game\components\camera\CameraBasisComponent.h">
       <Filter>game\components\camera</Filter>
     </ClInclude>
-    <ClInclude Include="core\entity\Bundle.h">
-      <Filter>core\entity</Filter>
+    <ClInclude Include="game\components\terrain\TerrainComponent.h">
+      <Filter>game\components\terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="game\components\terrain\ChunkComponent.h">
+      <Filter>game\components\terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="game\components\terrain\BlockComponent.h">
+      <Filter>game\components\terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="game\systems\terrain\ChunkSpawnerSystem.h">
+      <Filter>game\systems\terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="game\systems\terrain\ChunkDespawnerSystem.h">
+      <Filter>game\systems\terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="game\systems\terrain\ChunkMeshSystem.h">
+      <Filter>game\systems\terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="game\utils\NumericUtils.h">
+      <Filter>game\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="game\components\requests\BlockMeshRequest.h">
+      <Filter>game\components\request</Filter>
+    </ClInclude>
+    <ClInclude Include="game\factory\BlockMeshFactory.h">
+      <Filter>game\factory</Filter>
+    </ClInclude>
+    <ClInclude Include="game\components\terrain\VisibleBlockFacesComponent.h">
+      <Filter>game\components\terrain</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -185,10 +224,20 @@
     <ClCompile Include="game\utils\FileUtils.cpp">
       <Filter>game\utils</Filter>
     </ClCompile>
+    <ClCompile Include="game\systems\terrain\ChunkSpawnerSystem.cpp">
+      <Filter>game\systems\terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="game\systems\terrain\ChunkDespawnerSystem.cpp">
+      <Filter>game\systems\terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="game\systems\terrain\ChunkMeshSystem.cpp">
+      <Filter>game\systems\terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="game\factory\BlockMeshFactory.cpp">
+      <Filter>game\factory</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\shaders\basic_vert.vert" />
-    <None Include="res\textures\mosaic.png" />
     <None Include="res\shaders\basic_vert.vert">
       <Filter>res\shaders</Filter>
     </None>
@@ -200,7 +249,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="res\textures\mosaic.png">
+    <Image Include="res\textures\blocks.png">
       <Filter>res\textures</Filter>
     </Image>
   </ItemGroup>

@@ -1,5 +1,4 @@
 #pragma once
-#include "core/entity/Bundle.h"
 #include "core/components/PositionComponent.h"
 
 #include "CameraBasisComponent.h"

@@ -5,8 +5,10 @@
 
 #include "core/entity/Component.h"
 
-struct TGLTextureComponent: IComponent
+struct TGLTextureComponent
 {
+  static constexpr ComponentTag ComponentTag{};
+
   static constexpr unsigned int INVALID_SHADER_ID = -1;
 
   unsigned int TextureID = static_cast<unsigned int>(-1);

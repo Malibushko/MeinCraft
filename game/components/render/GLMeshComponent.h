@@ -1,8 +1,10 @@
 #pragma once
 #include "core/entity/Component.h"
 
-struct TGLMeshComponent : IComponent
+struct TGLMeshComponent
 {
+  static constexpr ComponentTag ComponentTag{};
+
   static constexpr unsigned int INVALID_ID = -1;
 
   unsigned int VAO           = INVALID_ID;

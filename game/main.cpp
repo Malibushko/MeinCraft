@@ -11,15 +11,17 @@
 #include "components/display/DisplayComponent.h"
 #include "components/display/GLFWWindowComponent.h"
 #include "components/render/GLUnbakedMeshComponent.h"
-#include "components/render/GLShaderComponent.h"
-#include "components/render/GLTextureComponent.h"
-#include "resources/ShaderLibrary.h"
-#include "resources/TextureLibrary.h"
+#include "components/terrain/TerrainComponent.h"
 
 #include "systems/camera/CameraSystem.h"
 #include "systems/display/GLFWWindowSystem.h"
 #include "systems/render/GLMeshSystem.h"
 #include "systems/render/GLRenderSystem.h"
+#include "systems/terrain/ChunkDespawnerSystem.h"
+#include "systems/terrain/ChunkMeshSystem.h"
+#include "systems/terrain/ChunkSpawnerSystem.h"
+
+#include "utils/NumericUtils.h"
 
 void InitCamera (World & World_);
 void InitDisplay(World & World_);
@@ -44,20 +46,6 @@ void InitCamera(World & World_)
 
   World_.SpawnBundle(TPerspectiveCameraBundle
   {
-    .Camera = TCameraBundle
-    {
-      .Position = TPositionComponent
-      {
-        .Position = { 0.0f, 0.0f, -3.0f }
-      },
-
-      .Basis = TCameraBasisComponent
-      {
-        .Up    = { 0.0f, 1.0f, 0.0f  },
-        .Front = { 0.0f, 0.0f, -1.0f },
-        .Right = { 1.0f, 0.0f, 0.0f  }
-      }
-    },
     .Perspective =
     {
       .FOV         = 45.0f,
@@ -85,63 +73,25 @@ void InitDisplay(World & World_)
 void InitSystems(World & World_)
 {
   World_.AddSystem<CGLFWWindowSystem>()
+        .AddSystem<GLMeshSystem>()
         .AddSystem<GLRenderSystem>()
-        .AddSystem<CCameraSystem>()
-        .AddSystem<GLMeshSystem>();
+        .AddSystem<CCameraSystem>();
 }
 
 void InitTerrain(World & World_)
 {
-  struct TriangleSpawner : ISystem
+  World_.Spawn(TTerrainComponent
   {
-    struct Triangle
+    .TerrainGenerationStrategy = [](const glm::vec3 & _Position) -> TBlockComponent
     {
-      TGLUnbakedMeshComponent Mesh;
-      TGLShaderComponent      Shader;
-      TGLTextureComponent     Texture;
-      TPositionComponent      Position;
-    };
+      if (Utils::AlmostEqual(_Position.y, 0.f))
+        return TBlockComponent{ .Type = EBlockType::GrassDirt };
 
-    void OnCreate(registry_t & Registry_) override
-    {
-      Triangle Triangle;
-
-      Triangle.Shader.ShaderID   = CShaderLibrary::Load("res/shaders/basic").ShaderID;
-      Triangle.Texture.TextureID = CTextureLibrary::Load("res/textures/mosaic.png").TextureID;
-      Triangle.Mesh.Vertices     =
-      {
-        { -0.5f, -0.5f, 0.0f },
-        {  0.5f, -0.5f, 0.0f },
-        {  0.0f,  0.5f, 0.0f }
-      };
-
-      Triangle.Mesh.Indices =
-      {
-        0, 1, 2
-      };
-
-      Triangle.Mesh.UV =
-      {
-        { 0.0f, 0.0f },
-        { 1.0f, 0.0f },
-        { 0.5f, 1.0f }
-      };
-
-      Triangle.Position.Position = { 0.0f, 0.0f, -1.0f };
-
-      SpawnBundle(Registry_, std::move(Triangle));
+      return TBlockComponent{ .Type = EBlockType::Air };
     }
+  });
 
-    void OnUpdate(registry_t& Registry_, float Delta_) override
-    {
-      // Empty
-    }
-
-    void OnDestroy(registry_t& Registry_) override
-    {
-      // Empty
-    }
-  };
-
-  World_.AddSystem<TriangleSpawner>();
+  World_.AddSystem<CChunkSpawnerSystem>()
+        .AddSystem<CChunkDespawnerSystem>()
+        .AddSystem<CChunkMeshSystem>();
 }

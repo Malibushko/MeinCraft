@@ -2,8 +2,10 @@
 #include "GlobalTransformComponent.h"
 #include "core/components/PositionComponent.h"
 
-struct TCameraBasisComponent : IComponent
+struct TCameraBasisComponent
 {
+  static constexpr ComponentTag ComponentTag{};
+
   glm::vec3 Up   { 0.0f, 1.0f, 0.0f };
   glm::vec3 Front{ 0.0f, 0.0f, -1.0f };
   glm::vec3 Right{ 1.0f, 0.0f, 0.0f };

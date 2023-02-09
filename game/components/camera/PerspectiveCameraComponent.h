@@ -1,8 +1,10 @@
 #pragma once
 #include "core/entity/Component.h"
 
-struct TPerspectiveCameraComponent : IComponent
+struct TPerspectiveCameraComponent
 {
+  static constexpr ComponentTag ComponentTag{};
+
   float FOV{};
   float AspectRatio{};
   float Near{};
