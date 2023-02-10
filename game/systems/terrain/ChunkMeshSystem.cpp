@@ -32,7 +32,7 @@ void CChunkMeshSystem::OnUpdate(registry_t & Registry_, float Delta_)
 
     for (const auto & BlockEntity : Chunk.Blocks)
     {
-      if (auto * Block = Registry_.try_get<TBlockComponent>(BlockEntity); Block && Block->IsVisible())
+      if (BlockEntity != entt::null)
         Factory.InitBlock(Registry_, BlockEntity);
     }
 

@@ -1,10 +1,3 @@
-#include <iostream>
-#include <core/entity/entity.h>
-#include <glm/trigonometric.hpp>
-#include <glm/ext/matrix_transform.hpp>
-
-#include "core/components/PositionComponent.h"
-
 #include "World.h"
 #include "components/camera/PerspectiveCameraBundle.h"
 #include "components/camera/PerspectiveCameraComponent.h"

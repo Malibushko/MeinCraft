@@ -85,9 +85,18 @@ void CChunkSpawnerSystem::SpawnChunkAt(
         const int        Index           = X + TChunkComponent::CHUNK_SIZE_X * (Y + TChunkComponent::CHUNK_SIZE_Y * Z);
         const glm::vec3  BlockPosition   = FromChunkCoordinates(ChunkPosition) + glm::vec3(X, Y, Z);
 
-        const auto [BlockEntity, Block] = Create<TBlockComponent>(Registry_);
+        TBlockComponent Block = Terrain.TerrainGenerationStrategy(BlockPosition);
 
-        Block = Terrain.TerrainGenerationStrategy(BlockPosition);
+        if (!Block.IsVisible())
+        {
+          Chunk.Blocks[Index] = entt::null;
+
+          continue;
+        }
+
+        const auto [BlockEntity, BlockComponent] = Create<TBlockComponent>(Registry_);
+
+        BlockComponent = Block;
 
         AddComponent(Registry_, BlockEntity, TPositionComponent{ .Position = BlockPosition });
 
@@ -111,10 +120,10 @@ void CChunkSpawnerSystem::UpdateBlocksFaces(registry_t & Registry, TChunkCompone
       {
         const int Index = X + TChunkComponent::CHUNK_SIZE_X * (Y + TChunkComponent::CHUNK_SIZE_Y * Z);
 
-        TVisibleBlockFacesComponent Faces{ .Faces = EBlockFace::None };
-
-        if (TBlockComponent & Block = Registry.get<TBlockComponent>(Chunk.Blocks[Index]); !Block.IsVisible())
+        if (Chunk.Blocks[Index] == entt::null)
           continue;
+
+        TVisibleBlockFacesComponent Faces{ .Faces = EBlockFace::None };
 
         if (X == 0)
           Faces.Faces = Faces.Faces | EBlockFace::Front;
