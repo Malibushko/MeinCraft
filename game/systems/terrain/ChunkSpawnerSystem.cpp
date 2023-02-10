@@ -1,6 +1,7 @@
 #include "ChunkSpawnerSystem.h"
 
 #include "core/components/PositionComponent.h"
+#include "core/components/TransformComponent.h"
 
 #include "game/components/camera/CameraBasisComponent.h"
 #include "game/components/terrain/BlockComponent.h"
@@ -12,13 +13,9 @@
 // Config
 //
 
-static constexpr int        CHUNK_SPAWN_DISTANCE = 2;
-static constexpr std::array DIRECTIONS           =
-{
-  glm::ivec2(-1, 1),  glm::ivec2(0, 1),  glm::ivec2(1, 1),
-  glm::ivec2(-1, 0),  glm::ivec2(0, 0),  glm::ivec2(1, 0),
-  glm::ivec2(-1, -1), glm::ivec2(0, -1), glm::ivec2(1, -1)
-};
+static constexpr int CHUNK_SPAWN_RADIUS = 11;
+
+static_assert((CHUNK_SPAWN_RADIUS & 1) && "Spawn Distance must be odd!");
 
 //
 // Construction/Destruction
@@ -46,14 +43,12 @@ void CChunkSpawnerSystem::OnUpdate(registry_t & Registry_, float Delta_)
   {
     glm::ivec2 ChunkPosition = ToChunkCoordinates(Position.Position);
 
-    for (int Distance = 0; Distance < CHUNK_SPAWN_DISTANCE; Distance++)
+    for (int X = -CHUNK_SPAWN_RADIUS / 2; X < CHUNK_SPAWN_RADIUS / 2; X++)
     {
-      for (glm::ivec2 Direction : DIRECTIONS)
+      for (int Y = -CHUNK_SPAWN_RADIUS / 2; Y < CHUNK_SPAWN_RADIUS / 2; Y++)
       {
-        Direction *= Distance;
-
-        if (!Terrain.Chunks.contains(ChunkPosition + Direction))
-          SpawnChunkAt(Registry_, Terrain, ChunkPosition + Direction);
+        if (!Terrain.Chunks.contains(ChunkPosition + glm::ivec2(X, Y)))
+          SpawnChunkAt(Registry_, Terrain, ChunkPosition + glm::ivec2(X, Y));
       }
     }
   }
@@ -98,7 +93,7 @@ void CChunkSpawnerSystem::SpawnChunkAt(
 
         BlockComponent = Block;
 
-        AddComponent(Registry_, BlockEntity, TPositionComponent{ .Position = BlockPosition });
+        AddComponent(Registry_, BlockEntity, TTransformComponent{ .Transform = glm::translate(glm::mat4(1.0f), BlockPosition) });
 
         Chunk.Blocks[Index] = BlockEntity;
       }

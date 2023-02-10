@@ -13,6 +13,7 @@
 #include "systems/terrain/ChunkDespawnerSystem.h"
 #include "systems/terrain/ChunkMeshSystem.h"
 #include "systems/terrain/ChunkSpawnerSystem.h"
+#include "systems/utils/FPSCounterSystem.h"
 
 #include "utils/NumericUtils.h"
 
@@ -20,6 +21,7 @@ void InitCamera (World & World_);
 void InitDisplay(World & World_);
 void InitSystems(World & World_);
 void InitTerrain(World & World_);
+void InitMetrics(World & World_);
 
 int main()
 {
@@ -28,7 +30,8 @@ int main()
   World.AddStartupFunction(InitDisplay)
        .AddStartupFunction(InitCamera)
        .AddStartupFunction(InitSystems)
-       .AddStartupFunction(InitTerrain);
+       .AddStartupFunction(InitTerrain)
+       .AddStartupFunction(InitMetrics);
 
   World.Run();
 }
@@ -87,4 +90,9 @@ void InitTerrain(World & World_)
   World_.AddSystem<CChunkSpawnerSystem>()
         .AddSystem<CChunkDespawnerSystem>()
         .AddSystem<CChunkMeshSystem>();
+}
+
+void InitMetrics(World & World_)
+{
+  World_.AddSystem<CFPSCounterSystem>();
 }

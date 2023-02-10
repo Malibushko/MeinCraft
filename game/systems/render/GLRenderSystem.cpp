@@ -4,6 +4,7 @@
 #include <spdlog/spdlog.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include "core/components/PositionComponent.h"
+#include "core/components/TransformComponent.h"
 
 #include "game/components/camera/GlobalTransformComponent.h"
 #include "game/components/display/DisplayComponent.h"
@@ -39,38 +40,42 @@ void GLRenderSystem::OnUpdate(registry_t & Registry_, float Delta_)
   glClearColor(0.52f, 0.807f, 0.92f, 1.f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  glm::mat4 Transform = QueryOrCreate<TGlobalTransformComponent>(Registry_).second.Transform;
+  glm::mat4 GlobalTransform = QueryOrCreate<TGlobalTransformComponent>(Registry_).second.Transform;
 
-  for (const auto & [Entity, Mesh] : Registry_.view<TGLMeshComponent>().each())
+  GLuint PreviousShader  = 0;
+  GLuint PreviousTexture = 0;
+
+  for (auto && [Entity, Mesh, Shader, Texture, Transform] : Registry_.view<TGLMeshComponent, TGLShaderComponent, TGLTextureComponent, TTransformComponent>().each())
   {
     assert(Mesh.IsBaked());
 
-    if (const TGLShaderComponent * Shader = Registry_.try_get<TGLShaderComponent>(Entity); Shader)
+    if (PreviousShader != Shader.ShaderID)
     {
-      const TPositionComponent * Position = Registry_.try_get<TPositionComponent>(Entity);
+      assert(Shader.IsValid());
+      glUseProgram(Shader.ShaderID);
 
-      assert(Shader->IsValid());
-      glUseProgram(Shader->ShaderID);
-
-      glUniformMatrix4fv(
-        glGetUniformLocation(Shader->ShaderID, "u_Transform"),
-        1,
-        GL_FALSE,
-        &(Position ? glm::translate(Transform, Position->Position) : Transform)[0][0]
-      );
+      PreviousShader = Shader.ShaderID;
     }
 
-    if (const TGLTextureComponent * Texture = Registry_.try_get<TGLTextureComponent>(Entity); Texture)
-    {
-      assert(Texture->IsValid());
+    glUniformMatrix4fv(
+        glGetUniformLocation(Shader.ShaderID, "u_Transform"),
+        1,
+        GL_FALSE,
+        &(GlobalTransform * Transform.Transform)[0][0]
+      );
 
+    assert(Texture->IsValid());
+
+    if (PreviousTexture != Texture.TextureID)
+    {
       glActiveTexture(GL_TEXTURE0);
-      glBindTexture(GL_TEXTURE_2D, Texture->TextureID);
+      glBindTexture(GL_TEXTURE_2D, Texture.TextureID);
+
+      PreviousTexture = Texture.TextureID;
     }
 
     glBindVertexArray(Mesh.VAO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, Mesh.EBO);
-
     glDrawElements(GL_TRIANGLES, Mesh.IndicesCount, GL_UNSIGNED_INT, nullptr);
   }
 }

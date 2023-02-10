@@ -172,6 +172,7 @@
     <ClInclude Include="game\systems\terrain\ChunkDespawnerSystem.h" />
     <ClInclude Include="game\systems\terrain\ChunkMeshSystem.h" />
     <ClInclude Include="game\systems\terrain\ChunkSpawnerSystem.h" />
+    <ClInclude Include="game\systems\utils\FPSCounterSystem.h" />
     <ClInclude Include="game\utils\FileUtils.h" />
     <ClInclude Include="game\utils\NumericUtils.h" />
     <ClInclude Include="game\World.h" />
@@ -187,6 +188,7 @@
     <ClCompile Include="game\systems\terrain\ChunkDespawnerSystem.cpp" />
     <ClCompile Include="game\systems\terrain\ChunkMeshSystem.cpp" />
     <ClCompile Include="game\systems\terrain\ChunkSpawnerSystem.cpp" />
+    <ClCompile Include="game\systems\utils\FPSCounterSystem.cpp" />
     <ClCompile Include="game\utils\FileUtils.cpp" />
     <ClCompile Include="game\World.cpp" />
     <ClCompile Include="game\Main.cpp" />

@@ -52,6 +52,8 @@ public: // Interface
   template<class T, class ... Args>
   World & AddSystem(Args && ... Args_)
   {
+    static_assert(std::is_base_of_v<ISystem, T> && "T inherit ISystem");
+
     m_Systems.emplace_back(std::make_unique<T>(std::forward<Args>(Args_)...));
 
     if constexpr (std::is_base_of_v<IFrameListenerSystem, T>)
@@ -95,25 +97,23 @@ public: // Interface
     for (const auto & System : m_Systems)
       System->OnCreate(m_Registry);
 
+    auto LastTick = std::chrono::high_resolution_clock::now();
+
     while (m_State == EState::Running)
     {
-      auto LastTick = std::chrono::high_resolution_clock::now();
+      const auto  Now   = std::chrono::high_resolution_clock::now();
+      const float Delta = std::chrono::duration_cast<std::chrono::milliseconds>(Now - LastTick).count();
 
       for (const auto & System : m_FrameListenerSystems)
         System->OnFrameBegin(m_Registry);
 
       for (const auto & System : m_Systems)
-      {
-        const auto  Now   = std::chrono::high_resolution_clock::now();
-        const float Delta = std::chrono::duration<float>(Now - LastTick).count();
-
         System->OnUpdate(m_Registry, Delta);
-
-        LastTick = Now;
-      }
 
       for (const auto & System : m_FrameListenerSystems)
         System->OnFrameEnd(m_Registry);
+
+      LastTick = Now;
     }
 
     for (const auto & System : m_Systems)

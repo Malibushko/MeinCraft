@@ -73,6 +73,9 @@
     <Filter Include="game\factory">
       <UniqueIdentifier>{686b03d4-4408-40a6-8254-2ad03fc6ddff}</UniqueIdentifier>
     </Filter>
+    <Filter Include="game\systems\utils">
+      <UniqueIdentifier>{46fd77cb-3ca2-4c20-90f9-7a5b657e5283}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\entity\Entity.h">
@@ -195,6 +198,9 @@
     <ClInclude Include="game\components\terrain\VisibleBlockFacesComponent.h">
       <Filter>game\components\terrain</Filter>
     </ClInclude>
+    <ClInclude Include="game\systems\utils\FPSCounterSystem.h">
+      <Filter>game\systems\utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="game\Main.cpp">
@@ -235,6 +241,9 @@
     </ClCompile>
     <ClCompile Include="game\factory\BlockMeshFactory.cpp">
       <Filter>game\factory</Filter>
+    </ClCompile>
+    <ClCompile Include="game\systems\utils\FPSCounterSystem.cpp">
+      <Filter>game\systems\utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

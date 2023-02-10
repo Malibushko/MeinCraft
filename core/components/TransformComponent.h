@@ -1,8 +1,10 @@
 #pragma once
 #include "core/entity/Component.h"
-#include <glm/vec4.hpp>
+#include <glm/mat4x4.hpp>
 
-struct TTransformComponent : IComponent
+struct TTransformComponent
 {
-  glm::vec4 Transform;
+  static constexpr ComponentTag ComponentTag{};
+
+  glm::mat4 Transform{1.f};
 };
