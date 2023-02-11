@@ -138,10 +138,11 @@ void CBlockMeshFactory::InitBlock(registry_t & Registry, const entity_t & BlockE
   {
     EBlockFace BlockFaces = EBlockFace::All;
 
-    if (TVisibleBlockFacesComponent* Faces = Registry.try_get<TVisibleBlockFacesComponent>(BlockEntity); Faces)
+    if (TVisibleBlockFacesComponent * Faces = Registry.try_get<TVisibleBlockFacesComponent>(BlockEntity); Faces)
       BlockFaces = Faces->Faces;
 
-    Registry.emplace<TGLUnbakedMeshComponent>(BlockEntity, GetMeshForBlock(Block, BlockFaces));
+    if (BlockFaces != EBlockFace::None)
+      Registry.emplace<TGLUnbakedMeshComponent>(BlockEntity, GetMeshForBlock(Block, BlockFaces));
   }
 
   if (!HasComponent<TGLTextureComponent>(Registry, BlockEntity))

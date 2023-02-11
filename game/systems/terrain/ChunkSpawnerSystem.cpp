@@ -16,7 +16,7 @@
 // Config
 //
 
-static constexpr int CHUNK_SPAWN_RADIUS = 11;
+static constexpr int CHUNK_SPAWN_RADIUS = 25;
 
 static_assert((CHUNK_SPAWN_RADIUS & 1) && "Spawn Distance must be odd!");
 
