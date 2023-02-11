@@ -85,6 +85,12 @@
     <Filter Include="game\components\events">
       <UniqueIdentifier>{64c8738a-3725-44d2-a1cb-029b970c6332}</UniqueIdentifier>
     </Filter>
+    <Filter Include="third_party">
+      <UniqueIdentifier>{3dde4e4c-8840-484f-bc02-1a3544ad5a77}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="third_party\FastNoise">
+      <UniqueIdentifier>{ca649821-ec60-4a18-b9a2-2fe4253cbbcc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\entity\Entity.h">
@@ -222,6 +228,12 @@
     <ClInclude Include="game\components\events\CameraChangedEvent.h">
       <Filter>game\components\events</Filter>
     </ClInclude>
+    <ClInclude Include="game\systems\terrain\NoiseTerrainGenerator.h">
+      <Filter>game\systems\terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\FastNoise\FastNoiseLite.h">
+      <Filter>third_party\FastNoise</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="game\Main.cpp">
@@ -269,6 +281,9 @@
     <ClCompile Include="game\math\Frustum.cpp">
       <Filter>game\math</Filter>
     </ClCompile>
+    <ClCompile Include="game\systems\terrain\NoiseTerrainGenerator.cpp">
+      <Filter>game\systems\terrain</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\basic.frag">
@@ -276,6 +291,9 @@
     </None>
     <None Include="res\shaders\basic.vert">
       <Filter>res\shaders</Filter>
+    </None>
+    <None Include="third_party\FastNoise\LICENSE">
+      <Filter>third_party\FastNoise</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

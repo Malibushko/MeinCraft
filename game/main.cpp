@@ -13,6 +13,7 @@
 #include "systems/terrain/ChunkDespawnerSystem.h"
 #include "systems/terrain/ChunkMeshSystem.h"
 #include "systems/terrain/ChunkSpawnerSystem.h"
+#include "systems/terrain/NoiseTerrainGenerator.h"
 #include "systems/utils/FPSCounterSystem.h"
 
 #include "utils/NumericUtils.h"
@@ -47,7 +48,7 @@ void InitCamera(World & World_)
       .FOV         = 45.0f,
       .AspectRatio = QueryFirst<TDisplayComponent>(World_.Registry()).GetAspectRatio(),
       .Near        = 0.1f,
-      .Far         = 100.f,
+      .Far         = 250.f,
     }
   });
 }
@@ -56,8 +57,8 @@ void InitDisplay(World & World_)
 {
   World_.Spawn(TDisplayComponent
   {
-    .Width  = 800,
-    .Height = 600
+    .Width  = 1280,
+    .Height = 720
   })
   .Spawn(TGLFWWindowComponent
   {
@@ -80,10 +81,9 @@ void InitTerrain(World & World_)
   {
     .TerrainGenerationStrategy = [](const glm::vec3 & _Position) -> TBlockComponent
     {
-      if (Utils::AlmostEqual(_Position.y, 0.f))
-        return TBlockComponent{ .Type = EBlockType::GrassDirt };
+      static CNoiseTerrainGenerator Generator;
 
-      return TBlockComponent{ .Type = EBlockType::Air };
+      return Generator.Generate(_Position);
     }
   });
 
