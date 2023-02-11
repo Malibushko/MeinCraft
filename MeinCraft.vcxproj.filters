@@ -76,6 +76,15 @@
     <Filter Include="game\systems\utils">
       <UniqueIdentifier>{46fd77cb-3ca2-4c20-90f9-7a5b657e5283}</UniqueIdentifier>
     </Filter>
+    <Filter Include="game\components\physics">
+      <UniqueIdentifier>{bb6b5a85-b6c3-4714-8321-3a8e97cc0ae6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\math">
+      <UniqueIdentifier>{8b4dec99-4372-4629-9c6c-1e9d7f0a799b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\components\events">
+      <UniqueIdentifier>{64c8738a-3725-44d2-a1cb-029b970c6332}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\entity\Entity.h">
@@ -201,6 +210,18 @@
     <ClInclude Include="game\systems\utils\FPSCounterSystem.h">
       <Filter>game\systems\utils</Filter>
     </ClInclude>
+    <ClInclude Include="game\components\physics\AABBVolumeComponent.h">
+      <Filter>game\components\physics</Filter>
+    </ClInclude>
+    <ClInclude Include="game\components\physics\BoundingVolume.h">
+      <Filter>game\components\physics</Filter>
+    </ClInclude>
+    <ClInclude Include="game\math\Frustum.h">
+      <Filter>game\math</Filter>
+    </ClInclude>
+    <ClInclude Include="game\components\events\CameraChangedEvent.h">
+      <Filter>game\components\events</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="game\Main.cpp">
@@ -244,6 +265,9 @@
     </ClCompile>
     <ClCompile Include="game\systems\utils\FPSCounterSystem.cpp">
       <Filter>game\systems\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="game\math\Frustum.cpp">
+      <Filter>game\math</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

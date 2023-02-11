@@ -9,6 +9,9 @@
 #include "game/components/input/MouseMovementData.h"
 #include "game/components/input/MouseWheelData.h"
 
+#include "game/components/events/CameraChangedEvent.h"
+#include "game/components/terrain/BlockComponent.h"
+
 //
 // Config
 //
@@ -41,6 +44,8 @@ void CCameraSystem::OnUpdate(registry_t & Registry_, float Delta_)
   auto   CameraViews   = Registry_.view<TGlobalTransformComponent, TPositionComponent, TCameraBasisComponent>().each();
 
   bool IsNeedUpdateTransforms = false;
+
+  Registry_.clear<TCameraChangedEvent>();
 
   for (const auto & [Entity, GlobalTransform, Position, Basis] : CameraViews)
   {
@@ -104,7 +109,11 @@ void CCameraSystem::OnUpdate(registry_t & Registry_, float Delta_)
     }
 
     if (IsNeedUpdateTransforms)
+    {
       UpdateCameraTransforms(Registry_);
+
+      Create<TCameraChangedEvent>(Registry_);
+    }
   }
 }
 
@@ -119,22 +128,23 @@ void CCameraSystem::UpdateCameraTransforms(registry_t & Registry_)
 
   for (const auto & [Entity, GlobalTransform, Position, Basis] : CameraViews)
   {
-    glm::mat4 Model      = glm::mat4(1.f);
-    glm::mat4 View       = glm::lookAt(Position.Position, Position.Position + Basis.Front, Basis.Up);
-    glm::mat4 Projection = glm::mat4(1.f);
+    GlobalTransform.Model      = glm::mat4(1.f);
+    GlobalTransform.View       = glm::lookAt(Position.Position, Position.Position + Basis.Front, Basis.Up);
 
     if (const auto Perspective = Registry_.try_get<TPerspectiveCameraComponent>(Entity);
         Perspective != nullptr)
     {
-      Projection = glm::perspective(
+      GlobalTransform.Projection = glm::perspective(
           glm::radians(Perspective->FOV),
           Perspective->AspectRatio,
           Perspective->Near,
           Perspective->Far
         );
     }
-
-    GlobalTransform.Transform = Projection * View * Model;
+    else
+    {
+      GlobalTransform.Projection = glm::mat4(1.f);
+    }
   }
 }
 

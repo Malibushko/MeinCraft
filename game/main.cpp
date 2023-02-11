@@ -70,8 +70,8 @@ void InitSystems(World & World_)
 {
   World_.AddSystem<CGLFWWindowSystem>()
         .AddSystem<GLMeshSystem>()
-        .AddSystem<GLRenderSystem>()
-        .AddSystem<CCameraSystem>();
+        .AddSystem<CCameraSystem>()
+        .AddSystem<GLRenderSystem>();
 }
 
 void InitTerrain(World & World_)

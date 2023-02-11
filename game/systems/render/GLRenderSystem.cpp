@@ -8,6 +8,8 @@
 
 #include "game/components/camera/GlobalTransformComponent.h"
 #include "game/components/display/DisplayComponent.h"
+#include "game/components/events/CameraChangedEvent.h"
+#include "game/components/physics/BoundingVolume.h"
 #include "game/components/render/GLMeshComponent.h"
 #include "game/components/render/GLShaderComponent.h"
 #include "game/components/render/GLTextureComponent.h"
@@ -40,13 +42,25 @@ void GLRenderSystem::OnUpdate(registry_t & Registry_, float Delta_)
   glClearColor(0.52f, 0.807f, 0.92f, 1.f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  glm::mat4 GlobalTransform = QueryOrCreate<TGlobalTransformComponent>(Registry_).second.Transform;
+  const auto & GlobalTransform = QueryOrCreate<TGlobalTransformComponent>(Registry_).second;
+
+  // TODO: copy MVP to uniform block
+  const glm::mat4 MVP = GlobalTransform.Projection * GlobalTransform.View * GlobalTransform.Model;
+
+  if (IsNeedUpdateFrustum(Registry_))
+    UpdateFrustum(GlobalTransform);
 
   GLuint PreviousShader  = 0;
   GLuint PreviousTexture = 0;
 
   for (auto && [Entity, Mesh, Shader, Texture, Transform] : Registry_.view<TGLMeshComponent, TGLShaderComponent, TGLTextureComponent, TTransformComponent>().each())
   {
+    if (const TBoundingVolumeComponent * BBComponent = Registry_.try_get<TBoundingVolumeComponent>(Entity))
+    {
+      if (!m_RenderFrustum.Intersect(*BBComponent))
+        continue;
+    }
+
     assert(Mesh.IsBaked());
 
     if (PreviousShader != Shader.ShaderID)
@@ -61,10 +75,10 @@ void GLRenderSystem::OnUpdate(registry_t & Registry_, float Delta_)
         glGetUniformLocation(Shader.ShaderID, "u_Transform"),
         1,
         GL_FALSE,
-        &(GlobalTransform * Transform.Transform)[0][0]
+        &(MVP * Transform.Transform)[0][0]
       );
 
-    assert(Texture->IsValid());
+    assert(Texture.IsValid());
 
     if (PreviousTexture != Texture.TextureID)
     {
@@ -83,4 +97,18 @@ void GLRenderSystem::OnUpdate(registry_t & Registry_, float Delta_)
 void GLRenderSystem::OnDestroy(registry_t & Registry_)
 {
   // Empty
+}
+
+void GLRenderSystem::UpdateFrustum(const TGlobalTransformComponent & Transform)
+{
+  m_RenderFrustum       = CFrustum::FromTransform(Transform);
+  m_IsNeedUpdateFrustum = false;
+}
+
+bool GLRenderSystem::IsNeedUpdateFrustum(registry_t & Registry) const
+{
+  if (m_IsNeedUpdateFrustum)
+    return true;
+
+  return HasComponent<TCameraChangedEvent>(Registry);
 }

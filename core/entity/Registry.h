@@ -100,3 +100,9 @@ bool HasComponent(registry_t & Registry_, entity_t Entity_)
 {
   return Registry_.try_get<T>(Entity_) != nullptr;
 }
+
+template<class T>
+bool HasComponent(registry_t & Registry)
+{
+  return Registry.view<T>().size() > 0;
+}

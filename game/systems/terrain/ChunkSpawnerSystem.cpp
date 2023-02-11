@@ -1,9 +1,12 @@
 #include "ChunkSpawnerSystem.h"
 
+#include <spdlog/spdlog.h>
+
 #include "core/components/PositionComponent.h"
 #include "core/components/TransformComponent.h"
 
 #include "game/components/camera/CameraBasisComponent.h"
+#include "game/components/physics/BoundingVolume.h"
 #include "game/components/terrain/BlockComponent.h"
 #include "game/components/terrain/ChunkComponent.h"
 #include "game/components/terrain/TerrainComponent.h"
@@ -93,7 +96,15 @@ void CChunkSpawnerSystem::SpawnChunkAt(
 
         BlockComponent = Block;
 
-        AddComponent(Registry_, BlockEntity, TTransformComponent{ .Transform = glm::translate(glm::mat4(1.0f), BlockPosition) });
+        AddComponent(Registry_, BlockEntity, TTransformComponent
+        {
+          .Transform = glm::translate(glm::mat4(1.0f), BlockPosition)
+        });
+
+        AddComponent(Registry_, BlockEntity, TBoundingVolumeComponent
+        {
+          .Volume = TAABBVolumeComponent{.Min = BlockPosition - glm::vec3(0.5), .Max = BlockPosition + glm::vec3(0.5)}
+        });
 
         Chunk.Blocks[Index] = BlockEntity;
       }

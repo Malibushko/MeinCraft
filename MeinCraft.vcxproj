@@ -150,9 +150,12 @@
     <ClInclude Include="game\components\camera\PerspectiveCameraComponent.h" />
     <ClInclude Include="game\components\display\DisplayComponent.h" />
     <ClInclude Include="game\components\display\GLFWWindowComponent.h" />
+    <ClInclude Include="game\components\events\CameraChangedEvent.h" />
     <ClInclude Include="game\components\input\KeyboardState.h" />
     <ClInclude Include="game\components\input\MouseMovementData.h" />
     <ClInclude Include="game\components\input\MouseWheelData.h" />
+    <ClInclude Include="game\components\physics\AABBVolumeComponent.h" />
+    <ClInclude Include="game\components\physics\BoundingVolume.h" />
     <ClInclude Include="game\components\render\GLMeshComponent.h" />
     <ClInclude Include="game\components\render\GLShaderComponent.h" />
     <ClInclude Include="game\components\render\GLTextureComponent.h" />
@@ -163,6 +166,7 @@
     <ClInclude Include="game\components\terrain\ChunkComponent.h" />
     <ClInclude Include="game\components\terrain\TerrainComponent.h" />
     <ClInclude Include="game\factory\BlockMeshFactory.h" />
+    <ClInclude Include="game\math\Frustum.h" />
     <ClInclude Include="game\resources\ShaderLibrary.h" />
     <ClInclude Include="game\resources\TextureLibrary.h" />
     <ClInclude Include="game\systems\camera\CameraSystem.h" />
@@ -179,6 +183,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="game\factory\BlockMeshFactory.cpp" />
+    <ClCompile Include="game\math\Frustum.cpp" />
     <ClCompile Include="game\resources\ShaderLibrary.cpp" />
     <ClCompile Include="game\resources\TextureLibrary.cpp" />
     <ClCompile Include="game\systems\camera\CameraSystem.cpp" />
