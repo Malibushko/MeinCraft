@@ -1,6 +1,7 @@
 #include "ChunkMeshSystem.h"
 
 #include "core/components/TransformComponent.h"
+#include "game/components/physics/BoundingVolume.h"
 #include "game/components/terrain/BlockComponent.h"
 #include "game/components/terrain/ChunkComponent.h"
 #include "game/factory/BlockMeshFactory.h"
@@ -91,6 +92,16 @@ void CChunkMeshSystem::RecreateChunkMesh(registry_t & Registry_, entity_t ChunkE
   {
     .TextureID = CTextureLibrary::Load("res/textures/blocks_atlas.png").TextureID
   };
+
+  // TODO: This is a hack, we should be able to get the AABB from the mesh
+  Registry_.emplace_or_replace<TBoundingVolumeComponent>(ChunkEntity, TBoundingVolumeComponent
+  {
+    .Volume = TAABBVolumeComponent
+    {
+      .Min = ChunkTransform.Transform[3],
+      .Max = glm::vec3(ChunkTransform.Transform[3]) + glm::vec3(TChunkComponent::CHUNK_SIZE_X, TChunkComponent::CHUNK_SIZE_Y, TChunkComponent::CHUNK_SIZE_Z)
+    }
+  });
 
   Registry_.emplace_or_replace<TGLUnbakedMeshComponent>(ChunkEntity, ChunkMesh);
   Registry_.emplace_or_replace<TGLShaderComponent>(ChunkEntity, Shader);
