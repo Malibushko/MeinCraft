@@ -126,27 +126,37 @@ void CChunkSpawnerSystem::UpdateBlocksFaces(registry_t & Registry, TChunkCompone
       {
         const int Index = X + TChunkComponent::CHUNK_SIZE_X * (Y + TChunkComponent::CHUNK_SIZE_Y * Z);
 
+        const int NeighbourIndices[6] =
+        {
+          X - 1 + TChunkComponent::CHUNK_SIZE_X * (Y + TChunkComponent::CHUNK_SIZE_Y * Z),
+          X + 1 + TChunkComponent::CHUNK_SIZE_X * (Y + TChunkComponent::CHUNK_SIZE_Y * Z),
+          X + TChunkComponent::CHUNK_SIZE_X * (Y - 1 + TChunkComponent::CHUNK_SIZE_Y * Z),
+          X + TChunkComponent::CHUNK_SIZE_X * (Y + 1 + TChunkComponent::CHUNK_SIZE_Y * Z),
+          X + TChunkComponent::CHUNK_SIZE_X * (Y + TChunkComponent::CHUNK_SIZE_Y * (Z - 1)),
+          X + TChunkComponent::CHUNK_SIZE_X * (Y + TChunkComponent::CHUNK_SIZE_Y * (Z + 1))
+        };
+
         if (Chunk.Blocks[Index] == entt::null)
           continue;
 
         TVisibleBlockFacesComponent Faces{ .Faces = EBlockFace::None };
 
-        if (X == 0)
+        if (X == 0 || Chunk.Blocks[NeighbourIndices[0]] == entt::null)
           Faces.Faces = Faces.Faces | EBlockFace::Front;
 
-        if (X == TChunkComponent::CHUNK_SIZE_X - 1)
+        if (X == TChunkComponent::CHUNK_SIZE_X - 1 || Chunk.Blocks[NeighbourIndices[1]] == entt::null)
           Faces.Faces = Faces.Faces | EBlockFace::Back;
 
-        if (Y == 0)
+        if (Y == 0 || Chunk.Blocks[NeighbourIndices[2]] == entt::null)
           Faces.Faces = Faces.Faces | EBlockFace::Bottom;
 
-        if (Y == TChunkComponent::CHUNK_SIZE_Y - 1)
+        if (Y == TChunkComponent::CHUNK_SIZE_Y - 1 || Chunk.Blocks[NeighbourIndices[3]] == entt::null)
           Faces.Faces = Faces.Faces | EBlockFace::Top;
 
-        if (Z == 0)
+        if (Z == 0 || Chunk.Blocks[NeighbourIndices[4]] == entt::null)
           Faces.Faces = Faces.Faces | EBlockFace::Left;
 
-        if (Z == TChunkComponent::CHUNK_SIZE_Z - 1)
+        if (Z == TChunkComponent::CHUNK_SIZE_Z - 1 || Chunk.Blocks[NeighbourIndices[5]] == entt::null)
           Faces.Faces = Faces.Faces | EBlockFace::Right;
 
         Registry.emplace<TVisibleBlockFacesComponent>(Chunk.Blocks[Index], Faces);
