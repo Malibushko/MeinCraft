@@ -124,39 +124,6 @@ CBlockMeshFactory::CBlockMeshFactory() = default;
 CBlockMeshFactory::~CBlockMeshFactory() = default;
 
 //
-// Interface
-//
-
-void CBlockMeshFactory::InitBlock(registry_t & Registry, const entity_t & BlockEntity) const
-{
-  assert(HasComponent<TBlockComponent>(Registry, BlockEntity));
-
-  TBlockComponent & Block = Registry.get<TBlockComponent>(BlockEntity);
-
-  if (!HasComponent<TGLUnbakedMeshComponent>(Registry, BlockEntity) &&
-      !HasComponent<TGLMeshComponent>(Registry, BlockEntity))
-  {
-    EBlockFace BlockFaces = EBlockFace::All;
-
-    if (TVisibleBlockFacesComponent * Faces = Registry.try_get<TVisibleBlockFacesComponent>(BlockEntity); Faces)
-      BlockFaces = Faces->Faces;
-
-    if (BlockFaces != EBlockFace::None)
-      Registry.emplace<TGLUnbakedMeshComponent>(BlockEntity, GetMeshForBlock(Block, BlockFaces));
-  }
-
-  if (!HasComponent<TGLTextureComponent>(Registry, BlockEntity))
-  {
-    Registry.emplace<TGLTextureComponent>(BlockEntity, GetTextureForBlock(Block));
-  }
-
-  if (!HasComponent<TGLShaderComponent>(Registry, BlockEntity))
-  {
-    Registry.emplace<TGLShaderComponent>(BlockEntity, GetShaderForBlock(Block));
-  }
-}
-
-//
 // Service
 //
 
@@ -182,25 +149,6 @@ TGLUnbakedMeshComponent CBlockMeshFactory::GetMeshForBlock(const TBlockComponent
   }
 
   return Mesh;
-}
-
-
-TGLTextureComponent CBlockMeshFactory::GetTextureForBlock(const TBlockComponent & Block) const
-{
-  TGLTextureComponent Texture;
-
-  Texture.TextureID = CTextureLibrary::Load(TEXTURE_ATLAS_PATH).TextureID;
-
-  return Texture;
-}
-
-TGLShaderComponent CBlockMeshFactory::GetShaderForBlock(const TBlockComponent & Block) const
-{
-  TGLShaderComponent Shader;
-
-  Shader.ShaderID = CShaderLibrary::Load("res/shaders/basic").ShaderID;
-
-  return Shader;
 }
 
 std::vector<glm::vec2> CBlockMeshFactory::GetUVForBlock(const TBlockComponent & Block, EBlockFace Faces) const

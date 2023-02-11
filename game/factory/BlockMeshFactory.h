@@ -18,15 +18,7 @@ public: // Construction/Destruction
 
 public: // Interface
 
-  void InitBlock(registry_t & Registry, const entity_t & BlockEntity) const;
-
-public: // Service
-
   TGLUnbakedMeshComponent GetMeshForBlock(const TBlockComponent & Block, EBlockFace Faces) const;
-
-  TGLTextureComponent GetTextureForBlock(const TBlockComponent & Block) const;
-
-  TGLShaderComponent GetShaderForBlock(const TBlockComponent & Block) const;
 
   std::vector<glm::vec2> GetUVForBlock(const TBlockComponent & Block, EBlockFace Faces) const;
 };

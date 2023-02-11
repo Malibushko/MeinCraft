@@ -90,7 +90,7 @@ void GLRenderSystem::OnUpdate(registry_t & Registry_, float Delta_)
 
     glBindVertexArray(Mesh.VAO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, Mesh.EBO);
-    glDrawElements(GL_TRIANGLES, Mesh.IndicesCount, GL_UNSIGNED_INT, nullptr);
+    glDrawElements(GL_LINES, Mesh.IndicesCount, GL_UNSIGNED_INT, nullptr);
   }
 }
 

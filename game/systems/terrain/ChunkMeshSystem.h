@@ -2,6 +2,7 @@
 #include "core/entity/System.h"
 #include "game/components/render/GLUnbakedMeshComponent.h"
 
+struct TChunkComponent;
 struct TBlockComponent;
 
 class CChunkMeshSystem : public ISystem
@@ -19,4 +20,8 @@ public: // ISystem
   void OnUpdate(registry_t & Registry_, float Delta_) override;
 
   void OnDestroy(registry_t & Registry_) override;
+
+protected: // Service
+
+  void RecreateChunkMesh(registry_t & Registry_, entity_t ChunkEntity, TChunkComponent & Chunk) const;
 };

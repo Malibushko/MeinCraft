@@ -96,20 +96,17 @@ void CChunkSpawnerSystem::SpawnChunkAt(
 
         BlockComponent = Block;
 
-        AddComponent(Registry_, BlockEntity, TTransformComponent
-        {
-          .Transform = glm::translate(glm::mat4(1.0f), BlockPosition)
-        });
-
-        AddComponent(Registry_, BlockEntity, TBoundingVolumeComponent
-        {
-          .Volume = TAABBVolumeComponent{.Min = BlockPosition - glm::vec3(0.5), .Max = BlockPosition + glm::vec3(0.5)}
-        });
-
         Chunk.Blocks[Index] = BlockEntity;
       }
     }
   }
+
+  TTransformComponent ChunkTransform
+  {
+    .Transform = glm::translate(glm::mat4(1.0f), FromChunkCoordinates(ChunkPosition))
+  };
+
+  AddComponent(Registry_, Entity, std::move(ChunkTransform));
 
   UpdateBlocksFaces(Registry_, Chunk);
 

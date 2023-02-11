@@ -286,10 +286,10 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\shaders\basic.frag">
+    <None Include="res\shaders\blocks_shader.frag">
       <Filter>res\shaders</Filter>
     </None>
-    <None Include="res\shaders\basic.vert">
+    <None Include="res\shaders\blocks_shader.vert">
       <Filter>res\shaders</Filter>
     </None>
     <None Include="third_party\FastNoise\LICENSE">
@@ -297,7 +297,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="res\textures\blocks.png">
+    <Image Include="res\textures\blocks_atlas.png">
       <Filter>res\textures</Filter>
     </Image>
   </ItemGroup>

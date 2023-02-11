@@ -207,12 +207,12 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\shaders\basic.frag" />
-    <None Include="res\shaders\basic.vert" />
+    <None Include="res\shaders\blocks_shader.frag" />
+    <None Include="res\shaders\blocks_shader.vert" />
     <None Include="third_party\FastNoise\LICENSE" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="res\textures\blocks.png" />
+    <Image Include="res\textures\blocks_atlas.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
