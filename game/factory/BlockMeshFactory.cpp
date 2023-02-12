@@ -70,14 +70,14 @@ static constexpr std::array<glm::vec3, 4> CUBE_FACES[]
     glm::vec3{  0.5f,  0.5f, -0.5f },
   },
   {
-    // Back
+    // Front
     glm::vec3{ -0.5f, -0.5f, -0.5f },
     glm::vec3{ -0.5f,  0.5f, -0.5f },
     glm::vec3{  0.5f,  0.5f, -0.5f },
     glm::vec3{  0.5f, -0.5f, -0.5f }
   },
   {
-     // Front
+     // Back
      glm::vec3{ -0.5f, -0.5f,  0.5f },
      glm::vec3{  0.5f, -0.5f,  0.5f },
      glm::vec3{  0.5f,  0.5f,  0.5f },
@@ -96,6 +96,52 @@ static constexpr std::array<glm::vec3, 4> CUBE_FACES[]
     glm::vec3{ -0.5f, -0.5f, -0.5f },
     glm::vec3{  0.5f, -0.5f, -0.5f },
     glm::vec3{  0.5f, -0.5f,  0.5f }
+  }
+};
+
+static constexpr std::array<glm::vec3, 4> CUBE_NORMALS[]  =
+{
+  // Left
+  {
+    glm::vec3{ -1.f,  0.f,  0.f },
+    glm::vec3{ -1.f,  0.f,  0.f },
+    glm::vec3{ -1.f,  0.f,  0.f },
+    glm::vec3{ -1.f,  0.f,  0.f },
+  },
+  // Right
+  {
+    glm::vec3{  1.f,  0.f,  0.f },
+    glm::vec3{  1.f,  0.f,  0.f },
+    glm::vec3{  1.f,  0.f,  0.f },
+    glm::vec3{  1.f,  0.f,  0.f },
+  },
+  // Back
+  {
+    glm::vec3{  0.f,  0.f, -1.f },
+    glm::vec3{  0.f,  0.f, -1.f },
+    glm::vec3{  0.f,  0.f, -1.f },
+    glm::vec3{  0.f,  0.f, -1.f },
+  },
+  // Front
+  {
+    glm::vec3{  0.f,  0.f,  1.f },
+    glm::vec3{  0.f,  0.f,  1.f },
+    glm::vec3{  0.f,  0.f,  1.f },
+    glm::vec3{  0.f,  0.f,  1.f },
+  },
+  // Top
+  {
+    glm::vec3{  0.f,  1.f,  0.f },
+    glm::vec3{  0.f,  1.f,  0.f },
+    glm::vec3{  0.f,  1.f,  0.f },
+    glm::vec3{  0.f,  1.f,  0.f },
+  },
+  // Bottom
+  {
+    glm::vec3{  0.f, -1.f,  0.f },
+    glm::vec3{  0.f, -1.f,  0.f },
+    glm::vec3{  0.f, -1.f,  0.f },
+    glm::vec3{  0.f, -1.f,  0.f }
   }
 };
 
@@ -144,7 +190,7 @@ TGLUnbakedMeshComponent CBlockMeshFactory::GetMeshForBlock(const TBlockComponent
 
       Mesh.UV = GetUVForBlock(Block, Faces);
 
-      // TODO: Mesh.Normals.push_back(glm::vec3{ 0.0f, 0.0f, 0.0f });
+      Mesh.Normals.insert(Mesh.Normals.end(), CUBE_NORMALS[FaceIndex].begin(), CUBE_NORMALS[FaceIndex].end());
     }
   }
 

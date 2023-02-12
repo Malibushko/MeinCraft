@@ -1,13 +1,13 @@
 #pragma once
 #include "core/entity/System.h"
 
-class CWorldLightMeshSystem : public ISystem
+class CDirectedLightMovementSystem : public ISystem
 {
 public: // Construction/Destruction
 
-  CWorldLightMeshSystem();
+  CDirectedLightMovementSystem();
 
-  ~CWorldLightMeshSystem() override;
+  ~CDirectedLightMovementSystem() override;
 
 public: // ISystem
 
@@ -17,7 +17,8 @@ public: // ISystem
 
   void OnDestroy(registry_t & Registry_) override;
 
-protected: // Service
+protected: // Members
 
-  void InitWorldLightMesh(registry_t & Registry, entity_t LightEntity);
+  float m_MovementAccumulator{ 0.f };
+  float m_PauseAccumulator{ 0.f };
 };

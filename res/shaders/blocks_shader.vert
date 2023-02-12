@@ -1,11 +1,13 @@
 #version 330 core
 layout (location = 0) in vec3 aPosition;
 layout (location = 1) in vec2 aTextureCoord;
+layout (location = 2) in vec3 aNormal;
 
 out vec2 TextureCoords;
 out vec3 Position;
+out vec3 Normal;
 
-layout(std140) uniform Matrices
+layout(std140) uniform MatricesBlock
 {
   mat4 Projection;
   mat4 View;
@@ -18,5 +20,6 @@ void main()
 {
 	gl_Position   = MVP * u_Transform * vec4(aPosition, 1.0);
 	TextureCoords = aTextureCoord;
+	Normal        = mat3(transpose(inverse(u_Transform))) * aNormal;
 	Position      = gl_Position.xyz;
 }

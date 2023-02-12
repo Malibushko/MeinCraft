@@ -12,6 +12,8 @@
 #include "game/components/camera/PerspectiveCameraComponent.h"
 #include "game/components/display/DisplayComponent.h"
 #include "game/components/events/CameraChangedEvent.h"
+#include "game/components/lightning/DirectedLightComponent.h"
+#include "game/components/lightning/LightComponent.h"
 #include "game/components/physics/BoundingVolume.h"
 #include "game/components/render/GLMeshComponent.h"
 #include "game/components/render/GLShaderComponent.h"
@@ -62,6 +64,8 @@ void GLRenderSystem::OnUpdate(registry_t & Registry_, float Delta_)
     UpdateUniformBlocks(Registry_);
   }
 
+  UpdateLightUBO(Registry_);
+
   GLuint PreviousShader  = 0;
   GLuint PreviousTexture = 0;
 
@@ -87,6 +91,7 @@ void GLRenderSystem::OnUpdate(registry_t & Registry_, float Delta_)
         const auto & BlockName = magic_enum::enum_name(UniformBlock);
         const auto   BlockID   = glGetUniformBlockIndex(Shader.ShaderID, BlockName.data());
 
+        assert(BlockID != GL_INVALID_INDEX);
         glUniformBlockBinding(Shader.ShaderID, BlockID, static_cast<GLuint>(UniformBlock));
       });
     }
@@ -173,19 +178,19 @@ void GLRenderSystem::UpdateCameraUBO(registry_t & Registry_)
 {
   struct TCameraUBO
   {
-    glm::vec3 Direction;
-    glm::vec3 Position;
-    float     ViewDistance;
+    float                                ViewDistance;
+    alignas(sizeof(float) * 4) glm::vec3 Position;
+    alignas(sizeof(float) * 4) glm::vec3 Direction;
   } UBO;
 
   static_assert(std::is_standard_layout_v<TCameraUBO>);
 
-  const auto & CameraBasis = QuerySingle<TCameraBasisComponent>(Registry_);
-  const auto & Transform   = QuerySingle<TGlobalTransformComponent>(Registry_);
+  const auto & [CameraBasis, Position] = QuerySingle<TCameraBasisComponent, TPositionComponent>(Registry_);
+  const auto & Transform               = QuerySingle<TGlobalTransformComponent>(Registry_);
 
   UBO.Direction    = CameraBasis.Front;
-  UBO.Position     = Transform.View[3];
-  UBO.ViewDistance = m_RenderFrustum.GetViewDistance();
+  UBO.Position     = glm::vec3(0.f);
+  UBO.ViewDistance = static_cast<float>(m_RenderFrustum.GetViewDistance());
 
   if (m_CameraUBO == 0)
     glGenBuffers(1, &m_CameraUBO);
@@ -194,11 +199,36 @@ void GLRenderSystem::UpdateCameraUBO(registry_t & Registry_)
 
   glBufferData(GL_UNIFORM_BUFFER, sizeof(TCameraUBO), nullptr, GL_DYNAMIC_DRAW);
   glBindBufferRange(GL_UNIFORM_BUFFER, static_cast<GLuint>(EUniformBlock::CameraBlock), m_CameraUBO, 0, sizeof(TCameraUBO));
-  glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(m_CameraUBO), &UBO);
+  glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(TCameraUBO), &UBO);
 
   glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
 void GLRenderSystem::UpdateLightUBO(registry_t & Registry_)
 {
+  struct TLightUBO
+  {
+    float                                DirectedLightIntensity;
+    alignas(sizeof(float) * 4) glm::vec3 DirectedLightDirection;
+    alignas(sizeof(float) * 4) glm::vec3 DirectedLightColor;
+  } UBO;
+
+  static_assert(std::is_standard_layout_v<TLightUBO>);
+
+  auto && [DirectedLight, Light] = QuerySingle<TDirectedLightComponent, TLightComponent>(Registry_);
+
+  UBO.DirectedLightDirection = DirectedLight.Direction;
+  UBO.DirectedLightIntensity = DirectedLight.Intensity;
+  UBO.DirectedLightColor     = Light.Ambient + Light.Diffuse + Light.Specular;
+
+  if (m_LightUBO == 0)
+    glGenBuffers(1, &m_LightUBO);
+
+  glBindBuffer(GL_UNIFORM_BUFFER, m_LightUBO);
+
+  glBufferData(GL_UNIFORM_BUFFER, sizeof(TLightUBO), nullptr, GL_DYNAMIC_DRAW);
+  glBindBufferRange(GL_UNIFORM_BUFFER, static_cast<GLuint>(EUniformBlock::LightBlock), m_LightUBO, 0, sizeof(TLightUBO));
+  glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(TLightUBO), &UBO);
+
+  glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }

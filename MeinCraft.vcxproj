@@ -158,7 +158,6 @@
     <ClInclude Include="game\components\lightning\DirectedLightComponent.h" />
     <ClInclude Include="game\components\lightning\LightComponent.h" />
     <ClInclude Include="game\components\lightning\PointLightComponent.h" />
-    <ClInclude Include="game\components\lightning\WorldLightBundle.h" />
     <ClInclude Include="game\components\physics\AABBVolumeComponent.h" />
     <ClInclude Include="game\components\physics\BoundingVolume.h" />
     <ClInclude Include="game\components\render\GLMeshComponent.h" />
@@ -176,6 +175,7 @@
     <ClInclude Include="game\resources\TextureLibrary.h" />
     <ClInclude Include="game\systems\camera\CameraSystem.h" />
     <ClInclude Include="game\systems\display\GLFWWindowSystem.h" />
+    <ClInclude Include="game\systems\lightning\DirectedLightMovementSystem.h" />
     <ClInclude Include="game\systems\render\GLMeshSystem.h" />
     <ClInclude Include="game\systems\render\GLRenderSystem.h" />
     <ClInclude Include="game\systems\terrain\ChunkDespawnerSystem.h" />
@@ -195,6 +195,7 @@
     <ClCompile Include="game\resources\TextureLibrary.cpp" />
     <ClCompile Include="game\systems\camera\CameraSystem.cpp" />
     <ClCompile Include="game\systems\display\GLFWWindowSystem.cpp" />
+    <ClCompile Include="game\systems\lightning\DirectedLightMovementSystem.cpp" />
     <ClCompile Include="game\systems\render\GLMeshSystem.cpp" />
     <ClCompile Include="game\systems\render\GLRenderSystem.cpp" />
     <ClCompile Include="game\systems\terrain\ChunkDespawnerSystem.cpp" />

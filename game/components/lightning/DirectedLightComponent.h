@@ -4,5 +4,8 @@
 
 struct TDirectedLightComponent
 {
-  glm::vec4 Direction;
+  static constexpr ComponentTag ComponentTag{};
+
+  float     Intensity = 1.f;
+  glm::vec3 Direction;
 };

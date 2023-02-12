@@ -255,8 +255,8 @@
     <ClInclude Include="game\components\lightning\DirectedLightBundle.h">
       <Filter>game\components\lightning</Filter>
     </ClInclude>
-    <ClInclude Include="game\components\lightning\WorldLightBundle.h">
-      <Filter>game\components\lightning</Filter>
+    <ClInclude Include="game\systems\lightning\DirectedLightMovementSystem.h">
+      <Filter>game\systems\lightning</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -307,6 +307,9 @@
     </ClCompile>
     <ClCompile Include="game\systems\terrain\NoiseTerrainGenerator.cpp">
       <Filter>game\systems\terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="game\systems\lightning\DirectedLightMovementSystem.cpp">
+      <Filter>game\systems\lightning</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

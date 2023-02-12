@@ -20,4 +20,9 @@ AlmostEqual(T x, T y, int ulp = 2)
     || std::fabs(x - y) < std::numeric_limits<T>::min();
 }
 
+  template<class T>
+  T Lerp(T a, T b, float t)
+  {
+    return a + (b - a) * t;
+  }
 }

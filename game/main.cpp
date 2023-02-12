@@ -3,7 +3,7 @@
 #include "components/camera/PerspectiveCameraComponent.h"
 #include "components/display/DisplayComponent.h"
 #include "components/display/GLFWWindowComponent.h"
-#include "components/lightning/WorldLightBundle.h"
+#include "components/lightning/DirectedLightBundle.h"
 #include "components/render/GLMeshComponent.h"
 #include "components/render/GLShaderComponent.h"
 #include "components/render/GLTextureComponent.h"
@@ -16,6 +16,7 @@
 
 #include "systems/camera/CameraSystem.h"
 #include "systems/display/GLFWWindowSystem.h"
+#include "systems/lightning/DirectedLightMovementSystem.h"
 #include "systems/render/GLMeshSystem.h"
 #include "systems/render/GLRenderSystem.h"
 #include "systems/terrain/ChunkDespawnerSystem.h"
@@ -105,26 +106,20 @@ void InitTerrain(World & World_)
 
 void InitLight(World & World_)
 {
-  World_.SpawnBundle(TWorldLightBundle
+  World_.SpawnBundle(TDirectedLightBundle
   {
-    .Transform =
+    .Light = TLightComponent
     {
-      .Transform = glm::scale(glm::translate(glm::mat4(1.f), glm::vec3(0.f, 400.f, 0.f)), glm::vec3(100.f))
+      .Ambient = glm::vec3(0.92f, 0.95f, 0.13f),
     },
-    .DirectedLight = TDirectedLightBundle
+    .DirectedLight = TDirectedLightComponent
     {
-      .Light =
-      {
-        .Ambient  = glm::vec4(0.1f, 0.1f, 0.1f, 1.f),
-        .Diffuse  = glm::vec4(0.8f, 0.8f, 0.8f, 1.f),
-        .Specular = glm::vec4(1.f, 1.f, 1.f, 1.f),
-      },
-      .DirectedLight = TDirectedLightComponent
-      {
-        .Direction = glm::vec4(0.f, -1.f, 0.f, 1.f)
-      }
+      .Intensity = 0.3f,
+      .Direction = glm::vec3(0.f),
     }
   });
+
+  World_.AddSystem<CDirectedLightMovementSystem>();
 }
 
 void InitMetrics(World & World_)

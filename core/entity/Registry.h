@@ -20,12 +20,10 @@ namespace details
   };
 }
 
-template<class T>
-T & QuerySingle(registry_t & Registry_)
+template<class ... T>
+decltype(auto) QuerySingle(registry_t & Registry_)
 {
-  assert(Registry_.view<T>().size() == 1 && "Query returned more than one result!");
-
-  return Registry_.get<T>(Registry_.view<T>().front());
+  return Registry_.get<T...>(Registry_.view<T...>().front());
 }
 
 template<class T>
