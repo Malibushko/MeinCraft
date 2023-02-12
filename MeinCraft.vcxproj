@@ -154,6 +154,11 @@
     <ClInclude Include="game\components\input\KeyboardState.h" />
     <ClInclude Include="game\components\input\MouseMovementData.h" />
     <ClInclude Include="game\components\input\MouseWheelData.h" />
+    <ClInclude Include="game\components\lightning\DirectedLightBundle.h" />
+    <ClInclude Include="game\components\lightning\DirectedLightComponent.h" />
+    <ClInclude Include="game\components\lightning\LightComponent.h" />
+    <ClInclude Include="game\components\lightning\PointLightComponent.h" />
+    <ClInclude Include="game\components\lightning\WorldLightBundle.h" />
     <ClInclude Include="game\components\physics\AABBVolumeComponent.h" />
     <ClInclude Include="game\components\physics\BoundingVolume.h" />
     <ClInclude Include="game\components\render\GLMeshComponent.h" />
@@ -212,6 +217,7 @@
     <None Include="third_party\FastNoise\LICENSE" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="res\icons\logo.png" />
     <Image Include="res\textures\blocks_atlas.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

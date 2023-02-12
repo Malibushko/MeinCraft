@@ -31,6 +31,8 @@ public: // Interface
 
   [[nodiscard]] bool Intersect(...) const;
 
+  size_t GetViewDistance() const;
+
 protected: // Service
 
   void Normalize(EPlane Plane);

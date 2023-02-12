@@ -6,6 +6,8 @@
 enum class EBlockType
 {
   Invalid = -1,
+  Sun,
+  Moon,
   Air,
   GrassDirt
 };

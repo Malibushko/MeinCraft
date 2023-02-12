@@ -3,7 +3,7 @@
 #include "game/utils/NumericUtils.h"
 
 static constexpr float LOWER_GENERATION_BOUND = 0.f;
-static constexpr float UPPER_GENERATION_BOUND = 25.f;
+static constexpr float UPPER_GENERATION_BOUND = 65.f;
 
 //
 // Construction/Destruction
@@ -34,9 +34,9 @@ TBlockComponent CNoiseTerrainGenerator::Generate(const glm::vec3 & _Position)
 
   float Value = m_Noise.GetNoise(_Position.x, _Position.z);
 
-  Value /= _Position.y * 0.25;
+  Value /= _Position.y * 0.17;
 
-  if (Value >= 0.2f)
+  if (Value >= 0.25f)
   {
     return TBlockComponent
     {

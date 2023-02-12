@@ -21,7 +21,7 @@ namespace details
 }
 
 template<class T>
-T & QueryFirst(registry_t & Registry_)
+T & QuerySingle(registry_t & Registry_)
 {
   assert(Registry_.view<T>().size() == 1 && "Query returned more than one result!");
 

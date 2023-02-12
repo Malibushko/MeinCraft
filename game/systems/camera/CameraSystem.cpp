@@ -40,7 +40,7 @@ void CCameraSystem::OnUpdate(registry_t & Registry_, float Delta_)
 {
   Delta_ /= 1000.f;
 
-  auto & KeyboardState = QueryFirst<TKeyboardState>(Registry_);
+  auto & KeyboardState = QuerySingle<TKeyboardState>(Registry_);
   auto   CameraViews   = Registry_.view<TGlobalTransformComponent, TPositionComponent, TCameraBasisComponent>().each();
 
   bool IsNeedUpdateTransforms = false;

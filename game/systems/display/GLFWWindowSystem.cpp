@@ -6,6 +6,7 @@
 #include <glad/glad.h>
 #include <spdlog/spdlog.h>
 #include <magic_enum.hpp>
+#include <stb_image.h>
 #include <glm/vec2.hpp>
 
 #include "game/components/display/GLFWWindowComponent.h"
@@ -164,8 +165,8 @@ void CGLFWWindowSystem::OnCreate(registry_t & Registry_)
 
   InitGLFWWindow(
       Registry_,
-      QueryFirst<TGLFWWindowComponent>(Registry_),
-      QueryFirst<TDisplayComponent>(Registry_)
+      QuerySingle<TGLFWWindowComponent>(Registry_),
+      QuerySingle<TDisplayComponent>(Registry_)
     );
 }
 
@@ -224,6 +225,24 @@ void CGLFWWindowSystem::InitGLFWWindow(registry_t & Registry, TGLFWWindowCompone
 
   glfwMakeContextCurrent(Window.Window);
   glfwSetWindowUserPointer(Window.Window, &Registry);
+
+  if (Window.Icon != nullptr)
+  {
+    GLFWimage images[1];
+
+    images[0].pixels = stbi_load(Window.Icon, &images[0].width, &images[0].height, nullptr, 4);
+
+    if (images[0].pixels == nullptr)
+    {
+      spdlog::warn("Failed to load icon: {}", Window.Icon);
+    }
+    else
+    {
+      glfwSetWindowIcon(m_Window, 1, images);
+
+      stbi_image_free(images[0].pixels);
+    }
+  }
 
   glfwSetInputMode(Window.Window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 

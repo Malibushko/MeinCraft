@@ -16,7 +16,7 @@
 // Config
 //
 
-static constexpr int CHUNK_SPAWN_RADIUS = 25;
+static constexpr int CHUNK_SPAWN_RADIUS = 47;
 
 static_assert((CHUNK_SPAWN_RADIUS & 1) && "Spawn Distance must be odd!");
 
@@ -39,7 +39,7 @@ void CChunkSpawnerSystem::OnCreate(registry_t & Registry_)
 
 void CChunkSpawnerSystem::OnUpdate(registry_t & Registry_, float Delta_)
 {
-  auto & Terrain     = QueryFirst<TTerrainComponent>(Registry_);
+  auto & Terrain     = QuerySingle<TTerrainComponent>(Registry_);
   auto   CameraViews = Registry_.view<TGlobalTransformComponent, TPositionComponent>().each();
 
   for (auto && [Entity, Transform, Position] : CameraViews)

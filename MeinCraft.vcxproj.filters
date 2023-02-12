@@ -91,6 +91,15 @@
     <Filter Include="third_party\FastNoise">
       <UniqueIdentifier>{ca649821-ec60-4a18-b9a2-2fe4253cbbcc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="res\icons">
+      <UniqueIdentifier>{84d51ee2-589d-4d4b-8a28-7eec11595b38}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\components\lightning">
+      <UniqueIdentifier>{6a8f6766-28c0-49ad-8985-571e47ca2f54}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\systems\lightning">
+      <UniqueIdentifier>{1f05c437-57d9-4105-86be-ea80930487b8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\entity\Entity.h">
@@ -234,6 +243,21 @@
     <ClInclude Include="third_party\FastNoise\FastNoiseLite.h">
       <Filter>third_party\FastNoise</Filter>
     </ClInclude>
+    <ClInclude Include="game\components\lightning\DirectedLightComponent.h">
+      <Filter>game\components\lightning</Filter>
+    </ClInclude>
+    <ClInclude Include="game\components\lightning\LightComponent.h">
+      <Filter>game\components\lightning</Filter>
+    </ClInclude>
+    <ClInclude Include="game\components\lightning\PointLightComponent.h">
+      <Filter>game\components\lightning</Filter>
+    </ClInclude>
+    <ClInclude Include="game\components\lightning\DirectedLightBundle.h">
+      <Filter>game\components\lightning</Filter>
+    </ClInclude>
+    <ClInclude Include="game\components\lightning\WorldLightBundle.h">
+      <Filter>game\components\lightning</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="game\Main.cpp">
@@ -299,6 +323,9 @@
   <ItemGroup>
     <Image Include="res\textures\blocks_atlas.png">
       <Filter>res\textures</Filter>
+    </Image>
+    <Image Include="res\icons\logo.png">
+      <Filter>res\icons</Filter>
     </Image>
   </ItemGroup>
 </Project>

@@ -77,6 +77,11 @@ bool CFrustum::Intersect(...) const
 	return false;
 }
 
+size_t CFrustum::GetViewDistance() const
+{
+  return m_Planes[Back][D] - m_Planes[Front][D];
+}
+
 //
 // Service
 //

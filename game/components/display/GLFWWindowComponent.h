@@ -3,7 +3,8 @@
 
 struct TGLFWWindowComponent
 {
-  const char * Title;
+  const char * Title = nullptr;
+  const char * Icon  = nullptr;
 
   struct GLFWwindow * Window = nullptr;
 };
