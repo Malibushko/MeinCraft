@@ -10,7 +10,7 @@
 #include "components/render/GLUnbakedMeshComponent.h"
 #include "components/terrain/TerrainComponent.h"
 #include "components/terrain/VisibleBlockFacesComponent.h"
-#include "factory/BlockMeshFactory.h"
+#include "factory/BlockFactory.h"
 #include "resources/ShaderLibrary.h"
 #include "resources/TextureLibrary.h"
 

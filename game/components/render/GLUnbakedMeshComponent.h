@@ -9,9 +9,9 @@ struct TGLUnbakedMeshComponent
 {
   static constexpr ComponentTag ComponentTag{};
 
-  std::vector<glm::vec3> Vertices;
-  std::vector<int>       Indices;
+  std::vector<glm::vec3>      Vertices;
+  std::vector<unsigned short> Indices;
 
-  std::vector<glm::vec3> Normals;
-  std::vector<glm::vec2> UV;
+  std::vector<glm::vec3>      Normals;
+  std::vector<glm::vec2>      UV;
 };

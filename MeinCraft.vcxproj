@@ -169,7 +169,7 @@
     <ClInclude Include="game\components\terrain\BlockComponent.h" />
     <ClInclude Include="game\components\terrain\ChunkComponent.h" />
     <ClInclude Include="game\components\terrain\TerrainComponent.h" />
-    <ClInclude Include="game\factory\BlockMeshFactory.h" />
+    <ClInclude Include="game\factory\BlockFactory.h" />
     <ClInclude Include="game\math\Frustum.h" />
     <ClInclude Include="game\resources\ShaderLibrary.h" />
     <ClInclude Include="game\resources\TextureLibrary.h" />
@@ -189,7 +189,7 @@
     <ClInclude Include="third_party\FastNoise\FastNoiseLite.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="game\factory\BlockMeshFactory.cpp" />
+    <ClCompile Include="game\factory\BlockFactory.cpp" />
     <ClCompile Include="game\math\Frustum.cpp" />
     <ClCompile Include="game\resources\ShaderLibrary.cpp" />
     <ClCompile Include="game\resources\TextureLibrary.cpp" />

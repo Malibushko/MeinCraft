@@ -14,7 +14,7 @@ public: // Construction/Destruction
 
 public: // Interface
 
-  TBlockComponent Generate(const glm::vec3 & _Position);
+  TBlockComponent Generate(glm::vec3 _Position);
 
 private: // Members
 

@@ -1,7 +1,10 @@
-#include "BlockMeshFactory.h"
+#include "BlockFactory.h"
 
 #include <array>
+#include <fstream>
 #include <glad/glad.h>
+#include <nlohmann/json.hpp>
+#include <spdlog/spdlog.h>
 
 #include "core/entity/Registry.h"
 #include "game/components/render/GLMeshComponent.h"
@@ -11,47 +14,13 @@
 #include "game/resources/ShaderLibrary.h"
 #include "game/resources/TextureLibrary.h"
 
-//
-// Service
-//
-
-glm::vec2 GetBlockTextureAtlasCoords(EBlockType Type, EBlockFace Face)
-{
-  switch (Type)
-  {
-    case EBlockType::GrassDirt:
-    {
-        switch (Face)
-        {
-          case EBlockFace::Front:
-          case EBlockFace::Back:
-          case EBlockFace::Left:
-          case EBlockFace::Right:
-          {
-            return { 16.f, 160.f };
-          }
-          case EBlockFace::Top:
-          {
-            return { 224.f, 160.f};
-          }
-          case EBlockFace::Bottom:
-          {
-            return { 128.f, 80.f };
-          }
-        }
-    }
-  }
-
-  return {};
-}
 
 //
 // Config
 //
 
-static constexpr glm::vec2        TEXTURE_ATLAS_BLOCK_SIZE = { 16.f, 16.f };
-static constexpr glm::vec2        TEXTURE_ATLAS_SIZE       = { 512.f, 512.f };
-static constexpr std::string_view TEXTURE_ATLAS_PATH       = "res/textures/blocks.png";
+static constexpr std::string_view BLOCK_UV_CONFIG_PATH   = "res/configs/blocks_uv.json";
+static constexpr std::string_view BLOCK_INFO_CONFIG_PATH = "res/configs/blocks.json";
 
 static constexpr std::array<glm::vec3, 4> CUBE_FACES[]
 {
@@ -145,7 +114,7 @@ static constexpr std::array<glm::vec3, 4> CUBE_NORMALS[]  =
   }
 };
 
-static constexpr std::array<int, 6> CUBE_INDICES[] =
+static constexpr std::array<unsigned short, 6> CUBE_INDICES[] =
 {
   // Front
   {0, 1, 2, 2, 3, 0},
@@ -165,15 +134,29 @@ static constexpr std::array<int, 6> CUBE_INDICES[] =
 // Construction/Destruction
 //
 
-CBlockMeshFactory::CBlockMeshFactory() = default;
+CBlockFactory::CBlockFactory()
+{
+  LoadConfigs();
+}
 
-CBlockMeshFactory::~CBlockMeshFactory() = default;
+CBlockFactory::~CBlockFactory() = default;
+
+//
+// Factory
+//
+
+CBlockFactory & CBlockFactory::Instance()
+{
+  static CBlockFactory Factory;
+
+  return Factory;
+}
 
 //
 // Service
 //
 
-TGLUnbakedMeshComponent CBlockMeshFactory::GetMeshForBlock(const TBlockComponent & Block, EBlockFace Faces) const
+TGLUnbakedMeshComponent CBlockFactory::GetMeshForBlock(const TBlockComponent & Block, EBlockFace Faces)
 {
   TGLUnbakedMeshComponent Mesh;
 
@@ -197,7 +180,7 @@ TGLUnbakedMeshComponent CBlockMeshFactory::GetMeshForBlock(const TBlockComponent
   return Mesh;
 }
 
-std::vector<glm::vec2> CBlockMeshFactory::GetUVForBlock(const TBlockComponent & Block, EBlockFace Faces) const
+std::vector<glm::vec2> CBlockFactory::GetUVForBlock(const TBlockComponent & Block, EBlockFace Faces)
 {
   std::vector<glm::vec2> UV;
 
@@ -207,11 +190,8 @@ std::vector<glm::vec2> CBlockMeshFactory::GetUVForBlock(const TBlockComponent & 
     {
       const EBlockFace Face = static_cast<EBlockFace>(1 << FaceIndex);
 
-      glm::vec2 UVMin = GetBlockTextureAtlasCoords(Block.Type, Face);
-      glm::vec2 UVMax = UVMin + TEXTURE_ATLAS_BLOCK_SIZE;
-
-      UVMin /= TEXTURE_ATLAS_SIZE;
-      UVMax /= TEXTURE_ATLAS_SIZE;
+      glm::vec2 UVMin = Instance().m_BlockUVs[Block.Type].Faces[FaceIndex];
+      glm::vec2 UVMax = UVMin + Instance().m_BlockQuadSize;
 
       switch (Face)
       {
@@ -240,4 +220,112 @@ std::vector<glm::vec2> CBlockMeshFactory::GetUVForBlock(const TBlockComponent & 
   }
 
   return UV;
+}
+
+bool CBlockFactory::IsBlockTransparent(const TBlockComponent & Block)
+{
+  return true;
+}
+
+void CBlockFactory::LoadConfigs()
+{
+  LoadBlockConfigs();
+  LoadBlockUVs();
+}
+
+void CBlockFactory::LoadBlockConfigs()
+{
+  spdlog::info("Loading block configs on path {}", BLOCK_INFO_CONFIG_PATH);
+
+  std::ifstream BlockInfoStream(BLOCK_INFO_CONFIG_PATH.data());
+
+  if (!BlockInfoStream.is_open())
+  {
+    spdlog::critical("Failed to open block info config file");
+    return;
+  }
+
+  const auto BlockInfoConfig = nlohmann::json::parse(BlockInfoStream);
+
+  if (BlockInfoConfig.empty())
+  {
+    spdlog::critical("Failed to parse block info config file");
+    return;
+  }
+
+  for (auto && BlockInfo : BlockInfoConfig)
+  {
+    TBlockInfo Info;
+
+    BlockInfo["id"].get_to(Info.Type);
+    BlockInfo["displayName"].get_to(Info.DisplayName);
+    BlockInfo["name"].get_to(Info.Name);
+
+    if (BlockInfo.contains("hardness") && !BlockInfo["hardness"].is_null())
+      BlockInfo["hardness"].get_to(Info.Hardness);
+
+    if (BlockInfo.contains("stackSize") && !BlockInfo["stackSize"].is_null())
+      BlockInfo["stackSize"].get_to(Info.StackSize);
+
+    BlockInfo["diggable"].get_to(Info.IsDiggable);
+    BlockInfo["boundingBox"].get_to(Info.BoundingBoxType);
+    // TODO: uncomment and implement BlockInfo["drops"].get_to(Info.DropIDs);
+    BlockInfo["transparent"].get_to(Info.IsTransparent);
+    BlockInfo["emitLight"].get_to(Info.EmitLight);
+    BlockInfo["filterLight"].get_to(Info.FilterLight);
+    BlockInfo["resistance"].get_to(Info.Resistance);
+
+    m_BlockInfos.emplace(Info.Type, std::move(Info));
+  }
+
+  spdlog::info("Successfully loaded block info config file");
+}
+
+void CBlockFactory::LoadBlockUVs()
+{
+  spdlog::info("Loading block UVs on path {}", BLOCK_UV_CONFIG_PATH);
+
+  std::ifstream BlockInfoStream(BLOCK_UV_CONFIG_PATH.data());
+
+  if (!BlockInfoStream.is_open())
+  {
+    spdlog::critical("Failed to open block info config file");
+    return;
+  }
+
+  const auto BlockUVsConfig = nlohmann::json::parse(BlockInfoStream);
+
+  m_BlockAtlasID  = CTextureLibrary::Load(BlockUVsConfig["atlas"].get<std::string>()).TextureID;
+  m_BlockShaderID = CShaderLibrary::Load("res/shaders/blocks_shader").ShaderID;
+
+  auto && BlockAtlasSize = BlockUVsConfig["atlas_size"].get<std::pair<float, float>>();
+  auto && BlockQuadSize  = BlockUVsConfig["quad_size"].get<std::pair<float, float>>();
+
+  m_BlockAtlasSize = { BlockAtlasSize.first, BlockAtlasSize.second };
+
+  m_BlockQuadSize = { BlockQuadSize.first, BlockQuadSize.second };
+  m_BlockQuadSize /= m_BlockAtlasSize;
+
+  for (auto && BlockUV : BlockUVsConfig["blocks"])
+  {
+    auto && UVConfig = BlockUV["uv"];
+
+    TBlockUV UV{};
+
+    for (size_t Index = 0; auto FaceID : {"front", "bottom", "left", "right", "top", "back"})
+    {
+      std::pair<float, float> FaceUV;
+
+      if (UVConfig.contains(FaceID))
+      {
+        UVConfig[FaceID].get_to(FaceUV);
+      }
+
+      UV.Faces[Index++] = { FaceUV.first / m_BlockAtlasSize.x, FaceUV.second / m_BlockAtlasSize.y };
+    }
+
+    m_BlockUVs[static_cast<EBlockType>(BlockUV["id"].get<int>())] = UV;
+  }
+
+  spdlog::info("Successfully loaded block UV config file");
 }

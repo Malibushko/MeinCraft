@@ -46,7 +46,7 @@ void GLMeshSystem::OnUpdate(registry_t & Registry_, float Delta_)
 
     glGenBuffers(1, &MeshComponent.VBO);
     glBindBuffer(GL_ARRAY_BUFFER, MeshComponent.VBO);
-    glBufferData(GL_ARRAY_BUFFER, TotalSize, nullptr, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, static_cast<int>(TotalSize), nullptr, GL_STATIC_DRAW);
 
     int       BufferOffset = 0;
     const int VerticesSize = UnbakedMesh.Vertices.size() * sizeof(UnbakedMesh.Vertices[0]);

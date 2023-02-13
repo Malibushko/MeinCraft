@@ -5,11 +5,15 @@
 
 enum class EBlockType
 {
-  Invalid = -1,
-  Sun,
-  Moon,
-  Air,
-  GrassDirt
+  Invalid         = -1,
+  Air             = 0,
+  Stone           = 1,
+  Grass           = 2,
+  Dirt            = 3,
+  CobbleStone     = 4,
+  StationaryWater = 9,
+  StationaryLava  = 11,
+  Sand            = 12
 };
 
 struct TBlockComponent

@@ -4,7 +4,7 @@
 #include "game/components/physics/BoundingVolume.h"
 #include "game/components/terrain/BlockComponent.h"
 #include "game/components/terrain/ChunkComponent.h"
-#include "game/factory/BlockMeshFactory.h"
+#include "game/factory/BlockFactory.h"
 #include "game/resources/ShaderLibrary.h"
 #include "game/resources/TextureLibrary.h"
 
@@ -45,8 +45,6 @@ void CChunkMeshSystem::OnDestroy(registry_t & Registry_)
 
 void CChunkMeshSystem::RecreateChunkMesh(registry_t & Registry_, entity_t ChunkEntity, TChunkComponent & Chunk) const
 {
-  static CBlockMeshFactory Factory;
-
   TGLUnbakedMeshComponent ChunkMesh;
 
   TTransformComponent ChunkTransform = Registry_.get<TTransformComponent>(ChunkEntity);
@@ -67,8 +65,8 @@ void CChunkMeshSystem::RecreateChunkMesh(registry_t & Registry_, entity_t ChunkE
         if (Faces.Faces == EBlockFace::None)
           continue;
 
-        TGLUnbakedMeshComponent BlockMesh = Factory.GetMeshForBlock(Block, Faces.Faces);
-        std::vector<glm::vec2>  BlockUV   = Factory.GetUVForBlock(Block, Faces.Faces);
+        TGLUnbakedMeshComponent BlockMesh = CBlockFactory::GetMeshForBlock(Block, Faces.Faces);
+        std::vector<glm::vec2>  BlockUV   = CBlockFactory::GetUVForBlock(Block, Faces.Faces);
 
         for (auto & Vertex : BlockMesh.Vertices)
           Vertex += glm::vec3(X, Y, Z);

@@ -216,7 +216,7 @@
     <ClInclude Include="game\components\requests\BlockMeshRequest.h">
       <Filter>game\components\request</Filter>
     </ClInclude>
-    <ClInclude Include="game\factory\BlockMeshFactory.h">
+    <ClInclude Include="game\factory\BlockFactory.h">
       <Filter>game\factory</Filter>
     </ClInclude>
     <ClInclude Include="game\components\terrain\VisibleBlockFacesComponent.h">
@@ -296,7 +296,7 @@
     <ClCompile Include="game\systems\terrain\ChunkMeshSystem.cpp">
       <Filter>game\systems\terrain</Filter>
     </ClCompile>
-    <ClCompile Include="game\factory\BlockMeshFactory.cpp">
+    <ClCompile Include="game\factory\BlockFactory.cpp">
       <Filter>game\factory</Filter>
     </ClCompile>
     <ClCompile Include="game\systems\utils\FPSCounterSystem.cpp">
