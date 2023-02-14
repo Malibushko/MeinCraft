@@ -258,6 +258,9 @@
     <ClInclude Include="game\systems\lightning\DirectedLightMovementSystem.h">
       <Filter>game\systems\lightning</Filter>
     </ClInclude>
+    <ClInclude Include="game\systems\terrain\ChunkMeshCullSystem.h">
+      <Filter>game\systems\terrain</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="game\Main.cpp">
@@ -310,6 +313,9 @@
     </ClCompile>
     <ClCompile Include="game\systems\lightning\DirectedLightMovementSystem.cpp">
       <Filter>game\systems\lightning</Filter>
+    </ClCompile>
+    <ClCompile Include="game\systems\terrain\ChunkMeshCullSystem.cpp">
+      <Filter>game\systems\terrain</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

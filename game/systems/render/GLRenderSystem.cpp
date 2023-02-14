@@ -48,6 +48,9 @@ void GLRenderSystem::OnCreate(registry_t & Registry_)
 
   glViewport(0, 0, static_cast<int>(Display.Width), static_cast<int>(Display.Height));
   glEnable(GL_DEPTH_TEST);
+
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 void GLRenderSystem::OnUpdate(registry_t & Registry_, float Delta_)

@@ -179,6 +179,7 @@
     <ClInclude Include="game\systems\render\GLMeshSystem.h" />
     <ClInclude Include="game\systems\render\GLRenderSystem.h" />
     <ClInclude Include="game\systems\terrain\ChunkDespawnerSystem.h" />
+    <ClInclude Include="game\systems\terrain\ChunkMeshCullSystem.h" />
     <ClInclude Include="game\systems\terrain\ChunkMeshSystem.h" />
     <ClInclude Include="game\systems\terrain\ChunkSpawnerSystem.h" />
     <ClInclude Include="game\systems\terrain\NoiseTerrainGenerator.h" />
@@ -199,6 +200,7 @@
     <ClCompile Include="game\systems\render\GLMeshSystem.cpp" />
     <ClCompile Include="game\systems\render\GLRenderSystem.cpp" />
     <ClCompile Include="game\systems\terrain\ChunkDespawnerSystem.cpp" />
+    <ClCompile Include="game\systems\terrain\ChunkMeshCullSystem.cpp" />
     <ClCompile Include="game\systems\terrain\ChunkMeshSystem.cpp" />
     <ClCompile Include="game\systems\terrain\ChunkSpawnerSystem.cpp" />
     <ClCompile Include="game\systems\terrain\NoiseTerrainGenerator.cpp" />

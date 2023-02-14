@@ -20,6 +20,7 @@
 #include "systems/render/GLMeshSystem.h"
 #include "systems/render/GLRenderSystem.h"
 #include "systems/terrain/ChunkDespawnerSystem.h"
+#include "systems/terrain/ChunkMeshCullSystem.h"
 #include "systems/terrain/ChunkMeshSystem.h"
 #include "systems/terrain/ChunkSpawnerSystem.h"
 #include "systems/terrain/NoiseTerrainGenerator.h"
@@ -101,6 +102,7 @@ void InitTerrain(World & World_)
 
   World_.AddSystem<CChunkSpawnerSystem>()
         .AddSystem<CChunkDespawnerSystem>()
+        .AddSystem<CChunkMeshCullSystem>()
         .AddSystem<CChunkMeshSystem>();
 }
 

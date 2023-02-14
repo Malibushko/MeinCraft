@@ -43,10 +43,10 @@ vec4 ApplyFog(in vec4 Color)
 vec4 ApplyDirectedLight(in vec4 Color)
 {
   // TODO: refactor
-  vec4  Ambient = Color * 0.25;
+  vec3  Ambient = Color.xyz * 0.25;
   float Diffuse = max(dot(Normal, normalize(-DirectedLightDirection)), 0.0);
 
-  return Ambient + Color * (Diffuse * vec4(DirectedLightColor, 1.0)) * DirectedLightIntensity;
+  return vec4(Ambient + Color.xyz * (Diffuse * DirectedLightColor) * DirectedLightIntensity, Color.w);
 }
 
 void main()

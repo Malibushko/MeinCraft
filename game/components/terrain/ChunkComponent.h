@@ -24,6 +24,11 @@ struct TChunkComponent
   EChunkState State{EChunkState::Dirty};
 
   std::array<entity_t, CHUNK_SIZE_X * CHUNK_SIZE_Y * CHUNK_SIZE_Z> Blocks;
+
+  entity_t GetBlockAt(glm::ivec3 ChunkPosition) const
+  {
+    return Blocks[ChunkPosition.x + CHUNK_SIZE_X * (ChunkPosition.y + CHUNK_SIZE_Y * ChunkPosition.z)];
+  }
 };
 
 inline glm::ivec2 ToChunkCoordinates(const glm::vec3 & Position_)

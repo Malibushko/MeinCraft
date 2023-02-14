@@ -25,6 +25,4 @@ public: // ISystem
 protected: // Service
 
   void SpawnChunkAt(registry_t & Registry_, TTerrainComponent & Terrain, const glm::ivec2 & ChunkPosition);
-
-  void UpdateBlocksFaces(registry_t & Registry, TChunkComponent & Chunk);
 };

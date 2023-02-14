@@ -20,7 +20,7 @@ TBlockComponent CNoiseTerrainGenerator::Generate(glm::vec3 _Position)
     return TBlockComponent{ .Type = EBlockType::Air };
 
   if (_Position.y <= LOWER_GENERATION_BOUND)
-    return TBlockComponent{ .Type = EBlockType::Stone };
+    return TBlockComponent{ .Type = EBlockType::Sand };
 
   if (_Position.y <= LOWER_GENERATION_BOUND + 1)
     return TBlockComponent{ .Type = EBlockType::StationaryWater };

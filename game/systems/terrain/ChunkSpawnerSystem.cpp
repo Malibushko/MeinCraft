@@ -1,5 +1,7 @@
 #include "ChunkSpawnerSystem.h"
 
+#include <set>
+#include <unordered_set>
 #include <spdlog/spdlog.h>
 
 #include "core/components/PositionComponent.h"
@@ -11,6 +13,7 @@
 #include "game/components/terrain/ChunkComponent.h"
 #include "game/components/terrain/TerrainComponent.h"
 #include "game/components/terrain/VisibleBlockFacesComponent.h"
+#include "game/factory/BlockFactory.h"
 
 //
 // Config
@@ -108,58 +111,6 @@ void CChunkSpawnerSystem::SpawnChunkAt(
 
   AddComponent(Registry_, Entity, std::move(ChunkTransform));
 
-  UpdateBlocksFaces(Registry_, Chunk);
-
   Terrain.Chunks[ChunkPosition] = Entity;
 }
-
-void CChunkSpawnerSystem::UpdateBlocksFaces(registry_t & Registry, TChunkComponent & Chunk)
-{
-  for (int X = 0; X < TChunkComponent::CHUNK_SIZE_X; X++)
-  {
-    for (int Y = TChunkComponent::CHUNK_SIZE_Y - 1; Y >= 0; Y--)
-    {
-      for (int Z = 0; Z < TChunkComponent::CHUNK_SIZE_Z; Z++)
-      {
-        const int Index = X + TChunkComponent::CHUNK_SIZE_X * (Y + TChunkComponent::CHUNK_SIZE_Y * Z);
-
-        const int NeighbourIndices[6] =
-        {
-          X - 1 + TChunkComponent::CHUNK_SIZE_X * (Y + TChunkComponent::CHUNK_SIZE_Y * Z),
-          X + 1 + TChunkComponent::CHUNK_SIZE_X * (Y + TChunkComponent::CHUNK_SIZE_Y * Z),
-          X + TChunkComponent::CHUNK_SIZE_X * (Y - 1 + TChunkComponent::CHUNK_SIZE_Y * Z),
-          X + TChunkComponent::CHUNK_SIZE_X * (Y + 1 + TChunkComponent::CHUNK_SIZE_Y * Z),
-          X + TChunkComponent::CHUNK_SIZE_X * (Y + TChunkComponent::CHUNK_SIZE_Y * (Z - 1)),
-          X + TChunkComponent::CHUNK_SIZE_X * (Y + TChunkComponent::CHUNK_SIZE_Y * (Z + 1))
-        };
-
-        if (Chunk.Blocks[Index] == entt::null)
-          continue;
-
-        TVisibleBlockFacesComponent Faces{ .Faces = EBlockFace::None };
-
-        if (X == 0 || Chunk.Blocks[NeighbourIndices[0]] == entt::null)
-          Faces.Faces = Faces.Faces | EBlockFace::Front;
-
-        if (X == TChunkComponent::CHUNK_SIZE_X - 1 || Chunk.Blocks[NeighbourIndices[1]] == entt::null)
-          Faces.Faces = Faces.Faces | EBlockFace::Back;
-
-        if (Y == 0 || Chunk.Blocks[NeighbourIndices[2]] == entt::null)
-          Faces.Faces = Faces.Faces | EBlockFace::Bottom;
-
-        if (Y == TChunkComponent::CHUNK_SIZE_Y - 1 || Chunk.Blocks[NeighbourIndices[3]] == entt::null)
-          Faces.Faces = Faces.Faces | EBlockFace::Top;
-
-        if (Z == 0 || Chunk.Blocks[NeighbourIndices[4]] == entt::null)
-          Faces.Faces = Faces.Faces | EBlockFace::Left;
-
-        if (Z == TChunkComponent::CHUNK_SIZE_Z - 1 || Chunk.Blocks[NeighbourIndices[5]] == entt::null)
-          Faces.Faces = Faces.Faces | EBlockFace::Right;
-
-        Registry.emplace<TVisibleBlockFacesComponent>(Chunk.Blocks[Index], Faces);
-      }
-    }
-  }
-}
-
 

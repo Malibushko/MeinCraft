@@ -20,6 +20,12 @@ namespace details
   };
 }
 
+template<class T>
+T & GetComponent(registry_t & Registry, entity_t Entity)
+{
+  return Registry.get<T>(Entity);
+}
+
 template<class ... T>
 decltype(auto) QuerySingle(registry_t & Registry_)
 {

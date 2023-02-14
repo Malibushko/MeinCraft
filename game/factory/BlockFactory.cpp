@@ -224,7 +224,7 @@ std::vector<glm::vec2> CBlockFactory::GetUVForBlock(const TBlockComponent & Bloc
 
 bool CBlockFactory::IsBlockTransparent(const TBlockComponent & Block)
 {
-  return true;
+  return Instance().m_BlockInfos[Block.Type].IsTransparent;
 }
 
 void CBlockFactory::LoadConfigs()
@@ -312,7 +312,7 @@ void CBlockFactory::LoadBlockUVs()
 
     TBlockUV UV{};
 
-    for (size_t Index = 0; auto FaceID : {"front", "bottom", "left", "right", "top", "back"})
+    for (size_t Index = 0; auto FaceID : {"front", "back", "left", "right", "top", "bottom"})
     {
       std::pair<float, float> FaceUV;
 
