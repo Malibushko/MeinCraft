@@ -45,13 +45,14 @@ void CChunkMeshSystem::OnDestroy(registry_t & Registry_)
 
 void CChunkMeshSystem::RecreateChunkMesh(registry_t & Registry_, entity_t ChunkEntity, TChunkComponent & Chunk) const
 {
-  TGLUnbakedMeshComponent ChunkMesh;
+  TGLUnbakedSolidMeshComponent       SolidMeshComponent;
+  TGLUnbakedTranslucentMeshComponent TranslucentMeshComponent;
 
   TTransformComponent ChunkTransform = Registry_.get<TTransformComponent>(ChunkEntity);
 
   for (int X = 0; X < TChunkComponent::CHUNK_SIZE_X; X++)
   {
-    for (int Y = TChunkComponent::CHUNK_SIZE_Y - 1; Y >= 0; Y--)
+    for (int Y = 0; Y < TChunkComponent::CHUNK_SIZE_Y; Y++)
     {
       for (int Z = 0; Z < TChunkComponent::CHUNK_SIZE_Z; Z++)
       {
@@ -65,19 +66,34 @@ void CChunkMeshSystem::RecreateChunkMesh(registry_t & Registry_, entity_t ChunkE
         if (Faces.Faces == EBlockFace::None)
           continue;
 
-        TGLUnbakedMeshComponent BlockMesh = CBlockFactory::GetMeshForBlock(Block, Faces.Faces);
-        std::vector<glm::vec2>  BlockUV   = CBlockFactory::GetUVForBlock(Block, Faces.Faces);
+        TGLUnbakedSolidMeshComponent BlockMesh     = CBlockFactory::GetMeshForBlock(Block, Faces.Faces);
+        std::vector<glm::vec2>       BlockUV       = CBlockFactory::GetUVForBlock(Block, Faces.Faces);
+        EMeshType                    BlockMeshType = CBlockFactory::GetMeshTypeForBlock(Block);
 
-        for (auto & Vertex : BlockMesh.Vertices)
-          Vertex += glm::vec3(X, Y, Z);
+        const auto AppendToMesh = [&]<EMeshType T>(TGLUnbakedMeshComponent<T> & ChunkMesh)
+        {
+          for (auto & Vertex : BlockMesh.Vertices)
+            Vertex += glm::vec3(X, Y, Z);
 
-        for (auto & Index : BlockMesh.Indices)
-          Index += ChunkMesh.Vertices.size();
+          for (auto & Index : BlockMesh.Indices)
+            Index += ChunkMesh.Vertices.size();
 
-        ChunkMesh.Vertices.insert(ChunkMesh.Vertices.end(), BlockMesh.Vertices.begin(), BlockMesh.Vertices.end());
-        ChunkMesh.Indices.insert(ChunkMesh.Indices.end(), BlockMesh.Indices.begin(), BlockMesh.Indices.end());
-        ChunkMesh.UV.insert(ChunkMesh.UV.end(), BlockUV.begin(), BlockUV.end());
-        ChunkMesh.Normals.insert(ChunkMesh.Normals.end(), BlockMesh.Normals.begin(), BlockMesh.Normals.end());
+          ChunkMesh.Vertices.insert(ChunkMesh.Vertices.end(), BlockMesh.Vertices.begin(), BlockMesh.Vertices.end());
+          ChunkMesh.Indices.insert(ChunkMesh.Indices.end(), BlockMesh.Indices.begin(), BlockMesh.Indices.end());
+          ChunkMesh.UV.insert(ChunkMesh.UV.end(), BlockUV.begin(), BlockUV.end());
+          ChunkMesh.Normals.insert(ChunkMesh.Normals.end(), BlockMesh.Normals.begin(), BlockMesh.Normals.end());
+        };
+
+        switch (BlockMeshType)
+        {
+          case EMeshType::Translucent:
+            AppendToMesh(TranslucentMeshComponent);
+            break;
+
+          default:
+            AppendToMesh(SolidMeshComponent);
+            break;
+        }
       }
     }
   }
@@ -102,7 +118,12 @@ void CChunkMeshSystem::RecreateChunkMesh(registry_t & Registry_, entity_t ChunkE
     }
   });
 
-  Registry_.emplace_or_replace<TGLUnbakedMeshComponent>(ChunkEntity, ChunkMesh);
+  if (!SolidMeshComponent.Vertices.empty())
+    Registry_.emplace_or_replace<TGLUnbakedSolidMeshComponent>(ChunkEntity, std::move(SolidMeshComponent));
+
+  if (!TranslucentMeshComponent.Vertices.empty())
+    Registry_.emplace_or_replace<TGLUnbakedTranslucentMeshComponent>(ChunkEntity, std::move(TranslucentMeshComponent));
+
   Registry_.emplace_or_replace<TGLShaderComponent>(ChunkEntity, Shader);
   Registry_.emplace_or_replace<TGLTextureComponent>(ChunkEntity, Texture);
 }

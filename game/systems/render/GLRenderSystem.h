@@ -37,6 +37,8 @@ protected: // Service
 
   void UpdateLightUBO(registry_t & Registry_);
 
+  void UpdateTransluscentMeshesOrder(registry_t & Registry_);
+
 protected: // Members
 
   CFrustum m_RenderFrustum;

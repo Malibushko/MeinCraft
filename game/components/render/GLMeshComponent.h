@@ -1,6 +1,13 @@
 #pragma once
 #include "core/entity/Component.h"
 
+enum class EMeshType
+{
+  Solid,
+  Translucent
+};
+
+template<EMeshType T>
 struct TGLMeshComponent
 {
   static constexpr ComponentTag ComponentTag{};
@@ -17,3 +24,6 @@ struct TGLMeshComponent
     return VAO != INVALID_ID && VBO != INVALID_ID && EBO != INVALID_ID;
   }
 };
+
+using TGLSolidMeshComponent       = TGLMeshComponent<EMeshType::Solid>;
+using TGLTranslucentMeshComponent = TGLMeshComponent<EMeshType::Translucent>;

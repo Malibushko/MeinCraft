@@ -132,7 +132,7 @@ void CChunkMeshCullSystem::UpdateBlocksFaces(registry_t& Registry, TTerrainCompo
             Faces.Faces = Faces.Faces | static_cast<EBlockFace>(1 << i);
         }
 
-        Registry.emplace<TVisibleBlockFacesComponent>(Chunk.Blocks[Index], Faces);
+        Registry.emplace_or_replace<TVisibleBlockFacesComponent>(Chunk.Blocks[Index], Faces);
       }
     }
   }

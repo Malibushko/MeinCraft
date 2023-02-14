@@ -24,22 +24,22 @@ void GLMeshSystem::OnCreate(registry_t & Registry_)
   // Empty
 }
 
+static_assert(sizeof(glm::vec3) == 3 * sizeof(float));
+static_assert(sizeof(glm::vec2) == 2 * sizeof(float));
+
 void GLMeshSystem::OnUpdate(registry_t & Registry_, float Delta_)
 {
-  static_assert(sizeof(glm::vec3) == 3 * sizeof(float));
-  static_assert(sizeof(glm::vec2) == 2 * sizeof(float));
-
-  for (const auto & [Entity, UnbakedMesh] : Registry_.view<TGLUnbakedMeshComponent>().each())
+  const auto BakeMesh = [&]<EMeshType T>(entity_t Entity, TGLUnbakedMeshComponent<T> & UnbakedMesh) -> void
   {
     assert(!UnbakedMesh.Vertices.empty());
 
-    auto & MeshComponent = Registry_.emplace<TGLMeshComponent>(Entity);
+    auto & MeshComponent = Registry_.emplace<TGLMeshComponent<T>>(Entity);
 
     size_t TotalSize = 0;
 
     TotalSize += UnbakedMesh.Vertices.size() * sizeof(UnbakedMesh.Vertices[0]);
-    TotalSize += UnbakedMesh.UV.size() * sizeof(UnbakedMesh.UV[0]);
-    TotalSize += UnbakedMesh.Normals.size() * sizeof(UnbakedMesh.Normals[0]);
+    TotalSize += UnbakedMesh.UV.size()       * sizeof(UnbakedMesh.UV[0]);
+    TotalSize += UnbakedMesh.Normals.size()  * sizeof(UnbakedMesh.Normals[0]);
 
     glGenVertexArrays(1, &MeshComponent.VAO);
     glBindVertexArray(MeshComponent.VAO);
@@ -50,7 +50,7 @@ void GLMeshSystem::OnUpdate(registry_t & Registry_, float Delta_)
 
     int       BufferOffset = 0;
     const int VerticesSize = UnbakedMesh.Vertices.size() * sizeof(UnbakedMesh.Vertices[0]);
-    const int UVSize       = UnbakedMesh.UV.size() * sizeof(UnbakedMesh.UV[0]);
+    const int UVSize = UnbakedMesh.UV.size() * sizeof(UnbakedMesh.UV[0]);
 
     glBufferSubData(GL_ARRAY_BUFFER, 0, VerticesSize, UnbakedMesh.Vertices.data());
 
@@ -104,8 +104,15 @@ void GLMeshSystem::OnUpdate(registry_t & Registry_, float Delta_)
 
     MeshComponent.IndicesCount = static_cast<int>(UnbakedMesh.Indices.size());
 
-    Registry_.remove<TGLUnbakedMeshComponent>(Entity);
-  }
+    Registry_.remove<TGLUnbakedMeshComponent<T>>(Entity);
+  };
+
+
+  for (const auto & [Entity, UnbakedMesh] : Registry_.view<TGLUnbakedSolidMeshComponent>().each())
+    BakeMesh(Entity, UnbakedMesh);
+
+  for (const auto & [Entity, UnbakedMesh] : Registry_.view<TGLUnbakedTranslucentMeshComponent>().each())
+    BakeMesh(Entity, UnbakedMesh);
 }
 
 void GLMeshSystem::OnDestroy(registry_t & Registry_)

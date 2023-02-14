@@ -25,11 +25,13 @@ protected: // Factory
 
 public: // Interface
 
-  static TGLUnbakedMeshComponent GetMeshForBlock(const TBlockComponent & Block, EBlockFace Faces);
+  static TGLUnbakedSolidMeshComponent GetMeshForBlock(const TBlockComponent & Block, EBlockFace Faces);
 
   static std::vector<glm::vec2> GetUVForBlock(const TBlockComponent & Block, EBlockFace Faces);
 
   static bool IsBlockTransparent(const TBlockComponent & Block);
+
+  static EMeshType GetMeshTypeForBlock(const TBlockComponent & Block);
 
 protected: // Service
 

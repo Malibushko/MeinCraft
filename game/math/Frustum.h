@@ -33,6 +33,8 @@ public: // Interface
 
   size_t GetViewDistance() const;
 
+  glm::vec3 GetPosition() const;
+
 protected: // Service
 
   void Normalize(EPlane Plane);

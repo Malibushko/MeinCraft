@@ -82,6 +82,11 @@ size_t CFrustum::GetViewDistance() const
   return m_Planes[Back][D] - m_Planes[Front][D];
 }
 
+glm::vec3 CFrustum::GetPosition() const
+{
+	return glm::vec3(m_Planes[Front]) * m_Planes[Front][D];
+}
+
 //
 // Service
 //

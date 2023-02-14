@@ -18,6 +18,7 @@
 #include "game/components/render/GLMeshComponent.h"
 #include "game/components/render/GLShaderComponent.h"
 #include "game/components/render/GLTextureComponent.h"
+#include "game/components/render/GLUnbakedMeshComponent.h"
 
 enum class EUniformBlock
 {
@@ -25,7 +26,6 @@ enum class EUniformBlock
   CameraBlock,
   LightBlock
 };
-
 
 //
 // Construction/Destruction
@@ -58,13 +58,11 @@ void GLRenderSystem::OnUpdate(registry_t & Registry_, float Delta_)
   glClearColor(0.52f, 0.807f, 0.92f, 1.f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  const auto & GlobalTransform = QueryOrCreate<TGlobalTransformComponent>(Registry_).second;
-  const auto & CameraBasis     = QuerySingle<TCameraBasisComponent>(Registry_);
-
   if (IsNeedUpdateFrustum(Registry_))
   {
-    UpdateFrustum(GlobalTransform);
+    UpdateFrustum(QueryOrCreate<TGlobalTransformComponent>(Registry_).second);
     UpdateUniformBlocks(Registry_);
+    UpdateTransluscentMeshesOrder(Registry_);
   }
 
   UpdateLightUBO(Registry_);
@@ -72,54 +70,63 @@ void GLRenderSystem::OnUpdate(registry_t & Registry_, float Delta_)
   GLuint PreviousShader  = 0;
   GLuint PreviousTexture = 0;
 
-  for (auto && [Entity, Mesh, Shader, Texture, Transform] : Registry_.view<TGLMeshComponent, TGLShaderComponent, TGLTextureComponent, TTransformComponent>().each())
+  const auto RenderPass = [&](auto && Meshes)
   {
-    if (const TBoundingVolumeComponent * BBComponent = Registry_.try_get<TBoundingVolumeComponent>(Entity))
+    for (auto && [Entity, Mesh, Shader, Texture, Transform] : Meshes.each())
     {
-      if (!m_RenderFrustum.Intersect(*BBComponent))
-        continue;
-    }
-
-    assert(Mesh.IsBaked());
-
-    if (PreviousShader != Shader.ShaderID)
-    {
-      assert(Shader.IsValid());
-      glUseProgram(Shader.ShaderID);
-
-      PreviousShader = Shader.ShaderID;
-
-      magic_enum::enum_for_each<EUniformBlock>([&](EUniformBlock UniformBlock)
+      if (const TBoundingVolumeComponent * BBComponent = Registry_.try_get<TBoundingVolumeComponent>(Entity))
       {
-        const auto & BlockName = magic_enum::enum_name(UniformBlock);
-        const auto   BlockID   = glGetUniformBlockIndex(Shader.ShaderID, BlockName.data());
+        if (!m_RenderFrustum.Intersect(*BBComponent))
+          continue;
+      }
 
-        assert(BlockID != GL_INVALID_INDEX);
-        glUniformBlockBinding(Shader.ShaderID, BlockID, static_cast<GLuint>(UniformBlock));
-      });
-    }
+      assert(Mesh.IsBaked());
 
-    glUniformMatrix4fv(
+      if (PreviousShader != Shader.ShaderID)
+      {
+        assert(Shader.IsValid());
+        glUseProgram(Shader.ShaderID);
+
+        PreviousShader = Shader.ShaderID;
+
+        magic_enum::enum_for_each<EUniformBlock>([&](EUniformBlock UniformBlock)
+        {
+          const auto & BlockName = magic_enum::enum_name(UniformBlock);
+          const auto   BlockID = glGetUniformBlockIndex(Shader.ShaderID, BlockName.data());
+
+          assert(BlockID != GL_INVALID_INDEX);
+          glUniformBlockBinding(Shader.ShaderID, BlockID, static_cast<GLuint>(UniformBlock));
+        });
+      }
+
+      glUniformMatrix4fv(
         glGetUniformLocation(Shader.ShaderID, "u_Transform"),
         1,
         GL_FALSE,
         &Transform.Transform[0][0]
       );
 
-    assert(Texture.IsValid());
+      assert(Texture.IsValid());
 
-    if (PreviousTexture != Texture.TextureID)
-    {
-      glActiveTexture(GL_TEXTURE0);
-      glBindTexture(GL_TEXTURE_2D, Texture.TextureID);
+      if (PreviousTexture != Texture.TextureID)
+      {
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, Texture.TextureID);
 
-      PreviousTexture = Texture.TextureID;
+        PreviousTexture = Texture.TextureID;
+      }
+
+      glBindVertexArray(Mesh.VAO);
+      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, Mesh.EBO);
+      glDrawElements(GL_TRIANGLES, Mesh.IndicesCount, GL_UNSIGNED_SHORT, nullptr);
     }
+  };
 
-    glBindVertexArray(Mesh.VAO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, Mesh.EBO);
-    glDrawElements(GL_TRIANGLES, Mesh.IndicesCount, GL_UNSIGNED_SHORT, nullptr);
-  }
+  auto && SolidMeshes = Registry_.view<TGLSolidMeshComponent, TGLShaderComponent, TGLTextureComponent, TTransformComponent>();
+  auto && TranslucentMeshes = Registry_.view<TGLTranslucentMeshComponent, TGLShaderComponent, TGLTextureComponent, TTransformComponent>();
+
+  RenderPass(SolidMeshes);
+  RenderPass(TranslucentMeshes);
 }
 
 void GLRenderSystem::OnDestroy(registry_t & Registry_)
@@ -234,4 +241,19 @@ void GLRenderSystem::UpdateLightUBO(registry_t & Registry_)
   glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(TLightUBO), &UBO);
 
   glBindBuffer(GL_UNIFORM_BUFFER, 0);
+}
+
+void GLRenderSystem::UpdateTransluscentMeshesOrder(registry_t & Registry_)
+{
+  auto & Transform = QueryOrCreate<TGlobalTransformComponent>(Registry_).second;
+
+  glm::vec3 ViewPosition = m_RenderFrustum.GetPosition();
+
+  Registry_.sort<TGLTranslucentMeshComponent>([&](const entity_t Left, const entity_t Right) -> bool
+  {
+    const glm::vec3 LeftPosition  = Registry_.get<TTransformComponent>(Left).Transform[3];
+    const glm::vec3 RightPosition = Registry_.get<TTransformComponent>(Right).Transform[3];
+
+    return glm::length(ViewPosition - LeftPosition) - glm::length(ViewPosition - RightPosition);
+  });
 }

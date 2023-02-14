@@ -156,9 +156,9 @@ CBlockFactory & CBlockFactory::Instance()
 // Service
 //
 
-TGLUnbakedMeshComponent CBlockFactory::GetMeshForBlock(const TBlockComponent & Block, EBlockFace Faces)
+TGLUnbakedSolidMeshComponent CBlockFactory::GetMeshForBlock(const TBlockComponent & Block, EBlockFace Faces)
 {
-  TGLUnbakedMeshComponent Mesh;
+  TGLUnbakedSolidMeshComponent Mesh;
 
   int ActiveFaceIndex = 0;
 
@@ -225,6 +225,14 @@ std::vector<glm::vec2> CBlockFactory::GetUVForBlock(const TBlockComponent & Bloc
 bool CBlockFactory::IsBlockTransparent(const TBlockComponent & Block)
 {
   return Instance().m_BlockInfos[Block.Type].IsTransparent;
+}
+
+EMeshType CBlockFactory::GetMeshTypeForBlock(const TBlockComponent& Block)
+{
+  if (IsBlockTransparent(Block))
+    return EMeshType::Translucent;
+
+  return EMeshType::Solid;
 }
 
 void CBlockFactory::LoadConfigs()
