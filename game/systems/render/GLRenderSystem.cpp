@@ -245,6 +245,7 @@ void GLRenderSystem::UpdateLightUBO(registry_t & Registry_)
 
 void GLRenderSystem::UpdateTransluscentMeshesOrder(registry_t & Registry_)
 {
+  return;
   auto & Transform = QueryOrCreate<TGlobalTransformComponent>(Registry_).second;
 
   glm::vec3 ViewPosition = m_RenderFrustum.GetPosition();

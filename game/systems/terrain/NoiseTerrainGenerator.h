@@ -8,13 +8,17 @@ class CNoiseTerrainGenerator
 {
 public: // Construction/Destruction
 
-  CNoiseTerrainGenerator();
+  CNoiseTerrainGenerator(int Seed = 0);
 
   ~CNoiseTerrainGenerator() = default;
 
 public: // Interface
 
   TBlockComponent Generate(glm::vec3 _Position);
+
+protected: // Service
+
+  float GetNoise(float x, float y);
 
 private: // Members
 

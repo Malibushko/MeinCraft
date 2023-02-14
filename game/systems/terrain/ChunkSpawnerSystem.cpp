@@ -19,7 +19,7 @@
 // Config
 //
 
-static constexpr int CHUNK_SPAWN_RADIUS = 47;
+static constexpr int CHUNK_SPAWN_RADIUS = 11;
 
 static_assert((CHUNK_SPAWN_RADIUS & 1) && "Spawn Distance must be odd!");
 
@@ -45,18 +45,37 @@ void CChunkSpawnerSystem::OnUpdate(registry_t & Registry_, float Delta_)
   auto & Terrain     = QuerySingle<TTerrainComponent>(Registry_);
   auto   CameraViews = Registry_.view<TGlobalTransformComponent, TPositionComponent>().each();
 
+  std::unordered_set<glm::ivec2> ChunksToUpdate;
+
   for (auto && [Entity, Transform, Position] : CameraViews)
   {
-    glm::ivec2 ChunkPosition = ToChunkCoordinates(Position.Position);
+    glm::ivec2 PlayerPosition = ToChunkCoordinates(Position.Position);
 
     for (int X = -CHUNK_SPAWN_RADIUS / 2; X < CHUNK_SPAWN_RADIUS / 2; X++)
     {
       for (int Y = -CHUNK_SPAWN_RADIUS / 2; Y < CHUNK_SPAWN_RADIUS / 2; Y++)
       {
-        if (!Terrain.Chunks.contains(ChunkPosition + glm::ivec2(X, Y)))
-          SpawnChunkAt(Registry_, Terrain, ChunkPosition + glm::ivec2(X, Y));
+        const glm::ivec2 ChunkPosition = PlayerPosition + glm::ivec2(X, Y);
+
+        if (!Terrain.Chunks.contains(ChunkPosition))
+        {
+          SpawnChunkAt(Registry_, Terrain, ChunkPosition);
+
+          ChunksToUpdate.insert(ChunkPosition + glm::ivec2(1, 0));
+          ChunksToUpdate.insert(ChunkPosition + glm::ivec2(-1, 0));
+          ChunksToUpdate.insert(ChunkPosition + glm::ivec2(0, 1));
+          ChunksToUpdate.insert(ChunkPosition + glm::ivec2(0, -1));
+        }
       }
     }
+  }
+
+  for (auto & ChunkPosition : ChunksToUpdate)
+  {
+    const entity_t ChunkEntity = Terrain.GetChunkAt(ChunkPosition);
+
+    if (ChunkEntity != entt::null)
+      GetComponent<TChunkComponent>(Registry_, ChunkEntity).State = EChunkState::Dirty;
   }
 }
 
