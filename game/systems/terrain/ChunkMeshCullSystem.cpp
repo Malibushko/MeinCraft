@@ -48,7 +48,7 @@ void CChunkMeshCullSystem::OnDestroy(registry_t& Registry_)
 void CChunkMeshCullSystem::UpdateBlocksFaces(registry_t& Registry, TTerrainComponent& Terrain,
   const glm::ivec2 & ChunkPosition, TChunkComponent & Chunk)
 {
-  const auto GetBlockAt = [&](glm::ivec3 BlockPosition) -> entity_t
+  const auto GetBlockAt = [&](glm::ivec3 BlockPosition) -> std::pair<entity_t, bool>
   {
     entity_t ChunkEntity = entt::null;
 
@@ -84,9 +84,9 @@ void CChunkMeshCullSystem::UpdateBlocksFaces(registry_t& Registry, TTerrainCompo
     }
 
     if (ChunkEntity != entt::null)
-      return Registry.get<TChunkComponent>(ChunkEntity).GetBlockAt(BlockPosition);
+      return { Registry.get<TChunkComponent>(ChunkEntity).GetBlockAt(BlockPosition), true };
 
-    return entt::null;
+    return { entt::null, false };
   };
 
   static const glm::ivec3 NeighbourOffsets[6] =
@@ -128,7 +128,9 @@ void CChunkMeshCullSystem::UpdateBlocksFaces(registry_t& Registry, TTerrainCompo
         {
           const glm::vec3 NeighbourPosition = NeighbourOffsets[i] + BlockPosition;
 
-          if (!IsBlockVisible(GetBlockAt(NeighbourPosition)))
+          const auto [BlockEntity, IsChunkExist] = GetBlockAt(NeighbourPosition);
+
+          if (IsChunkExist && !IsBlockVisible(BlockEntity))
             Faces.Faces = Faces.Faces | static_cast<EBlockFace>(1 << i);
         }
 

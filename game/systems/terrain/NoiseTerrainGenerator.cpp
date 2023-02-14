@@ -18,10 +18,10 @@ CNoiseTerrainGenerator::CNoiseTerrainGenerator(int Seed)
 
 TBlockComponent CNoiseTerrainGenerator::Generate(glm::vec3 _Position)
 {
-  if (Utils::AlmostEqual(_Position.y, LOWER_GENERATION_BOUND))
+  if (Utils::AlmostEqual(_Position.y, LOWER_GENERATION_BOUND) || _Position.y < LOWER_GENERATION_BOUND)
     return TBlockComponent{ .Type = EBlockType::Stone }; // TODO: replace with bedrock
 
-  if (_Position.y >= UPPER_GENERATION_BOUND)
+  if (std::abs(_Position.y) >= UPPER_GENERATION_BOUND)
     return TBlockComponent{ .Type = EBlockType::Air };
 
   float Elevation = GetNoise(_Position.x, _Position.z) +
@@ -36,7 +36,10 @@ TBlockComponent CNoiseTerrainGenerator::Generate(glm::vec3 _Position)
     if (Elevation < 0.2f)
       return TBlockComponent{ .Type = EBlockType::Sand };
 
-    return TBlockComponent{ .Type = EBlockType::Grass };
+    if (Generate(glm::vec3(_Position.x, _Position.y + 1.f, _Position.z)).Type == EBlockType::Air)
+      return TBlockComponent{ .Type = EBlockType::Grass };
+
+    return TBlockComponent{ .Type = EBlockType::Dirt };
   }
 
   if (_Position.y <= WATER_LEVEl && Generate(glm::vec3(_Position.x, _Position.y - 1.f, _Position.z)).Type != EBlockType::Air)

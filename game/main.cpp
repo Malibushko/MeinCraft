@@ -55,6 +55,12 @@ void InitCamera(World & World_)
 
   World_.SpawnBundle(TPerspectiveCameraBundle
   {
+    .Camera = TCameraBundle
+    {
+      .Position = TPositionComponent{
+        .Position = { 0.0f, 65.f, 0.0f }
+      }
+    },
     .Perspective =
     {
       .FOV         = 45.0f,
@@ -94,7 +100,7 @@ void InitTerrain(World & World_)
   {
     .TerrainGenerationStrategy = [](const glm::vec3 & _Position) -> TBlockComponent
     {
-      static CNoiseTerrainGenerator Generator;
+      static CNoiseTerrainGenerator Generator(time(nullptr));
 
       return Generator.Generate(_Position);
     }
