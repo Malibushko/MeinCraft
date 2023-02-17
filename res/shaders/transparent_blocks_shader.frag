@@ -1,5 +1,6 @@
 #version 460 core
-out vec4 FragColor;
+layout (location = 0) out vec4  Accumulator;
+layout (location = 1) out float Reveal;
 
 in vec2 TextureCoords;
 in vec3 Position;
@@ -46,18 +47,23 @@ vec4 ApplyDirectedLight(in vec4 Color)
   vec3  Ambient = Color.xyz * 0.25;
   float Diffuse = max(dot(Normal, normalize(-DirectedLightDirection)), 0.0);
 
-  return vec4(Ambient + Color.xyz * (Diffuse * DirectedLightColor) * DirectedLightIntensity, Color.w);
+  return vec4(Ambient + Color.x * (Diffuse * DirectedLightColor) * DirectedLightIntensity, Color.w);
 }
 
 void main()
 {
 	vec4 Color = texture(Texture_0, TextureCoords);
 
-	if (Color.a < 0.1)
-		discard;
-
 	Color = ApplyDirectedLight(Color);
 	Color = ApplyFog(Color);
 
-	FragColor = Color;
+	// OIT stuff
+
+	float Weight = clamp(pow(min(1.0, Color.a * 10.0) + 0.01, 3.0) * 1e8 * pow(1.0 - gl_FragCoord.z * 0.9, 3.0), 1e-2, 3e3);
+
+	// store pixel color accumulation
+	Accumulator = vec4(Color.rgb * Color.a, Color.a) * Weight;
+
+	// store pixel revealage threshold
+	Reveal = Color.a;
 }

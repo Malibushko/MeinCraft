@@ -13,7 +13,10 @@ enum class EBlockType
   CobbleStone     = 4,
   StationaryWater = 9,
   StationaryLava  = 11,
-  Sand            = 12
+  Sand            = 12,
+  // TODO: support variations
+  Wood            = 17,
+  Leaves          = 18
 };
 
 struct TBlockComponent

@@ -3,6 +3,7 @@
 
 #include "core/entity/System.h"
 #include "game/components/camera/CameraBasisComponent.h"
+#include "game/components/render/GLShaderComponent.h"
 #include "game/math/Frustum.h"
 
 struct TGLShaderComponent;
@@ -37,7 +38,11 @@ protected: // Service
 
   void UpdateLightUBO(registry_t & Registry_);
 
-  void UpdateTransluscentMeshesOrder(registry_t & Registry_);
+  void InitSolidFramebuffer(size_t Width, size_t Height);
+
+  void InitTransparentFramebuffer(size_t Width, size_t Height);
+
+  void InitScreenVAO();
 
 protected: // Members
 
@@ -48,4 +53,18 @@ protected: // Members
   GLuint m_MatricesUBO{ 0 };
   GLuint m_LightUBO{ 0 };
   GLuint m_CameraUBO{ 0 };
+
+  GLuint m_SolidFBO{};
+  GLuint m_TransparentFBO{};
+
+  // stuff for order-independent transparency
+  GLuint m_SolidTexture{};
+  GLuint m_DepthTexture{};
+  GLuint m_AccumulatorTexture{};
+  GLuint m_RevealTexture{};
+
+  TGLShaderComponent m_CompositeShader;
+  TGLShaderComponent m_ScreenShader;
+
+  GLuint m_ScreenQuadVAO{};
 };

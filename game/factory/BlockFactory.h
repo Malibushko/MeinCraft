@@ -33,6 +33,8 @@ public: // Interface
 
   static EMeshType GetMeshTypeForBlock(const TBlockComponent & Block);
 
+  static TGLShaderComponent GetShaderForBlock(const TBlockComponent & Block);
+
 protected: // Service
 
   void LoadConfigs();

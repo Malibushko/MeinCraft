@@ -6,6 +6,9 @@
 #include <type_traits>
 #include <algorithm>
 
+#include "game/components/physics/AABBVolumeComponent.h"
+#include "game/components/physics/BoundingVolume.h"
+
 namespace Utils
 {
 
@@ -25,4 +28,10 @@ AlmostEqual(T x, T y, int ulp = 2)
   {
     return a + (b - a) * t;
   }
+
+  [[nodiscard]] float DistanceTo(const glm::vec3 _Position, const TBoundingVolumeComponent & Volume);
+
+  [[nodiscard]] float DistanceTo(const glm::vec3 _Position, const TAABBVolumeComponent & Volume);
+
+  [[nodiscard]] float DistanceTo(...);
 }

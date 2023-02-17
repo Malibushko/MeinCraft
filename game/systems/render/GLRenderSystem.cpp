@@ -19,6 +19,8 @@
 #include "game/components/render/GLShaderComponent.h"
 #include "game/components/render/GLTextureComponent.h"
 #include "game/components/render/GLUnbakedMeshComponent.h"
+#include "game/resources/ShaderLibrary.h"
+#include "game/utils/NumericUtils.h"
 
 enum class EUniformBlock
 {
@@ -47,31 +49,30 @@ void GLRenderSystem::OnCreate(registry_t & Registry_)
   const auto & Display = QuerySingle<TDisplayComponent>(Registry_);
 
   glViewport(0, 0, static_cast<int>(Display.Width), static_cast<int>(Display.Height));
-  glEnable(GL_DEPTH_TEST);
 
-  glEnable(GL_BLEND);
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  InitSolidFramebuffer(Display.Width, Display.Height);
+  InitTransparentFramebuffer(Display.Width, Display.Height);
+  InitScreenVAO();
 }
 
 void GLRenderSystem::OnUpdate(registry_t & Registry_, float Delta_)
 {
-  glClearColor(0.52f, 0.807f, 0.92f, 1.f);
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
   if (IsNeedUpdateFrustum(Registry_))
   {
     UpdateFrustum(QueryOrCreate<TGlobalTransformComponent>(Registry_).second);
     UpdateUniformBlocks(Registry_);
-    UpdateTransluscentMeshesOrder(Registry_);
   }
 
   UpdateLightUBO(Registry_);
 
-  GLuint PreviousShader  = 0;
-  GLuint PreviousTexture = 0;
+  glm::vec4 ZeroFillVector(0.0f);
+  glm::vec4 OneFillVector(1.0f);
 
   const auto RenderPass = [&](auto && Meshes)
   {
+    GLuint PreviousShader = 0;
+    GLuint PreviousTexture = 0;
+
     for (auto && [Entity, Mesh, Shader, Texture, Transform] : Meshes.each())
     {
       if (const TBoundingVolumeComponent * BBComponent = Registry_.try_get<TBoundingVolumeComponent>(Entity))
@@ -122,11 +123,67 @@ void GLRenderSystem::OnUpdate(registry_t & Registry_, float Delta_)
     }
   };
 
-  auto && SolidMeshes = Registry_.view<TGLSolidMeshComponent, TGLShaderComponent, TGLTextureComponent, TTransformComponent>();
-  auto && TranslucentMeshes = Registry_.view<TGLTranslucentMeshComponent, TGLShaderComponent, TGLTextureComponent, TTransformComponent>();
+  // Solid objects
 
-  RenderPass(SolidMeshes);
-  RenderPass(TranslucentMeshes);
+  glEnable(GL_DEPTH_TEST);
+  glDepthFunc(GL_LESS);
+  glDepthMask(GL_TRUE);
+  glDisable(GL_BLEND);
+
+  glClearColor(0.52f, 0.807f, 0.92f, 1.f);
+
+  glBindFramebuffer(GL_FRAMEBUFFER, m_SolidFBO);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+  RenderPass(Registry_.view<TGLSolidMeshComponent, TGLShaderComponent, TGLTextureComponent, TTransformComponent>());
+
+  // Transparent objects
+
+  glDepthMask(GL_FALSE);
+  glEnable(GL_BLEND);
+  glBlendFunci(0, GL_ONE, GL_ONE);
+  glBlendFunci(1, GL_ZERO, GL_ONE_MINUS_SRC_COLOR);
+  glBlendEquation(GL_FUNC_ADD);
+
+  glBindFramebuffer(GL_FRAMEBUFFER, m_TransparentFBO);
+  glClearBufferfv(GL_COLOR, 0, &ZeroFillVector[0]);
+  glClearBufferfv(GL_COLOR, 1, &OneFillVector[0]);
+
+  RenderPass(Registry_.view<TGLTranslucentMeshComponent, TGLShaderComponent, TGLTextureComponent, TTransformComponent>());
+
+  // Draw composite image
+
+  glDepthFunc(GL_ALWAYS);
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+  glBindFramebuffer(GL_FRAMEBUFFER, m_SolidFBO);
+
+  glUseProgram(m_CompositeShader.ShaderID);
+
+  glActiveTexture(GL_TEXTURE0);
+  glBindTexture(GL_TEXTURE_2D, m_AccumulatorTexture);
+  glActiveTexture(GL_TEXTURE1);
+  glBindTexture(GL_TEXTURE_2D, m_RevealTexture);
+  glBindVertexArray(m_ScreenQuadVAO);
+  glDrawArrays(GL_TRIANGLES, 0, 6);
+
+  // Finally draw to backbuffer
+  glDisable(GL_DEPTH_TEST);
+  glDepthMask(GL_TRUE);
+  glDisable(GL_BLEND);
+
+  // Bind backbuffer
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  glClearColor(0.f, 0.f, 0.f, 0.f);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+  glUseProgram(m_ScreenShader.ShaderID);
+
+  glActiveTexture(GL_TEXTURE0);
+  glBindTexture(GL_TEXTURE_2D, m_SolidTexture);
+  glBindVertexArray(m_ScreenQuadVAO);
+  glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
 void GLRenderSystem::OnDestroy(registry_t & Registry_)
@@ -243,18 +300,95 @@ void GLRenderSystem::UpdateLightUBO(registry_t & Registry_)
   glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
-void GLRenderSystem::UpdateTransluscentMeshesOrder(registry_t & Registry_)
+void GLRenderSystem::InitSolidFramebuffer(size_t Width, size_t Height)
 {
-  return;
-  auto & Transform = QueryOrCreate<TGlobalTransformComponent>(Registry_).second;
+  glGenFramebuffers(1, &m_SolidFBO);
 
-  glm::vec3 ViewPosition = m_RenderFrustum.GetPosition();
+  glGenTextures(1, &m_SolidTexture);
+  glBindTexture(GL_TEXTURE_2D, m_SolidTexture);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, Width, Height, 0, GL_RGBA, GL_HALF_FLOAT, nullptr);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glBindTexture(GL_TEXTURE_2D, 0);
 
-  Registry_.sort<TGLTranslucentMeshComponent>([&](const entity_t Left, const entity_t Right) -> bool
-  {
-    const glm::vec3 LeftPosition  = Registry_.get<TTransformComponent>(Left).Transform[3];
-    const glm::vec3 RightPosition = Registry_.get<TTransformComponent>(Right).Transform[3];
+  glGenTextures(1, &m_DepthTexture);
+  glBindTexture(GL_TEXTURE_2D, m_DepthTexture);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, Width, Height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+  glBindTexture(GL_TEXTURE_2D, 0);
 
-    return glm::length(ViewPosition - LeftPosition) - glm::length(ViewPosition - RightPosition);
-  });
+  glBindFramebuffer(GL_FRAMEBUFFER, m_SolidFBO);
+  glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_SolidTexture, 0);
+  glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_DepthTexture, 0);
+
+  if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+    spdlog::critical("!!! ERROR Opaque framebuffer is not complete !!!");
+
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void GLRenderSystem::InitTransparentFramebuffer(size_t Width, size_t Height)
+{
+  glGenFramebuffers(1, &m_TransparentFBO);
+
+  glGenTextures(1, &m_AccumulatorTexture);
+  glBindTexture(GL_TEXTURE_2D, m_AccumulatorTexture);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, Width, Height, 0, GL_RGBA, GL_HALF_FLOAT, nullptr);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glBindTexture(GL_TEXTURE_2D, 0);
+
+  glGenTextures(1, &m_RevealTexture);
+  glBindTexture(GL_TEXTURE_2D, m_RevealTexture);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, Width, Height, 0, GL_RED, GL_FLOAT, nullptr);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glBindTexture(GL_TEXTURE_2D, 0);
+
+  glBindFramebuffer(GL_FRAMEBUFFER, m_TransparentFBO);
+  glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_AccumulatorTexture, 0);
+  glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, m_RevealTexture, 0);
+  glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D,  m_DepthTexture, 0);
+
+  const GLenum TransparentDrawBuffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+  glDrawBuffers(2, TransparentDrawBuffers);
+
+  if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+    spdlog::critical("!!! ERROR: Transparent framebuffer is not complete !!!");
+
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void GLRenderSystem::InitScreenVAO()
+{
+  m_CompositeShader.ShaderID = CShaderLibrary::Load("res/shaders/composite_shader").ShaderID;
+  m_ScreenShader.ShaderID    = CShaderLibrary::Load("res/shaders/screen_shader").ShaderID;
+
+  if (!m_CompositeShader.IsValid() || !m_ScreenShader.IsValid())
+    spdlog::critical("!!! ERROR: Failed to load composite or screen shader !!!");
+
+  const float ScreenQuadVertices[] = {
+    // positions		    // uv
+    -1.0f, -1.0f, 0.0f,	0.0f, 0.0f,
+     1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+     1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
+
+     1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
+    -1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
+    -1.0f, -1.0f, 0.0f, 0.0f, 0.0f
+  };
+
+  GLuint QuadVBO;
+
+  glGenVertexArrays(1, &m_ScreenQuadVAO);
+  glGenBuffers(1, &QuadVBO);
+
+  glBindVertexArray(m_ScreenQuadVAO);
+  glBindBuffer(GL_ARRAY_BUFFER, QuadVBO);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(ScreenQuadVertices), ScreenQuadVertices, GL_STATIC_DRAW);
+
+  glEnableVertexAttribArray(0);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) 0);
+  glEnableVertexAttribArray(1);
+  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) (3 * sizeof(float)));
+  glBindVertexArray(0);
 }

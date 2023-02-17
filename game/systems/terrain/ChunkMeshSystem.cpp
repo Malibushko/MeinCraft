@@ -45,8 +45,11 @@ void CChunkMeshSystem::OnDestroy(registry_t & Registry_)
 
 void CChunkMeshSystem::RecreateChunkMesh(registry_t & Registry_, entity_t ChunkEntity, TChunkComponent & Chunk) const
 {
+  // TODO: support multiple meshes per chunk and allow and group them by shader
   TGLUnbakedSolidMeshComponent       SolidMeshComponent;
   TGLUnbakedTranslucentMeshComponent TranslucentMeshComponent;
+
+  TGLShaderComponent SolidMeshShader, TransclucentMeshShader;
 
   TTransformComponent ChunkTransform = Registry_.get<TTransformComponent>(ChunkEntity);
 
@@ -79,52 +82,70 @@ void CChunkMeshSystem::RecreateChunkMesh(registry_t & Registry_, entity_t ChunkE
             Index += ChunkMesh.Vertices.size();
 
           ChunkMesh.Vertices.insert(ChunkMesh.Vertices.end(), BlockMesh.Vertices.begin(), BlockMesh.Vertices.end());
-          ChunkMesh.Indices.insert(ChunkMesh.Indices.end(), BlockMesh.Indices.begin(), BlockMesh.Indices.end());
-          ChunkMesh.UV.insert(ChunkMesh.UV.end(), BlockUV.begin(), BlockUV.end());
-          ChunkMesh.Normals.insert(ChunkMesh.Normals.end(), BlockMesh.Normals.begin(), BlockMesh.Normals.end());
+          ChunkMesh.Indices.insert(ChunkMesh.Indices.end(),   BlockMesh.Indices.begin(), BlockMesh.Indices.end());
+          ChunkMesh.UV.insert(ChunkMesh.UV.end(),             BlockUV.begin(), BlockUV.end());
+          ChunkMesh.Normals.insert(ChunkMesh.Normals.end(),   BlockMesh.Normals.begin(), BlockMesh.Normals.end());
         };
 
         switch (BlockMeshType)
         {
           case EMeshType::Translucent:
             AppendToMesh(TranslucentMeshComponent);
+
+            TransclucentMeshShader = CBlockFactory::GetShaderForBlock(Block);
             break;
 
           default:
             AppendToMesh(SolidMeshComponent);
+
+            SolidMeshShader = CBlockFactory::GetShaderForBlock(Block);
             break;
         }
       }
     }
   }
 
-  TGLShaderComponent Shader
-  {
-    .ShaderID = CShaderLibrary::Load("res/shaders/blocks_shader").ShaderID
-  };
-
   TGLTextureComponent Texture
   {
     .TextureID = CTextureLibrary::Load("res/textures/blocks_atlas.png").TextureID
   };
 
-  // TODO: This is a hack, we should be able to get the AABB from the mesh
-  Registry_.emplace_or_replace<TBoundingVolumeComponent>(ChunkEntity, TBoundingVolumeComponent
-  {
-    .Volume = TAABBVolumeComponent
-    {
-      .Min = ChunkTransform.Transform[3],
-      .Max = glm::vec3(ChunkTransform.Transform[3]) + glm::vec3(TChunkComponent::CHUNK_SIZE_X, TChunkComponent::CHUNK_SIZE_Y, TChunkComponent::CHUNK_SIZE_Z)
-    }
-  });
-
   if (!SolidMeshComponent.Vertices.empty())
-    Registry_.emplace_or_replace<TGLUnbakedSolidMeshComponent>(ChunkEntity, std::move(SolidMeshComponent));
+  {
+    entity_t SolidMeshEntity = Registry_.create();
+
+    auto [Min, Max] = SolidMeshComponent.GetBounds();
+
+    Registry_.emplace<TGLUnbakedSolidMeshComponent>(SolidMeshEntity, std::move(SolidMeshComponent));
+    Registry_.emplace<TGLShaderComponent>(SolidMeshEntity, SolidMeshShader);
+    Registry_.emplace<TGLTextureComponent>(SolidMeshEntity, Texture);
+    Registry_.emplace<TBoundingVolumeComponent>(SolidMeshEntity, TBoundingVolumeComponent
+    {
+      .Volume = TAABBVolumeComponent{.Min = Min + glm::vec3(ChunkTransform.Transform[3]), .Max = Max + glm::vec3(ChunkTransform.Transform[3])}
+    });
+
+    Registry_.emplace<TTransformComponent>(SolidMeshEntity, ChunkTransform);
+
+    Chunk.Meshes.emplace_back(SolidMeshEntity);
+  }
 
   if (!TranslucentMeshComponent.Vertices.empty())
-    Registry_.emplace_or_replace<TGLUnbakedTranslucentMeshComponent>(ChunkEntity, std::move(TranslucentMeshComponent));
+  {
+    entity_t TranslucentMeshEntity = Registry_.create();
 
-  Registry_.emplace_or_replace<TGLShaderComponent>(ChunkEntity, Shader);
-  Registry_.emplace_or_replace<TGLTextureComponent>(ChunkEntity, Texture);
+    auto [Min, Max] = TranslucentMeshComponent.GetBounds();
+
+    Registry_.emplace<TGLUnbakedTranslucentMeshComponent>(TranslucentMeshEntity, std::move(TranslucentMeshComponent));
+    Registry_.emplace<TGLShaderComponent>(TranslucentMeshEntity, TransclucentMeshShader);
+    Registry_.emplace<TGLTextureComponent>(TranslucentMeshEntity, Texture);
+    Registry_.emplace<TBoundingVolumeComponent>(TranslucentMeshEntity, TBoundingVolumeComponent
+    {
+      .Volume = TAABBVolumeComponent{.Min = Min + glm::vec3(ChunkTransform.Transform[3]), .Max = Max + glm::vec3(ChunkTransform.Transform[3])}
+    });
+
+    Registry_.emplace<TTransformComponent>(TranslucentMeshEntity, ChunkTransform);
+
+    Chunk.Meshes.emplace_back(TranslucentMeshEntity);
+  }
 }
 

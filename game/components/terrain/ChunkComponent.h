@@ -25,6 +25,8 @@ struct TChunkComponent
 
   std::array<entity_t, CHUNK_SIZE_X * CHUNK_SIZE_Y * CHUNK_SIZE_Z> Blocks;
 
+  std::vector<entity_t> Meshes;
+
   entity_t GetBlockAt(glm::ivec3 ChunkPosition) const
   {
     return Blocks[ChunkPosition.x + CHUNK_SIZE_X * (ChunkPosition.y + CHUNK_SIZE_Y * ChunkPosition.z)];

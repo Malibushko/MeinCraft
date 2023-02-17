@@ -261,6 +261,9 @@
     <ClInclude Include="game\systems\terrain\ChunkMeshCullSystem.h">
       <Filter>game\systems\terrain</Filter>
     </ClInclude>
+    <ClInclude Include="game\utils\LRUCache.h">
+      <Filter>game\utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="game\Main.cpp">
@@ -317,6 +320,9 @@
     <ClCompile Include="game\systems\terrain\ChunkMeshCullSystem.cpp">
       <Filter>game\systems\terrain</Filter>
     </ClCompile>
+    <ClCompile Include="game\utils\NumericUtils.cpp">
+      <Filter>game\utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\blocks_shader.frag">
@@ -327,6 +333,24 @@
     </None>
     <None Include="third_party\FastNoise\LICENSE">
       <Filter>third_party\FastNoise</Filter>
+    </None>
+    <None Include="res\shaders\transparent_blocks_shader.frag">
+      <Filter>res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\transparent_blocks_shader.vert">
+      <Filter>res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\composite_shader.frag">
+      <Filter>res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\composite_shader.vert">
+      <Filter>res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\screen_shader.frag">
+      <Filter>res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\screen_shader.vert">
+      <Filter>res\shaders</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

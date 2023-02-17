@@ -31,9 +31,9 @@ public: // Interface
 
   [[nodiscard]] bool Intersect(...) const;
 
-  size_t GetViewDistance() const;
+  [[nodiscard]] size_t GetViewDistance() const;
 
-  glm::vec3 GetPosition() const;
+  [[nodiscard]] glm::vec3 GetPosition() const;
 
 protected: // Service
 

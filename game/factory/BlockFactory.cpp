@@ -227,12 +227,28 @@ bool CBlockFactory::IsBlockTransparent(const TBlockComponent & Block)
   return Instance().m_BlockInfos[Block.Type].IsTransparent;
 }
 
-EMeshType CBlockFactory::GetMeshTypeForBlock(const TBlockComponent& Block)
+EMeshType CBlockFactory::GetMeshTypeForBlock(const TBlockComponent & Block)
 {
   if (IsBlockTransparent(Block))
     return EMeshType::Translucent;
 
   return EMeshType::Solid;
+}
+
+TGLShaderComponent CBlockFactory::GetShaderForBlock(const TBlockComponent& Block)
+{
+  if (GetMeshTypeForBlock(Block) == EMeshType::Translucent)
+  {
+    return TGLShaderComponent
+    {
+      .ShaderID = CShaderLibrary::Load("res/shaders/transparent_blocks_shader").ShaderID
+    };
+  }
+
+  return TGLShaderComponent
+  {
+    .ShaderID = CShaderLibrary::Load("res/shaders/blocks_shader").ShaderID
+  };
 }
 
 void CBlockFactory::LoadConfigs()

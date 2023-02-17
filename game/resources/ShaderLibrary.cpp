@@ -110,7 +110,7 @@ CShaderLibrary::TShader CShaderLibrary::Load(
 {
   const entt::id_type ShaderID = entt::hashed_string(ShaderPath.data());
 
-  if (auto Iterator = Library.m_ShaderCache.find(ShaderID); Iterator != Library.m_ShaderCache.end())
+  if (const auto Iterator = Library.m_ShaderCache.find(ShaderID); Iterator != Library.m_ShaderCache.end())
     return Iterator->second;
 
   return Library.m_ShaderCache.emplace(ShaderID, Library.m_ShaderLoader(ShaderPath)).first->second;

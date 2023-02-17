@@ -185,6 +185,7 @@
     <ClInclude Include="game\systems\terrain\NoiseTerrainGenerator.h" />
     <ClInclude Include="game\systems\utils\FPSCounterSystem.h" />
     <ClInclude Include="game\utils\FileUtils.h" />
+    <ClInclude Include="game\utils\LRUCache.h" />
     <ClInclude Include="game\utils\NumericUtils.h" />
     <ClInclude Include="game\World.h" />
     <ClInclude Include="third_party\FastNoise\FastNoiseLite.h" />
@@ -206,6 +207,7 @@
     <ClCompile Include="game\systems\terrain\NoiseTerrainGenerator.cpp" />
     <ClCompile Include="game\systems\utils\FPSCounterSystem.cpp" />
     <ClCompile Include="game\utils\FileUtils.cpp" />
+    <ClCompile Include="game\utils\NumericUtils.cpp" />
     <ClCompile Include="game\World.cpp" />
     <ClCompile Include="game\Main.cpp" />
   </ItemGroup>
@@ -217,6 +219,12 @@
   <ItemGroup>
     <None Include="res\shaders\blocks_shader.frag" />
     <None Include="res\shaders\blocks_shader.vert" />
+    <None Include="res\shaders\composite_shader.frag" />
+    <None Include="res\shaders\composite_shader.vert" />
+    <None Include="res\shaders\screen_shader.frag" />
+    <None Include="res\shaders\screen_shader.vert" />
+    <None Include="res\shaders\transparent_blocks_shader.frag" />
+    <None Include="res\shaders\transparent_blocks_shader.vert" />
     <None Include="third_party\FastNoise\LICENSE" />
   </ItemGroup>
   <ItemGroup>
