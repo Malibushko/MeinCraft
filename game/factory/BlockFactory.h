@@ -29,6 +29,8 @@ public: // Interface
 
   static std::vector<glm::vec2> GetUVForBlock(const TBlockComponent & Block, EBlockFace Faces);
 
+  static bool IsBlockTranslucent(const TBlockComponent & Block);
+
   static bool IsBlockTransparent(const TBlockComponent & Block);
 
   static EMeshType GetMeshTypeForBlock(const TBlockComponent & Block);
@@ -55,6 +57,7 @@ protected: // Service Structs
     bool             IsDiggable{};
     std::string      BoundingBoxType;
     std::vector<int> DropIDs{};
+    bool             IsTranslucent{};
     bool             IsTransparent{};
     int              EmitLight{};
     int              FilterLight{};

@@ -226,6 +226,7 @@
       "boundingBox": "empty",
       "drops": [],
       "transparent": true,
+      "translucent": true,
       "emitLight": 0,
       "filterLight": 2,
       "resistance": 100

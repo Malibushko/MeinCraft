@@ -222,6 +222,11 @@ std::vector<glm::vec2> CBlockFactory::GetUVForBlock(const TBlockComponent & Bloc
   return UV;
 }
 
+bool CBlockFactory::IsBlockTranslucent(const TBlockComponent & Block)
+{
+  return Instance().m_BlockInfos[Block.Type].IsTranslucent;
+}
+
 bool CBlockFactory::IsBlockTransparent(const TBlockComponent & Block)
 {
   return Instance().m_BlockInfos[Block.Type].IsTransparent;
@@ -229,7 +234,7 @@ bool CBlockFactory::IsBlockTransparent(const TBlockComponent & Block)
 
 EMeshType CBlockFactory::GetMeshTypeForBlock(const TBlockComponent & Block)
 {
-  if (IsBlockTransparent(Block))
+  if (IsBlockTranslucent(Block))
     return EMeshType::Translucent;
 
   return EMeshType::Solid;
@@ -298,6 +303,9 @@ void CBlockFactory::LoadBlockConfigs()
     BlockInfo["emitLight"].get_to(Info.EmitLight);
     BlockInfo["filterLight"].get_to(Info.FilterLight);
     BlockInfo["resistance"].get_to(Info.Resistance);
+
+    if (BlockInfo.contains("translucent") && !BlockInfo["translucent"].is_null())
+      BlockInfo["translucent"].get_to(Info.IsTranslucent);
 
     m_BlockInfos.emplace(Info.Type, std::move(Info));
   }
