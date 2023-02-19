@@ -4,8 +4,10 @@ out vec4 FragColor;
 in vec2 TextureCoords;
 in vec3 Position;
 in vec3 Normal;
+in vec4 LightFragmentPosition;
 
-uniform sampler2D Texture_0;
+layout(binding = 0) uniform sampler2D u_Texture_0;
+layout(binding = 1) uniform sampler2D u_DepthMap;
 
 layout(std140) uniform MatricesBlock
 {
@@ -24,8 +26,9 @@ layout(std140) uniform CameraBlock
 layout(std140) uniform LightBlock
 {
 	float DirectedLightIntensity;
-	vec3  DirectedLightDirection;
-	vec3  DirectedLightColor;
+	vec4  DirectedLightDirection;
+	vec4  DirectedLightColor;
+	mat4  DirectedLightSpaceMatrix;
 };
 
 const float FOG_FACTOR = 0.0001;
@@ -40,18 +43,33 @@ vec4 ApplyFog(in vec4 Color)
   return mix(Color, FOG_COLOR, FogAmount);
 }
 
+float ShadowCalculation(vec4 LightSpaceFragmentPosition)
+{
+	vec3 LightSpaceFragmentPosition3D = LightSpaceFragmentPosition.xyz / LightSpaceFragmentPosition.w;
+
+	LightSpaceFragmentPosition3D = LightSpaceFragmentPosition3D * 0.5f + 0.5f;
+
+	float ClosestDepth = texture(u_DepthMap, LightSpaceFragmentPosition3D.xy).r;
+	float CurrentDepth = LightSpaceFragmentPosition3D.y;
+
+	float Shadow = CurrentDepth > ClosestDepth ? 1.0 : 0.0;
+
+	return ClosestDepth;
+}
+
 vec4 ApplyDirectedLight(in vec4 Color)
 {
   // TODO: refactor
   vec3  Ambient = Color.xyz * 0.25;
-  float Diffuse = max(dot(Normal, normalize(-DirectedLightDirection)), 0.0);
+  float Diffuse = max(dot(Normal, normalize(-DirectedLightDirection.xyz)), 0.0);
+  float Shadow  = ShadowCalculation(LightFragmentPosition);
 
-  return vec4(Ambient + Color.xyz * (Diffuse * DirectedLightColor) * DirectedLightIntensity, Color.w);
+  return vec4(Ambient + (1.0 - Shadow) * Color.xyz * (Diffuse * DirectedLightColor.xyz) * DirectedLightIntensity, Color.w);
 }
 
 void main()
 {
-	vec4 Color = texture(Texture_0, TextureCoords);
+	vec4 Color = texture(u_Texture_0, TextureCoords);
 
 	if (Color.a < 0.1)
 		discard;
@@ -59,5 +77,6 @@ void main()
 	Color = ApplyDirectedLight(Color);
 	Color = ApplyFog(Color);
 
-	FragColor = Color;
+	//FragColor = Color;
+	FragColor = vec4(vec3(1.0 - ShadowCalculation(LightFragmentPosition)), 1.0);
 }

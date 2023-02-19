@@ -20,6 +20,7 @@
 #include "game/components/render/GLTextureComponent.h"
 #include "game/components/render/GLUnbakedMeshComponent.h"
 #include "game/resources/ShaderLibrary.h"
+#include "game/resources/TextureLibrary.h"
 #include "game/utils/NumericUtils.h"
 
 enum class EUniformBlock
@@ -49,9 +50,11 @@ void GLRenderSystem::OnCreate(registry_t & Registry_)
   const auto & Display = QuerySingle<TDisplayComponent>(Registry_);
 
   glViewport(0, 0, static_cast<int>(Display.Width), static_cast<int>(Display.Height));
+  //glEnable(GL_FRAMEBUFFER_SRGB);
 
   InitSolidFramebuffer(Display.Width, Display.Height);
   InitTransparentFramebuffer(Display.Width, Display.Height);
+  InitShadowMap(Display.Width, Display.Height);
   InitScreenVAO();
 }
 
@@ -62,46 +65,37 @@ void GLRenderSystem::OnUpdate(registry_t & Registry_, float Delta_)
     UpdateFrustum(QueryOrCreate<TGlobalTransformComponent>(Registry_).second);
     UpdateUniformBlocks(Registry_);
   }
-
-  UpdateLightUBO(Registry_);
+  else
+    UpdateLightUBO(Registry_);
 
   glm::vec4 ZeroFillVector(0.0f);
   glm::vec4 OneFillVector(1.0f);
 
-  const auto RenderPass = [&](auto && Meshes)
+  const auto RenderPass = [&](auto && Meshes, GLuint PredefinedShader = 0)
   {
     GLuint PreviousShader = 0;
     GLuint PreviousTexture = 0;
 
     for (auto && [Entity, Mesh, Shader, Texture, Transform] : Meshes.each())
     {
-      if (const TBoundingVolumeComponent * BBComponent = Registry_.try_get<TBoundingVolumeComponent>(Entity))
-      {
-        if (!m_RenderFrustum.Intersect(*BBComponent))
-          continue;
-      }
+
 
       assert(Mesh.IsBaked());
 
-      if (PreviousShader != Shader.ShaderID)
+      if (!PredefinedShader && PreviousShader != Shader.ShaderID)
       {
         assert(Shader.IsValid());
         glUseProgram(Shader.ShaderID);
 
         PreviousShader = Shader.ShaderID;
 
-        magic_enum::enum_for_each<EUniformBlock>([&](EUniformBlock UniformBlock)
-        {
-          const auto & BlockName = magic_enum::enum_name(UniformBlock);
-          const auto   BlockID = glGetUniformBlockIndex(Shader.ShaderID, BlockName.data());
+        glUniform1i(0, Texture.TextureID);
 
-          assert(BlockID != GL_INVALID_INDEX);
-          glUniformBlockBinding(Shader.ShaderID, BlockID, static_cast<GLuint>(UniformBlock));
-        });
+        UpdateShaderUniformBindings(Shader.ShaderID);
       }
 
       glUniformMatrix4fv(
-        glGetUniformLocation(Shader.ShaderID, "u_Transform"),
+        glGetUniformLocation(PredefinedShader == 0 ? Shader.ShaderID : PredefinedShader, "u_Transform"),
         1,
         GL_FALSE,
         &Transform.Transform[0][0]
@@ -109,10 +103,15 @@ void GLRenderSystem::OnUpdate(registry_t & Registry_, float Delta_)
 
       assert(Texture.IsValid());
 
-      if (PreviousTexture != Texture.TextureID)
+      if (!PredefinedShader && PreviousTexture != Texture.TextureID)
       {
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, Texture.TextureID);
+        glUniform1i(0, Texture.TextureID);
+
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, m_DepthTexture);
+        glUniform1i(1, m_DepthTexture);
 
         PreviousTexture = Texture.TextureID;
       }
@@ -130,13 +129,29 @@ void GLRenderSystem::OnUpdate(registry_t & Registry_, float Delta_)
   glDepthMask(GL_TRUE);
   glDisable(GL_BLEND);
 
-  glClearColor(0.52f, 0.807f, 0.92f, 1.f);
+  auto && SolidObjects = Registry_.view<TGLSolidMeshComponent, TGLShaderComponent, TGLTextureComponent, TTransformComponent>();
 
-  glBindFramebuffer(GL_FRAMEBUFFER, m_SolidFBO);
+  glBindFramebuffer(GL_FRAMEBUFFER, m_DepthFBO);
+    glClear(GL_DEPTH_BUFFER_BIT);
+    glUseProgram(m_DepthShader.ShaderID);
+    glUniformMatrix4fv(glGetUniformLocation(m_DepthShader.ShaderID, "u_LightSpaceMatrix"), 1, GL_FALSE, &m_LightSpaceMatrix[0][0]);
+    RenderPass(SolidObjects, m_DepthShader.ShaderID);
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+  glClearColor(0.52f, 0.807f, 0.92f, 1.f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  RenderPass(Registry_.view<TGLSolidMeshComponent, TGLShaderComponent, TGLTextureComponent, TTransformComponent>());
+  auto DebugShaderID = CShaderLibrary::Load("res/shaders/debug_depth_shader").ShaderID;
 
+  glUseProgram(DebugShaderID);
+  glActiveTexture(GL_TEXTURE0);
+  glBindTexture(GL_TEXTURE_2D, m_DepthTexture);
+  glUniform1i(glGetUniformLocation(DebugShaderID, "depthMap"), 0);
+  glBindVertexArray(m_ScreenQuadVAO);
+  glDrawArrays(GL_TRIANGLES, 0, 6);
+
+  //RenderPass(SolidObjects);
+  /*
   // Transparent objects
 
   glDepthMask(GL_FALSE);
@@ -184,6 +199,7 @@ void GLRenderSystem::OnUpdate(registry_t & Registry_, float Delta_)
   glBindTexture(GL_TEXTURE_2D, m_SolidTexture);
   glBindVertexArray(m_ScreenQuadVAO);
   glDrawArrays(GL_TRIANGLES, 0, 6);
+  */
 }
 
 void GLRenderSystem::OnDestroy(registry_t & Registry_)
@@ -275,18 +291,25 @@ void GLRenderSystem::UpdateLightUBO(registry_t & Registry_)
 {
   struct TLightUBO
   {
-    float                                DirectedLightIntensity;
-    alignas(sizeof(float) * 4) glm::vec3 DirectedLightDirection;
-    alignas(sizeof(float) * 4) glm::vec3 DirectedLightColor;
+    float     DirectedLightIntensity;
+    glm::vec4 DirectedLightDirection;
+    glm::vec4 DirectedLightColor;
+    glm::mat4 DirectedLightSpaceMatrix;
   } UBO;
 
   static_assert(std::is_standard_layout_v<TLightUBO>);
 
   auto && [DirectedLight, Light] = QuerySingle<TDirectedLightComponent, TLightComponent>(Registry_);
 
-  UBO.DirectedLightDirection = DirectedLight.Direction;
-  UBO.DirectedLightIntensity = DirectedLight.Intensity;
-  UBO.DirectedLightColor     = Light.Ambient + Light.Diffuse + Light.Specular;
+  const glm::mat4 LightProjection = glm::ortho(-4000.f, 4000.f, -4000.f, 4000.f, 0.1f, 1000.f);
+  const glm::mat4 LightView       = glm::lookAt(DirectedLight.Direction, glm::vec3(0.f), glm::vec3(0.f, 1.f, 0.f));
+
+  UBO.DirectedLightDirection   = glm::vec4(DirectedLight.Direction, 1.0);
+  UBO.DirectedLightIntensity   = DirectedLight.Intensity;
+  UBO.DirectedLightColor       = glm::vec4(Light.Ambient + Light.Diffuse + Light.Specular, 0.0);
+  UBO.DirectedLightSpaceMatrix = LightView * LightProjection;
+
+  m_LightSpaceMatrix = UBO.DirectedLightSpaceMatrix;
 
   if (m_LightUBO == 0)
     glGenBuffers(1, &m_LightUBO);
@@ -300,6 +323,18 @@ void GLRenderSystem::UpdateLightUBO(registry_t & Registry_)
   glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
+void GLRenderSystem::UpdateShaderUniformBindings(GLuint ShaderID)
+{
+  magic_enum::enum_for_each<EUniformBlock>([&](EUniformBlock UniformBlock)
+  {
+    const auto & BlockName = magic_enum::enum_name(UniformBlock);
+    const auto   BlockID   = glGetUniformBlockIndex(ShaderID, BlockName.data());
+
+    if (BlockID != GL_INVALID_INDEX)
+      glUniformBlockBinding(ShaderID, BlockID, static_cast<GLuint>(UniformBlock));
+  });
+}
+
 void GLRenderSystem::InitSolidFramebuffer(size_t Width, size_t Height)
 {
   glGenFramebuffers(1, &m_SolidFBO);
@@ -311,14 +346,14 @@ void GLRenderSystem::InitSolidFramebuffer(size_t Width, size_t Height)
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glBindTexture(GL_TEXTURE_2D, 0);
 
-  glGenTextures(1, &m_DepthTexture);
-  glBindTexture(GL_TEXTURE_2D, m_DepthTexture);
+  glGenTextures(1, &m_SolidDepthTexture);
+  glBindTexture(GL_TEXTURE_2D, m_SolidDepthTexture);
   glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, Width, Height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
   glBindTexture(GL_TEXTURE_2D, 0);
 
   glBindFramebuffer(GL_FRAMEBUFFER, m_SolidFBO);
   glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_SolidTexture, 0);
-  glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_DepthTexture, 0);
+  glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_SolidDepthTexture, 0);
 
   if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
     spdlog::critical("!!! ERROR Opaque framebuffer is not complete !!!");
@@ -347,7 +382,7 @@ void GLRenderSystem::InitTransparentFramebuffer(size_t Width, size_t Height)
   glBindFramebuffer(GL_FRAMEBUFFER, m_TransparentFBO);
   glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_AccumulatorTexture, 0);
   glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, m_RevealTexture, 0);
-  glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D,  m_DepthTexture, 0);
+  glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D,  m_SolidDepthTexture, 0);
 
   const GLenum TransparentDrawBuffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
   glDrawBuffers(2, TransparentDrawBuffers);
@@ -391,4 +426,48 @@ void GLRenderSystem::InitScreenVAO()
   glEnableVertexAttribArray(1);
   glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) (3 * sizeof(float)));
   glBindVertexArray(0);
+}
+
+void GLRenderSystem::InitShadowMap(size_t Width, size_t Height)
+{
+  glGenFramebuffers(1, &m_DepthFBO);
+
+  glGenTextures(1, &m_DepthTexture);
+  glBindTexture(GL_TEXTURE_2D, m_DepthTexture);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, Width, Height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+  glBindFramebuffer(GL_FRAMEBUFFER, m_DepthFBO);
+  glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_DepthTexture, 0);
+  glDrawBuffer(GL_NONE);
+  glReadBuffer(GL_NONE);
+
+  if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+    spdlog::critical("!!! ERROR: Depth framebuffer is not complete !!!");
+
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+  m_DepthShader = CShaderLibrary::Load("res/shaders/depth_shader");
+
+  if (!m_DepthShader.IsValid())
+    spdlog::error("!!! ERROR: Failed to load directional shadow shader !!!");
+
+  UpdateShaderUniformBindings(m_DepthShader.ShaderID);
+}
+
+void GLRenderSystem::RenderSolidObjects(registry_t & Registry)
+{
+
+}
+
+void GLRenderSystem::RenderTransparentObjects(registry_t & Registry)
+{
+}
+
+void GLRenderSystem::RenderBackbuffer(registry_t & Registry)
+{
+
 }

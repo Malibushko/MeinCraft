@@ -7,9 +7,9 @@ in vec2 TextureCoords;
 layout (location = 0) out vec4 FragmentColor;
 
 // screen image
-uniform sampler2D Screen;
+layout(binding = 0) uniform sampler2D Screen;
 
 void main()
 {
-	FragmentColor = vec4(texture(Screen, TextureCoords).rgb, 1.0f);
+	FragmentColor = vec4(vec3(texture(Screen, TextureCoords).rgb), 1.0f);
 }

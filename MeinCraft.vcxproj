@@ -221,6 +221,10 @@
     <None Include="res\shaders\blocks_shader.vert" />
     <None Include="res\shaders\composite_shader.frag" />
     <None Include="res\shaders\composite_shader.vert" />
+    <None Include="res\shaders\debug_depth_shader.frag" />
+    <None Include="res\shaders\debug_depth_shader.vert" />
+    <None Include="res\shaders\depth_shader.frag" />
+    <None Include="res\shaders\depth_shader.vert" />
     <None Include="res\shaders\screen_shader.frag" />
     <None Include="res\shaders\screen_shader.vert" />
     <None Include="res\shaders\transparent_blocks_shader.frag" />

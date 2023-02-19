@@ -38,11 +38,21 @@ protected: // Service
 
   void UpdateLightUBO(registry_t & Registry_);
 
+  void UpdateShaderUniformBindings(GLuint ShaderID);
+
   void InitSolidFramebuffer(size_t Width, size_t Height);
 
   void InitTransparentFramebuffer(size_t Width, size_t Height);
 
   void InitScreenVAO();
+
+  void InitShadowMap(size_t Width, size_t Height);
+
+  void RenderSolidObjects(registry_t & Registry);
+
+  void RenderTransparentObjects(registry_t & Registry);
+
+  void RenderBackbuffer(registry_t & Registry);
 
 protected: // Members
 
@@ -57,9 +67,15 @@ protected: // Members
   GLuint m_SolidFBO{};
   GLuint m_TransparentFBO{};
 
+  // shadows
+  TGLShaderComponent m_DepthShader;
+  GLuint m_DepthFBO{};
+  GLuint m_DepthTexture{};
+  glm::mat4 m_LightSpaceMatrix{};
+
   // stuff for order-independent transparency
   GLuint m_SolidTexture{};
-  GLuint m_DepthTexture{};
+  GLuint m_SolidDepthTexture{};
   GLuint m_AccumulatorTexture{};
   GLuint m_RevealTexture{};
 

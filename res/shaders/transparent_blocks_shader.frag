@@ -6,7 +6,7 @@ in vec2 TextureCoords;
 in vec3 Position;
 in vec3 Normal;
 
-uniform sampler2D Texture_0;
+layout(binding = 0) uniform sampler2D Texture_0;
 
 layout(std140) uniform MatricesBlock
 {
@@ -25,8 +25,9 @@ layout(std140) uniform CameraBlock
 layout(std140) uniform LightBlock
 {
 	float DirectedLightIntensity;
-	vec3  DirectedLightDirection;
-	vec3  DirectedLightColor;
+	vec4  DirectedLightDirection;
+	vec4  DirectedLightColor;
+	mat4  DirectedLightSpaceMatrix;
 };
 
 const float FOG_FACTOR = 0.0001;
@@ -45,9 +46,9 @@ vec4 ApplyDirectedLight(in vec4 Color)
 {
   // TODO: refactor
   vec3  Ambient = Color.xyz * 0.25;
-  float Diffuse = max(dot(Normal, normalize(-DirectedLightDirection)), 0.0);
+  float Diffuse = max(dot(Normal, normalize(-DirectedLightDirection.xyz)), 0.0);
 
-  return vec4(Ambient + Color.x * (Diffuse * DirectedLightColor) * DirectedLightIntensity, Color.w);
+  return vec4(Ambient + Color.x * (Diffuse * DirectedLightColor.rgb) * DirectedLightIntensity, Color.w);
 }
 
 void main()

@@ -91,7 +91,7 @@ CShaderLibrary::CShaderLoader::result_type CShaderLibrary::CShaderLoader::operat
 
   spdlog::info("Shader compiled successfully: {}", ShaderPath);
 
-  return TShader{ .ShaderID = ShaderID };
+  return TGLShaderComponent{ .ShaderID = ShaderID };
 }
 
 //
@@ -104,7 +104,7 @@ static inline CShaderLibrary Library;
 // Interface
 //
 
-CShaderLibrary::TShader CShaderLibrary::Load(
+TGLShaderComponent CShaderLibrary::Load(
     std::string_view ShaderPath
   )
 {

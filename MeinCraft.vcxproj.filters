@@ -352,6 +352,18 @@
     <None Include="res\shaders\screen_shader.vert">
       <Filter>res\shaders</Filter>
     </None>
+    <None Include="res\shaders\depth_shader.frag">
+      <Filter>res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\depth_shader.vert">
+      <Filter>res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\debug_depth_shader.frag">
+      <Filter>res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\debug_depth_shader.vert">
+      <Filter>res\shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\textures\blocks_atlas.png">

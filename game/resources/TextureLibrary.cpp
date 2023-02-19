@@ -15,20 +15,29 @@ CTextureLibrary::CTextureLoader::result_type CTextureLibrary::CTextureLoader::op
 
   if (const auto Data = stbi_load(TexturePath.data(), &Width, &Height, &Channels, 0))
   {
-    GLenum Format = GL_RGB;
+    GLenum Format         = GL_RGB;
+    GLenum InternalFormat = GL_RGB;
 
     if (Channels == 1)
+    {
       Format = GL_RED;
+    }
     else if (Channels == 3)
-      Format = GL_RGB;
+    {
+      Format         = GL_RGB;
+      InternalFormat = GL_RGB;
+    }
     else if (Channels == 4)
-      Format = GL_RGBA;
+    {
+      Format         = GL_RGBA;
+      InternalFormat = GL_RGBA;
+    }
 
     GLuint Texture;
 
     glGenTextures(1, &Texture);
     glBindTexture(GL_TEXTURE_2D, Texture);
-    glTexImage2D(GL_TEXTURE_2D, 0, Format, Width, Height, 0, Format, GL_UNSIGNED_BYTE, Data);
+    glTexImage2D(GL_TEXTURE_2D, 0, InternalFormat, Width, Height, 0, Format, GL_UNSIGNED_BYTE, Data);
     glGenerateMipmap(GL_TEXTURE_2D);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
