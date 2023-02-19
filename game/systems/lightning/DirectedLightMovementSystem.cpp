@@ -7,15 +7,15 @@
 
 #include "game/utils/NumericUtils.h"
 
-static constexpr float FULL_CYCLE_INTERVAL = 10 * 1000;
+static constexpr float FULL_CYCLE_INTERVAL = 60 * 1000;
 static constexpr float AFTER_CYCLE_PAUSE   = 0 * 1000;
 
 static constexpr float MIN_INTENSITY       = 0.35f;
 static constexpr float MAX_INTENSITY       = 1.f;
 
-static constexpr glm::vec3 START_POINT     = glm::vec3(1.f, 0.f,    1.f);
-static constexpr glm::vec3 PEAK_POINT      = glm::vec3(1.f, 100.f, 1.f);
-static constexpr glm::vec3 FINAL_POINT     = glm::vec3(1.f, 0.f,    1.f);
+static constexpr glm::vec3 START_POINT     = glm::vec3(1.f, 100.f,  1.f);
+static constexpr glm::vec3 PEAK_POINT      = glm::vec3(0.f, 100.f, 1.f);
+static constexpr glm::vec3 FINAL_POINT     = glm::vec3(1.f, 100.f,  0.f);
 
 //
 // Construction/Destruction

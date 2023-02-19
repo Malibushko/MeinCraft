@@ -21,5 +21,5 @@ uniform mat4 u_LightSpaceMatrix;
 
 void main()
 {
-	gl_Position = DirectedLightSpaceMatrix * u_Transform * vec4(aPosition, 1.0f);
+	gl_Position = u_LightSpaceMatrix * u_Transform * vec4(aPosition, 1.0f);
 }

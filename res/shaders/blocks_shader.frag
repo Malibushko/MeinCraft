@@ -50,21 +50,21 @@ float ShadowCalculation(vec4 LightSpaceFragmentPosition)
 	LightSpaceFragmentPosition3D = LightSpaceFragmentPosition3D * 0.5f + 0.5f;
 
 	float ClosestDepth = texture(u_DepthMap, LightSpaceFragmentPosition3D.xy).r;
-	float CurrentDepth = LightSpaceFragmentPosition3D.y;
+	float CurrentDepth = LightSpaceFragmentPosition3D.z;
 
 	float Shadow = CurrentDepth > ClosestDepth ? 1.0 : 0.0;
 
-	return ClosestDepth;
+	return Shadow;
 }
 
 vec4 ApplyDirectedLight(in vec4 Color)
 {
   // TODO: refactor
   vec3  Ambient = Color.xyz * 0.25;
-  float Diffuse = max(dot(Normal, normalize(-DirectedLightDirection.xyz)), 0.0);
+ // float Diffuse = max(dot(Normal, normalize(-DirectedLightDirection.xyz)), 0.0);
   float Shadow  = ShadowCalculation(LightFragmentPosition);
 
-  return vec4(Ambient + (1.0 - Shadow) * Color.xyz * (Diffuse * DirectedLightColor.xyz) * DirectedLightIntensity, Color.w);
+  return vec4(Ambient * (1.0 - Shadow), Color.w);// * Color.xyz * (Diffuse * DirectedLightColor.xyz) * DirectedLightIntensity, Color.w);
 }
 
 void main()
@@ -77,6 +77,6 @@ void main()
 	Color = ApplyDirectedLight(Color);
 	Color = ApplyFog(Color);
 
-	//FragColor = Color;
-	FragColor = vec4(vec3(1.0 - ShadowCalculation(LightFragmentPosition)), 1.0);
+	FragColor = Color;
+	//FragColor = vec4(vec3(1.0 - ShadowCalculation(LightFragmentPosition)), 1.0);
 }

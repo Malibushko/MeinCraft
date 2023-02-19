@@ -89,8 +89,6 @@ void GLRenderSystem::OnUpdate(registry_t & Registry_, float Delta_)
 
         PreviousShader = Shader.ShaderID;
 
-        glUniform1i(0, Texture.TextureID);
-
         UpdateShaderUniformBindings(Shader.ShaderID);
       }
 
@@ -101,17 +99,20 @@ void GLRenderSystem::OnUpdate(registry_t & Registry_, float Delta_)
         &Transform.Transform[0][0]
       );
 
+      if (!PredefinedShader)
+        glUniformMatrix4fv(glGetUniformLocation(Shader.ShaderID, "u_LightSpaceMatrix"), 1, GL_FALSE, &m_LightSpaceMatrix[0][0]);
+
       assert(Texture.IsValid());
 
       if (!PredefinedShader && PreviousTexture != Texture.TextureID)
       {
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, Texture.TextureID);
-        glUniform1i(0, Texture.TextureID);
+        glUniform1i(glGetUniformLocation(Shader.ShaderID, "u_Texture_0"), 0);
 
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, m_DepthTexture);
-        glUniform1i(1, m_DepthTexture);
+        glUniform1i(glGetUniformLocation(Shader.ShaderID, "u_DepthMap"), 1);
 
         PreviousTexture = Texture.TextureID;
       }
@@ -132,15 +133,16 @@ void GLRenderSystem::OnUpdate(registry_t & Registry_, float Delta_)
   auto && SolidObjects = Registry_.view<TGLSolidMeshComponent, TGLShaderComponent, TGLTextureComponent, TTransformComponent>();
 
   glBindFramebuffer(GL_FRAMEBUFFER, m_DepthFBO);
-    glClear(GL_DEPTH_BUFFER_BIT);
-    glUseProgram(m_DepthShader.ShaderID);
-    glUniformMatrix4fv(glGetUniformLocation(m_DepthShader.ShaderID, "u_LightSpaceMatrix"), 1, GL_FALSE, &m_LightSpaceMatrix[0][0]);
-    RenderPass(SolidObjects, m_DepthShader.ShaderID);
+  glClear(GL_DEPTH_BUFFER_BIT);
+  glUseProgram(m_DepthShader.ShaderID);
+  glUniformMatrix4fv(glGetUniformLocation(m_DepthShader.ShaderID, "u_LightSpaceMatrix"), 1, GL_FALSE, &m_LightSpaceMatrix[0][0]);
+  RenderPass(SolidObjects, m_DepthShader.ShaderID);
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
 
   glClearColor(0.52f, 0.807f, 0.92f, 1.f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+  /*
   auto DebugShaderID = CShaderLibrary::Load("res/shaders/debug_depth_shader").ShaderID;
 
   glUseProgram(DebugShaderID);
@@ -149,8 +151,13 @@ void GLRenderSystem::OnUpdate(registry_t & Registry_, float Delta_)
   glUniform1i(glGetUniformLocation(DebugShaderID, "depthMap"), 0);
   glBindVertexArray(m_ScreenQuadVAO);
   glDrawArrays(GL_TRIANGLES, 0, 6);
+  */
 
-  //RenderPass(SolidObjects);
+  glClearColor(0.52f, 0.807f, 0.92f, 1.f);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+  RenderPass(SolidObjects);
+
   /*
   // Transparent objects
 
@@ -301,15 +308,14 @@ void GLRenderSystem::UpdateLightUBO(registry_t & Registry_)
 
   auto && [DirectedLight, Light] = QuerySingle<TDirectedLightComponent, TLightComponent>(Registry_);
 
-  const glm::mat4 LightProjection = glm::ortho(-4000.f, 4000.f, -4000.f, 4000.f, 0.1f, 1000.f);
+  const glm::mat4 LightProjection = glm::ortho(-100.f, 100.f, -100.f, 100.f, 0.1f, 250.f);
   const glm::mat4 LightView       = glm::lookAt(DirectedLight.Direction, glm::vec3(0.f), glm::vec3(0.f, 1.f, 0.f));
 
   UBO.DirectedLightDirection   = glm::vec4(DirectedLight.Direction, 1.0);
   UBO.DirectedLightIntensity   = DirectedLight.Intensity;
   UBO.DirectedLightColor       = glm::vec4(Light.Ambient + Light.Diffuse + Light.Specular, 0.0);
-  UBO.DirectedLightSpaceMatrix = LightView * LightProjection;
-
-  m_LightSpaceMatrix = UBO.DirectedLightSpaceMatrix;
+  UBO.DirectedLightSpaceMatrix = LightProjection * LightView;
+  m_LightSpaceMatrix           = UBO.DirectedLightSpaceMatrix;
 
   if (m_LightUBO == 0)
     glGenBuffers(1, &m_LightUBO);
