@@ -71,7 +71,6 @@ protected: // Members
   TGLShaderComponent m_DepthShader;
   GLuint m_DepthFBO{};
   GLuint m_DepthTexture{};
-  glm::mat4 m_LightSpaceMatrix{};
 
   // stuff for order-independent transparency
   GLuint m_SolidTexture{};

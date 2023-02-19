@@ -16,7 +16,7 @@ CTextureLibrary::CTextureLoader::result_type CTextureLibrary::CTextureLoader::op
   if (const auto Data = stbi_load(TexturePath.data(), &Width, &Height, &Channels, 0))
   {
     GLenum Format         = GL_RGB;
-    GLenum InternalFormat = GL_RGB;
+    GLenum InternalFormat = GL_SRGB;
 
     if (Channels == 1)
     {
@@ -25,12 +25,12 @@ CTextureLibrary::CTextureLoader::result_type CTextureLibrary::CTextureLoader::op
     else if (Channels == 3)
     {
       Format         = GL_RGB;
-      InternalFormat = GL_RGB;
+      InternalFormat = GL_SRGB;
     }
     else if (Channels == 4)
     {
       Format         = GL_RGBA;
-      InternalFormat = GL_RGBA;
+      InternalFormat = GL_SRGB_ALPHA;
     }
 
     GLuint Texture;

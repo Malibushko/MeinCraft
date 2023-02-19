@@ -6,8 +6,8 @@ in vec3 Position;
 in vec3 Normal;
 in vec4 LightFragmentPosition;
 
-layout(binding = 0) uniform sampler2D u_Texture_0;
-layout(binding = 1) uniform sampler2D u_DepthMap;
+layout(binding = 0) uniform sampler2D       u_Texture_0;
+layout(binding = 1) uniform sampler2DShadow u_DepthMap;
 
 layout(std140) uniform MatricesBlock
 {
@@ -26,8 +26,8 @@ layout(std140) uniform CameraBlock
 layout(std140) uniform LightBlock
 {
 	float DirectedLightIntensity;
-	vec4  DirectedLightDirection;
-	vec4  DirectedLightColor;
+	vec3  DirectedLightDirection;
+	vec3  DirectedLightColor;
 	mat4  DirectedLightSpaceMatrix;
 };
 
@@ -49,22 +49,24 @@ float ShadowCalculation(vec4 LightSpaceFragmentPosition)
 
 	LightSpaceFragmentPosition3D = LightSpaceFragmentPosition3D * 0.5f + 0.5f;
 
-	float ClosestDepth = texture(u_DepthMap, LightSpaceFragmentPosition3D.xy).r;
-	float CurrentDepth = LightSpaceFragmentPosition3D.z;
+	float Bias   = max(0.05 * (1.0 - dot(Normal, normalize(DirectedLightDirection.xyz))), 0.005);
+	float Shadow = 0.0;
 
-	float Shadow = CurrentDepth > ClosestDepth ? 1.0 : 0.0;
+	for (int x = -1; x <= 1; ++x)
+		for (int y = -1; y <= 1; ++y)
+			Shadow += texture(u_DepthMap, vec3(LightSpaceFragmentPosition3D.xy, LightSpaceFragmentPosition3D.z - Bias));
 
-	return Shadow;
+	return Shadow / 18.0;
 }
 
 vec4 ApplyDirectedLight(in vec4 Color)
 {
   // TODO: refactor
   vec3  Ambient = Color.xyz * 0.25;
- // float Diffuse = max(dot(Normal, normalize(-DirectedLightDirection.xyz)), 0.0);
-  float Shadow  = ShadowCalculation(LightFragmentPosition);
+  float Diffuse = max(dot(Normal, normalize(DirectedLightDirection.xyz)), 0.0);
+  float Shadow = ShadowCalculation(LightFragmentPosition);
 
-  return vec4(Ambient * (1.0 - Shadow), Color.w);// * Color.xyz * (Diffuse * DirectedLightColor.xyz) * DirectedLightIntensity, Color.w);
+  return vec4(Ambient + (1.0 - Shadow) * Color.xyz * (Diffuse * DirectedLightColor.rgb) * DirectedLightIntensity, Color.w);
 }
 
 void main()
@@ -78,5 +80,4 @@ void main()
 	Color = ApplyFog(Color);
 
 	FragColor = Color;
-	//FragColor = vec4(vec3(1.0 - ShadowCalculation(LightFragmentPosition)), 1.0);
 }

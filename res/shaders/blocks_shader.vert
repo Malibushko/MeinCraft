@@ -15,8 +15,15 @@ layout(std140, binding=0) uniform MatricesBlock
   mat4 MVP;
 };
 
+layout(std140) uniform LightBlock
+{
+	float DirectedLightIntensity;
+	vec3  DirectedLightDirection;
+	vec3  DirectedLightColor;
+	mat4  DirectedLightSpaceMatrix;
+};
+
 uniform mat4 u_Transform;
-uniform mat4 u_LightSpaceMatrix;
 
 void main()
 {
@@ -24,5 +31,5 @@ void main()
 	TextureCoords         = aTextureCoord;
 	Normal                = mat3(transpose(inverse(u_Transform))) * aNormal;
 	Position              = gl_Position.xyz;
-	LightFragmentPosition = u_LightSpaceMatrix * u_Transform * vec4(aPosition, 1.0);
+	LightFragmentPosition = DirectedLightSpaceMatrix * u_Transform * vec4(aPosition, 1.0);
 }

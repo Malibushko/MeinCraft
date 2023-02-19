@@ -50,7 +50,7 @@ void GLRenderSystem::OnCreate(registry_t & Registry_)
   const auto & Display = QuerySingle<TDisplayComponent>(Registry_);
 
   glViewport(0, 0, static_cast<int>(Display.Width), static_cast<int>(Display.Height));
-  //glEnable(GL_FRAMEBUFFER_SRGB);
+  glEnable(GL_FRAMEBUFFER_SRGB);
 
   InitSolidFramebuffer(Display.Width, Display.Height);
   InitTransparentFramebuffer(Display.Width, Display.Height);
@@ -78,7 +78,11 @@ void GLRenderSystem::OnUpdate(registry_t & Registry_, float Delta_)
 
     for (auto && [Entity, Mesh, Shader, Texture, Transform] : Meshes.each())
     {
-
+      if (const TBoundingVolumeComponent * BBComponent = Registry_.try_get<TBoundingVolumeComponent>(Entity))
+      {
+        if (!m_RenderFrustum.Intersect(*BBComponent))
+          continue;
+      }
 
       assert(Mesh.IsBaked());
 
@@ -93,26 +97,21 @@ void GLRenderSystem::OnUpdate(registry_t & Registry_, float Delta_)
       }
 
       glUniformMatrix4fv(
-        glGetUniformLocation(PredefinedShader == 0 ? Shader.ShaderID : PredefinedShader, "u_Transform"),
-        1,
-        GL_FALSE,
-        &Transform.Transform[0][0]
-      );
-
-      if (!PredefinedShader)
-        glUniformMatrix4fv(glGetUniformLocation(Shader.ShaderID, "u_LightSpaceMatrix"), 1, GL_FALSE, &m_LightSpaceMatrix[0][0]);
+          glGetUniformLocation(PredefinedShader == 0 ? Shader.ShaderID : PredefinedShader, "u_Transform"),
+          1,
+          GL_FALSE,
+          &Transform.Transform[0][0]
+        );
 
       assert(Texture.IsValid());
 
-      if (!PredefinedShader && PreviousTexture != Texture.TextureID)
+      if (PreviousTexture != Texture.TextureID)
       {
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, Texture.TextureID);
-        glUniform1i(glGetUniformLocation(Shader.ShaderID, "u_Texture_0"), 0);
 
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, m_DepthTexture);
-        glUniform1i(glGetUniformLocation(Shader.ShaderID, "u_DepthMap"), 1);
 
         PreviousTexture = Texture.TextureID;
       }
@@ -124,41 +123,29 @@ void GLRenderSystem::OnUpdate(registry_t & Registry_, float Delta_)
   };
 
   // Solid objects
-
   glEnable(GL_DEPTH_TEST);
   glDepthFunc(GL_LESS);
   glDepthMask(GL_TRUE);
   glDisable(GL_BLEND);
+
+  glEnable(GL_CULL_FACE);
+  glCullFace(GL_FRONT);
 
   auto && SolidObjects = Registry_.view<TGLSolidMeshComponent, TGLShaderComponent, TGLTextureComponent, TTransformComponent>();
 
   glBindFramebuffer(GL_FRAMEBUFFER, m_DepthFBO);
   glClear(GL_DEPTH_BUFFER_BIT);
   glUseProgram(m_DepthShader.ShaderID);
-  glUniformMatrix4fv(glGetUniformLocation(m_DepthShader.ShaderID, "u_LightSpaceMatrix"), 1, GL_FALSE, &m_LightSpaceMatrix[0][0]);
   RenderPass(SolidObjects, m_DepthShader.ShaderID);
-  glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+  glDisable(GL_CULL_FACE);
 
-  glClearColor(0.52f, 0.807f, 0.92f, 1.f);
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  /*
-  auto DebugShaderID = CShaderLibrary::Load("res/shaders/debug_depth_shader").ShaderID;
-
-  glUseProgram(DebugShaderID);
-  glActiveTexture(GL_TEXTURE0);
-  glBindTexture(GL_TEXTURE_2D, m_DepthTexture);
-  glUniform1i(glGetUniformLocation(DebugShaderID, "depthMap"), 0);
-  glBindVertexArray(m_ScreenQuadVAO);
-  glDrawArrays(GL_TRIANGLES, 0, 6);
-  */
-
+  glBindFramebuffer(GL_FRAMEBUFFER, m_SolidFBO);
   glClearColor(0.52f, 0.807f, 0.92f, 1.f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   RenderPass(SolidObjects);
 
-  /*
   // Transparent objects
 
   glDepthMask(GL_FALSE);
@@ -178,7 +165,6 @@ void GLRenderSystem::OnUpdate(registry_t & Registry_, float Delta_)
   glDepthFunc(GL_ALWAYS);
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
   glBindFramebuffer(GL_FRAMEBUFFER, m_SolidFBO);
 
   glUseProgram(m_CompositeShader.ShaderID);
@@ -206,7 +192,6 @@ void GLRenderSystem::OnUpdate(registry_t & Registry_, float Delta_)
   glBindTexture(GL_TEXTURE_2D, m_SolidTexture);
   glBindVertexArray(m_ScreenQuadVAO);
   glDrawArrays(GL_TRIANGLES, 0, 6);
-  */
 }
 
 void GLRenderSystem::OnDestroy(registry_t & Registry_)
@@ -239,9 +224,9 @@ void GLRenderSystem::UpdateMatricesUBO(registry_t & Registry_)
 {
   struct TMatricesUBO
   {
-    glm::mat4 Projection;
-    glm::mat4 View;
-    glm::mat4 MVP;
+    alignas(sizeof(float) * 4) glm::mat4 Projection;
+    alignas(sizeof(float) * 4) glm::mat4 View;
+    alignas(sizeof(float) * 4) glm::mat4 MVP;
   } UBO;
 
   static_assert(std::is_standard_layout_v<TMatricesUBO>);
@@ -296,13 +281,17 @@ void GLRenderSystem::UpdateCameraUBO(registry_t & Registry_)
 
 void GLRenderSystem::UpdateLightUBO(registry_t & Registry_)
 {
+#pragma pack (push, 1)
+
   struct TLightUBO
   {
-    float     DirectedLightIntensity;
-    glm::vec4 DirectedLightDirection;
-    glm::vec4 DirectedLightColor;
-    glm::mat4 DirectedLightSpaceMatrix;
+    float                                DirectedLightIntensity;
+    alignas(sizeof(float) * 4) glm::vec3 DirectedLightDirection;
+    alignas(sizeof(float) * 4) glm::vec3 DirectedLightColor;
+    alignas(sizeof(float) * 4) glm::mat4 DirectedLightSpaceMatrix;
   } UBO;
+
+#pragma pack (pop, 1)
 
   static_assert(std::is_standard_layout_v<TLightUBO>);
 
@@ -311,11 +300,10 @@ void GLRenderSystem::UpdateLightUBO(registry_t & Registry_)
   const glm::mat4 LightProjection = glm::ortho(-100.f, 100.f, -100.f, 100.f, 0.1f, 250.f);
   const glm::mat4 LightView       = glm::lookAt(DirectedLight.Direction, glm::vec3(0.f), glm::vec3(0.f, 1.f, 0.f));
 
-  UBO.DirectedLightDirection   = glm::vec4(DirectedLight.Direction, 1.0);
+  UBO.DirectedLightDirection   = DirectedLight.Direction;
   UBO.DirectedLightIntensity   = DirectedLight.Intensity;
-  UBO.DirectedLightColor       = glm::vec4(Light.Ambient + Light.Diffuse + Light.Specular, 0.0);
+  UBO.DirectedLightColor       = Light.Ambient + Light.Diffuse + Light.Specular;
   UBO.DirectedLightSpaceMatrix = LightProjection * LightView;
-  m_LightSpaceMatrix           = UBO.DirectedLightSpaceMatrix;
 
   if (m_LightUBO == 0)
     glGenBuffers(1, &m_LightUBO);
@@ -440,11 +428,13 @@ void GLRenderSystem::InitShadowMap(size_t Width, size_t Height)
 
   glGenTextures(1, &m_DepthTexture);
   glBindTexture(GL_TEXTURE_2D, m_DepthTexture);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, Width, Height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32, Width, Height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
 
   glBindFramebuffer(GL_FRAMEBUFFER, m_DepthFBO);
   glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_DepthTexture, 0);

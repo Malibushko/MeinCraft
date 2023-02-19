@@ -7,7 +7,7 @@
 
 #include "game/utils/NumericUtils.h"
 
-static constexpr float FULL_CYCLE_INTERVAL = 60 * 1000;
+static constexpr float FULL_CYCLE_INTERVAL = 600 * 1000;
 static constexpr float AFTER_CYCLE_PAUSE   = 0 * 1000;
 
 static constexpr float MIN_INTENSITY       = 0.35f;
