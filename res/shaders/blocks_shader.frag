@@ -56,7 +56,7 @@ float ShadowCalculation(vec4 LightSpaceFragmentPosition)
 		for (int y = -1; y <= 1; ++y)
 			Shadow += texture(u_DepthMap, vec3(LightSpaceFragmentPosition3D.xy, LightSpaceFragmentPosition3D.z - Bias));
 
-	return Shadow / 18.0;
+	return Shadow / 36.0;
 }
 
 vec4 ApplyDirectedLight(in vec4 Color)
@@ -66,7 +66,7 @@ vec4 ApplyDirectedLight(in vec4 Color)
   float Diffuse = max(dot(Normal, normalize(DirectedLightDirection.xyz)), 0.0);
   float Shadow = ShadowCalculation(LightFragmentPosition);
 
-  return vec4(Ambient + (1.0 - Shadow) * Color.xyz * (Diffuse * DirectedLightColor.rgb) * DirectedLightIntensity, Color.w);
+  return vec4(Ambient + Shadow * Color.xyz * (Diffuse * DirectedLightColor.rgb) * DirectedLightIntensity, Color.w);
 }
 
 void main()
