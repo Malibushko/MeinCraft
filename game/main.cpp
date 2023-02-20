@@ -24,6 +24,9 @@
 #include "systems/terrain/ChunkMeshSystem.h"
 #include "systems/terrain/ChunkSpawnerSystem.h"
 #include "systems/terrain/NoiseTerrainGenerator.h"
+#include "systems/ui/ultralight/UltraLightLoggerSystem.h"
+#include "systems/ui/ultralight/UltraLightUIRenderSystem.h"
+#include "systems/ui/ultralight/UltraLightUISystem.h"
 #include "systems/utils/FPSCounterSystem.h"
 
 #include "utils/NumericUtils.h"
@@ -33,6 +36,7 @@ void InitDisplay(World & World_);
 void InitCoreSystems(World & World_);
 void InitTerrain(World & World_);
 void InitLight(World & World_);
+void InitUI(World & World_);
 void InitMetrics(World & World_);
 
 int main()
@@ -44,8 +48,8 @@ int main()
        .AddStartupFunction(InitCoreSystems)
        .AddStartupFunction(InitTerrain)
        .AddStartupFunction(InitLight)
+       .AddStartupFunction(InitUI)
        .AddStartupFunction(InitMetrics);
-
   World.Run();
 }
 
@@ -128,6 +132,13 @@ void InitLight(World & World_)
   });
 
   World_.AddSystem<CDirectedLightMovementSystem>();
+}
+
+void InitUI(World & World_)
+{
+  World_.AddSystem<CUltraLightUIRenderSystem>();
+  World_.AddSystem<CUltraLightUISystem>();
+  World_.AddSystem<CUltraLightUILoggerSystem>();
 }
 
 void InitMetrics(World & World_)

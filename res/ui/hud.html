@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Minecraft HUD</title>
+    <style>
+      body {
+        background-color: transparent;
+        font-family: Arial, sans-serif;
+      }
+
+      #hud {
+        position: relative;
+        margin: auto;
+        width: 100%;
+      }
+
+      #player-info {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        color: #fff;
+        font-size: 20px;
+      }
+
+      #health-bar {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        width: 200px;
+        height: 20px;
+        background-color: #000;
+        border: 2px solid #fff;
+        border-radius: 10px;
+        overflow: hidden;
+      }
+
+      #health {
+        width: 100%;
+        height: 100%;
+        background-color: #ff5555;
+      }
+
+      #hunger-bar {
+        position: absolute;
+        top: 50px;
+        right: 20px;
+        width: 200px;
+        height: 20px;
+        background-color: #000;
+        border: 2px solid #fff;
+        border-radius: 10px;
+        overflow: hidden;
+      }
+
+      #hunger {
+        width: 100%;
+        height: 100%;
+        background-color: #ffaa00;
+      }
+
+      #experience-bar {
+        position: absolute;
+        top: 80px;
+        right: 20px;
+        width: 200px;
+        height: 20px;
+        background-color: #000;
+        border: 2px solid #fff;
+        border-radius: 10px;
+        overflow: hidden;
+      }
+
+      #experience {
+        width: 50%;
+        height: 100%;
+        background-color: #55aaff;
+      }
+
+      #crosshair {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 25px;
+        height: 25px;
+        box-sizing: content-box;
+        z-index: 999;
+      }
+      
+      #crosshair:before,
+      #crosshair:after {
+        content: '';
+        display: block;
+        position: absolute;
+        background-color: #fff;
+      }
+      
+      #crosshair:before {
+        top: calc(50% - 10px);
+        left: calc(50% - 1px);
+        width: 2px;
+        height: 20px;
+      }
+      
+      #crosshair:after {
+        top: calc(50% - 1px);
+        left: calc(50% - 10px);
+        width: 20px;
+        height: 2px;
+      }
+      
+
+      @media only screen and (max-width: 500px) {
+        #health-bar, #hunger-bar, #experience-bar {
+          top: 120px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="hud">
+      <div id="crosshair"></div>
+    </div>
+  </body>
+</html>

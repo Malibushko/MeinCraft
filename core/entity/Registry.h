@@ -33,14 +33,14 @@ decltype(auto) QuerySingle(registry_t & Registry_)
 }
 
 template<class T>
-std::pair<entity_t, T &> QueryOrCreate(registry_t & Registry_)
+decltype(auto) QueryOrCreate(registry_t & Registry_)
 {
   if (auto View = Registry_.view<T>(); View.size() >= 1)
-    return { View.front(), Registry_.get<T>(View.front()) };
+    return Registry_.get<T>(View.front());
 
-  auto Entity = Registry_.create();
+  const auto Entity = Registry_.create();
 
-  return { Entity, Registry_.emplace<T>(Entity) };
+  return Registry_.emplace<T>(Entity);
 }
 
 template<class T>

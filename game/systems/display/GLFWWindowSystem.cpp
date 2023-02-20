@@ -172,6 +172,9 @@ void CGLFWWindowSystem::OnCreate(registry_t & Registry_)
 
 void CGLFWWindowSystem::OnUpdate(registry_t & Registry_, float Delta_)
 {
+  glClearColor(1.0, 1.0, 1.0, 1.0);
+  glClear(GL_COLOR_BUFFER_BIT);
+
   SendInput(Registry_);
 }
 
@@ -281,7 +284,7 @@ void CGLFWWindowSystem::InitGLFWWindow(registry_t & Registry, TGLFWWindowCompone
 
 void CGLFWWindowSystem::SendInput(registry_t & Registry_)
 {
-  const auto & [Entity, Keyboard] = QueryOrCreate<TKeyboardState>(Registry_);
+  auto & Keyboard = QueryOrCreate<TKeyboardState>(Registry_);
 
   auto KeyboardStateMapping = [](int State_)
   {

@@ -11,5 +11,10 @@ layout(binding = 0) uniform sampler2D Screen;
 
 void main()
 {
-	FragmentColor = vec4(vec3(texture(Screen, TextureCoords).rgb), 1.0f);
+	vec4 Color = texture(Screen, TextureCoords);
+
+	if (Color.a < 0.1)
+		discard;
+
+	FragmentColor = Color;
 }

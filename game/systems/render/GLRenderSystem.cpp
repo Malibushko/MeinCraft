@@ -62,7 +62,7 @@ void GLRenderSystem::OnUpdate(registry_t & Registry_, float Delta_)
 {
   if (IsNeedUpdateFrustum(Registry_))
   {
-    UpdateFrustum(QueryOrCreate<TGlobalTransformComponent>(Registry_).second);
+    UpdateFrustum(QueryOrCreate<TGlobalTransformComponent>(Registry_));
     UpdateUniformBlocks(Registry_);
   }
   else
@@ -335,14 +335,14 @@ void GLRenderSystem::InitSolidFramebuffer(size_t Width, size_t Height)
 
   glGenTextures(1, &m_SolidTexture);
   glBindTexture(GL_TEXTURE_2D, m_SolidTexture);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, Width, Height, 0, GL_RGBA, GL_HALF_FLOAT, nullptr);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, static_cast<GLsizei>(Width), static_cast<GLsizei>(Height), 0, GL_RGBA, GL_HALF_FLOAT, nullptr);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glBindTexture(GL_TEXTURE_2D, 0);
 
   glGenTextures(1, &m_SolidDepthTexture);
   glBindTexture(GL_TEXTURE_2D, m_SolidDepthTexture);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, Width, Height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, static_cast<GLsizei>(Width), static_cast<GLsizei>(Height), 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
   glBindTexture(GL_TEXTURE_2D, 0);
 
   glBindFramebuffer(GL_FRAMEBUFFER, m_SolidFBO);
@@ -361,14 +361,14 @@ void GLRenderSystem::InitTransparentFramebuffer(size_t Width, size_t Height)
 
   glGenTextures(1, &m_AccumulatorTexture);
   glBindTexture(GL_TEXTURE_2D, m_AccumulatorTexture);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, Width, Height, 0, GL_RGBA, GL_HALF_FLOAT, nullptr);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, static_cast<GLsizei>(Width), static_cast<GLsizei>(Height), 0, GL_RGBA, GL_HALF_FLOAT, nullptr);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glBindTexture(GL_TEXTURE_2D, 0);
 
   glGenTextures(1, &m_RevealTexture);
   glBindTexture(GL_TEXTURE_2D, m_RevealTexture);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, Width, Height, 0, GL_RED, GL_FLOAT, nullptr);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, static_cast<GLsizei>(Width), static_cast<GLsizei>(Height), 0, GL_RED, GL_FLOAT, nullptr);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glBindTexture(GL_TEXTURE_2D, 0);
@@ -428,7 +428,7 @@ void GLRenderSystem::InitShadowMap(size_t Width, size_t Height)
 
   glGenTextures(1, &m_DepthTexture);
   glBindTexture(GL_TEXTURE_2D, m_DepthTexture);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32, Width, Height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32, static_cast<GLsizei>(Width), static_cast<GLsizei>(Height), 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);

@@ -79,7 +79,7 @@ void CChunkMeshSystem::RecreateChunkMesh(registry_t & Registry_, entity_t ChunkE
             Vertex += glm::vec3(X, Y, Z);
 
           for (auto & Index : BlockMesh.Indices)
-            Index += ChunkMesh.Vertices.size();
+            Index += static_cast<unsigned short>(ChunkMesh.Vertices.size());
 
           ChunkMesh.Vertices.insert(ChunkMesh.Vertices.end(), BlockMesh.Vertices.begin(), BlockMesh.Vertices.end());
           ChunkMesh.Indices.insert(ChunkMesh.Indices.end(),   BlockMesh.Indices.begin(), BlockMesh.Indices.end());
