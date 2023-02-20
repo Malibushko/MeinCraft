@@ -73,7 +73,7 @@ struct AExport JSValueNullTag {};
 struct AExport JSValueUndefinedTag {};
 
 ///
-/// JavaScript variant value wrapper that automatically manages JSValueRef 
+/// JavaScript variant value wrapper that automatically manages JSValueRef
 /// lifetime and provides helpful conversions.
 ///
 class AExport JSValue {
@@ -229,9 +229,9 @@ protected:
   friend class JSFunction;
 };
 
-/// 
+///
 /// A vector of JSValues, used for passing around arguments in JSCallback.
-/// 
+///
 class AExport JSArgs {
 public:
   /// Create an empty list of JavaScript arguments
@@ -298,7 +298,7 @@ protected:
 ///
 /// Takes two arguments (const JSObject& thisObj, const JSArgs& args) and
 /// returns nothing (void).
-///   
+///
 typedef std::function<void(const JSObject&, const JSArgs&)> JSCallback;
 
 ///
@@ -307,7 +307,7 @@ typedef std::function<void(const JSObject&, const JSArgs&)> JSCallback;
 ///
 /// Takes two arguments (const JSObject& thisObj, const JSArgs& args) and
 /// returns a JSValue back to JavaScript.
-///   
+///
 typedef std::function<JSValue(const JSObject&, const JSArgs&)> JSCallbackWithRetval;
 
 ///
@@ -330,11 +330,11 @@ typedef std::function<JSValue(const JSObject&, const JSArgs&)> JSCallbackWithRet
 ///
 #define BindJSCallbackWithRetval(fn) (JSCallbackWithRetval)std::bind(fn, this, std::placeholders::_1, std::placeholders::_2)
 
-/// 
+///
 /// Wrapper for JSObject property value (JSValue subclass). Allows new value assignment
 /// to object property, binding C++ callbacks to object properties via function objects,
 /// as well as value query via the JSValue interface.
-/// 
+///
 class AExport JSPropertyValue : public JSValue {
 public:
   virtual ~JSPropertyValue();
@@ -366,7 +366,7 @@ protected:
 ///
 /// JSArray wrapper that automatically manages lifetime and provides
 /// convenient access to indices and Array functions.
-/// 
+///
 class AExport JSArray {
 public:
   /// Create empty Array
@@ -429,7 +429,7 @@ protected:
 ///
 /// JSObject wrapper that automatically manages lifetime and provides
 /// convenient access to properties.
-/// 
+///
 class AExport JSObject {
 public:
   /// Create empty Object
@@ -437,7 +437,7 @@ public:
 
   /// Create from existing JSObjectRef from JavaScriptCore C API
   JSObject(JSObjectRef obj);
-  
+
   /// Copy constructor (shallow copy, will point to same instance)
   JSObject(const JSObject& other);
 
@@ -537,7 +537,7 @@ protected:
 
   JSContextRef ctx_;
   JSObjectRef instance_;
-  friend class JSValue;  
+  friend class JSValue;
 };
 
 ///
@@ -548,7 +548,7 @@ JSObject AExport JSGlobalObject();
 
 ///
 /// Evaluate a string of JavaScript and return a result.
-/// 
+///
 JSValue AExport JSEval(const JSString& str);
 
 }  // namespace ultralight

@@ -30,6 +30,6 @@ void main()
 	gl_Position           = MVP * u_Transform * vec4(aPosition, 1.0);
 	TextureCoords         = aTextureCoord;
 	Normal                = mat3(transpose(inverse(u_Transform))) * aNormal;
-	Position              = gl_Position.xyz;
+	Position              = (u_Transform * vec4(aPosition, 1.0)).xyz;
 	LightFragmentPosition = DirectedLightSpaceMatrix * u_Transform * vec4(aPosition, 1.0);
 }

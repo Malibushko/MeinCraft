@@ -1,0 +1,40 @@
+#crosshair {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 30px;
+    height: 3px;
+    background-color: #fff;
+    z-index: 999;
+  }
+  
+  #crosshair:after {
+    content: '';
+    display: block;
+    position: absolute;
+    width: 3px;
+    height: 30px;
+    background-color: #fff;
+    left: calc(50% - 1.5px);
+    top: calc(50% - 15px);
+  }
+  
+  #position {
+    font-family: 'Minecraftia', sans-serif;
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+    color: #fff;
+    font-size: 18px;
+    z-index: 999;
+  }
+
+  @font-face {
+    font-family: 'Minecraftia';
+    src: url('fonts/minecraftia.ttf') format('truetype');
+  }
+  
+  body {
+    font-family: 'Minecraftia', sans-serif;
+  }

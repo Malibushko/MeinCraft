@@ -14,8 +14,8 @@ static constexpr float MIN_INTENSITY       = 0.35f;
 static constexpr float MAX_INTENSITY       = 1.f;
 
 static constexpr glm::vec3 START_POINT     = glm::vec3(1.f, 100.f,  1.f);
-static constexpr glm::vec3 PEAK_POINT      = glm::vec3(100.f, 100.f, 1.f);
-static constexpr glm::vec3 FINAL_POINT     = glm::vec3(1.f, 100.f,  100.f);
+static constexpr glm::vec3 PEAK_POINT      = glm::vec3(1.f, 100.f, 1.f);
+static constexpr glm::vec3 FINAL_POINT     = glm::vec3(1.f, 100.f,  1.f);
 
 //
 // Construction/Destruction

@@ -19,7 +19,7 @@ layout(std140) uniform MatricesBlock
 layout(std140) uniform CameraBlock
 {
   float ViewDistance;
-  vec3  Direction;
+  vec3  CameraDirection;
   vec3  CameraPosition;
 };
 
@@ -32,15 +32,18 @@ layout(std140) uniform LightBlock
 };
 
 const float FOG_FACTOR = 0.0001;
-const vec4  FOG_COLOR  = vec4(0.5, 0.6, 0.7, 1.0);
+const vec3  FOG_COLOR  = vec3(0.5, 0.6, 0.7);
 
 vec4 ApplyFog(in vec4 Color)
 {
-  vec3 Distance = Position - CameraPosition;
+  vec3  RayDirection = CameraPosition - Position;
+  float RayLength    = length(RayDirection);
 
-  float FogAmount = 1.0 - exp(-dot(Distance, Distance) * FOG_FACTOR);
+  RayDirection = normalize(RayDirection);
 
-  return mix(Color, FOG_COLOR, FogAmount);
+  float FogAmount = 30 * exp(-CameraPosition.y * FOG_FACTOR) * (1.0 - exp(-RayLength * RayDirection.y * FOG_FACTOR)) / RayDirection.y;
+
+  return vec4(mix(Color.rgb, mix(FOG_COLOR, DirectedLightColor, 0.3 * DirectedLightIntensity), FogAmount), Color.w);
 }
 
 float ShadowCalculation(vec4 LightSpaceFragmentPosition)

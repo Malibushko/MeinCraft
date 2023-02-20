@@ -66,7 +66,7 @@ TBlockComponent CNoiseTerrainGenerator::GenerateImpl(glm::vec3 _Position)
     if (Generate(glm::vec3(_Position.x, _Position.y + 1.f, _Position.z)).Type == EBlockType::Air)
     {
 
-      if (m_Noise.GetNoise(_Position.x * 50.f, _Position.z * 50.f) > 0.8f)
+      if (m_Noise.GetNoise(_Position.x * 50.f, _Position.z * 50.f) > 0.85f && _Position.y > 15)
       {
         SpawnTreeAt(_Position);
 

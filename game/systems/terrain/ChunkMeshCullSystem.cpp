@@ -122,7 +122,10 @@ void CChunkMeshCullSystem::UpdateBlocksFaces(registry_t& Registry, TTerrainCompo
           return BlockEntity != entt::null && !CBlockFactory::IsBlockTransparent(Registry.get<TBlockComponent>(BlockEntity));
         };
 
-        TVisibleBlockFacesComponent Faces{ .Faces = EBlockFace::None };
+        TVisibleBlockFacesComponent Faces
+        {
+          .Faces = CBlockFactory::GetDefaultBlockMeshFaces(Registry.get<TBlockComponent>(Chunk.Blocks[Index]))
+        };
 
         for (int i = 0; i < 6; i++)
         {

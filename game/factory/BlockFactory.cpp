@@ -256,6 +256,15 @@ TGLShaderComponent CBlockFactory::GetShaderForBlock(const TBlockComponent& Block
   };
 }
 
+EBlockFace CBlockFactory::GetDefaultBlockMeshFaces(const TBlockComponent& Block)
+{
+  // TODO: move to config
+  if (Block.Type == EBlockType::Leaves)
+    return EBlockFace::All;
+
+  return EBlockFace::None;
+}
+
 void CBlockFactory::LoadConfigs()
 {
   LoadBlockConfigs();

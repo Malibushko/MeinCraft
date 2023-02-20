@@ -471,9 +471,6 @@
     <CopyFileToFolders Include="third_party\UltraLight\bin\Ultralight.dll" />
     <CopyFileToFolders Include="third_party\UltraLight\bin\UltralightCore.dll" />
     <CopyFileToFolders Include="third_party\UltraLight\bin\WebCore.dll" />
-    <CopyFileToFolders Include="third_party\UltraLight\bin\Ultralight.dll" />
-    <CopyFileToFolders Include="third_party\UltraLight\bin\UltralightCore.dll" />
-    <CopyFileToFolders Include="third_party\UltraLight\bin\WebCore.dll" />
     <CopyFileToFolders Include="third_party\UltraLight\lib\Ultralight.lib" />
     <CopyFileToFolders Include="third_party\UltraLight\lib\UltralightCore.lib" />
     <CopyFileToFolders Include="third_party\UltraLight\lib\WebCore.lib" />
@@ -483,8 +480,13 @@
     <CopyFileToFolders Include="third_party\UltraLight\lib\Ultralight.lib" />
     <CopyFileToFolders Include="third_party\UltraLight\lib\UltralightCore.lib" />
     <CopyFileToFolders Include="third_party\UltraLight\lib\WebCore.lib" />
-    <CopyFileToFolders Include="third_party\UltraLight\lib\Ultralight.lib" />
-    <CopyFileToFolders Include="third_party\UltraLight\lib\UltralightCore.lib" />
-    <CopyFileToFolders Include="third_party\UltraLight\lib\WebCore.lib" />
+    <CopyFileToFolders Include="third_party\**\*.dll" />
+    <CopyFileToFolders Include="third_party\**\*.dll" />
+    <CopyFileToFolders Include="third_party\**\*.dll" />
+    <CopyFileToFolders Include="third_party\**\*.dll" />
+    <CopyFileToFolders Include="third_party\**\*.lib" />
+    <CopyFileToFolders Include="third_party\**\*.lib" />
+    <CopyFileToFolders Include="third_party\**\*.lib" />
+    <CopyFileToFolders Include="third_party\**\*.lib" />
   </ItemGroup>
 </Project>

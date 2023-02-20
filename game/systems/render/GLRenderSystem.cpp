@@ -254,17 +254,16 @@ void GLRenderSystem::UpdateCameraUBO(registry_t & Registry_)
   struct TCameraUBO
   {
     float                                ViewDistance;
-    alignas(sizeof(float) * 4) glm::vec3 Position;
     alignas(sizeof(float) * 4) glm::vec3 Direction;
+    alignas(sizeof(float) * 4) glm::vec3 Position;
   } UBO;
 
   static_assert(std::is_standard_layout_v<TCameraUBO>);
 
-  const auto & [CameraBasis, Position] = QuerySingle<TCameraBasisComponent, TPositionComponent>(Registry_);
-  const auto & Transform               = QuerySingle<TGlobalTransformComponent>(Registry_);
+  const auto & [CameraBasis, Position, Transform] = QuerySingle<TCameraBasisComponent, TPositionComponent, TGlobalTransformComponent>(Registry_);
 
   UBO.Direction    = CameraBasis.Front;
-  UBO.Position     = glm::vec3(0.f);
+  UBO.Position     = Position.Position;
   UBO.ViewDistance = static_cast<float>(m_RenderFrustum.GetViewDistance());
 
   if (m_CameraUBO == 0)

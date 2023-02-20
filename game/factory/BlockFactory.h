@@ -37,6 +37,8 @@ public: // Interface
 
   static TGLShaderComponent GetShaderForBlock(const TBlockComponent & Block);
 
+  static EBlockFace GetDefaultBlockMeshFaces(const TBlockComponent & Block);
+
 protected: // Service
 
   void LoadConfigs();
