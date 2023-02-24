@@ -103,9 +103,6 @@
     <Filter Include="game\systems\ui">
       <UniqueIdentifier>{0a0ce43d-02d6-4121-873e-049a1e9b667f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="game\systems\ui\ultralightweight">
-      <UniqueIdentifier>{68df4985-6a6d-43e4-babd-dd7cff009a65}</UniqueIdentifier>
-    </Filter>
     <Filter Include="game\components\ui">
       <UniqueIdentifier>{86d6abec-f35c-4afb-b9f7-a1c262af709f}</UniqueIdentifier>
     </Filter>
@@ -120,6 +117,9 @@
     </Filter>
     <Filter Include="third_party\UltraLight\lib">
       <UniqueIdentifier>{acb780e5-b085-4dcf-8298-027f3d0d5f39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\systems\ui\noesisgui">
+      <UniqueIdentifier>{306725b9-7eaa-4865-b4ac-9bf8cf61ae73}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -285,23 +285,17 @@
     <ClInclude Include="game\utils\LRUCache.h">
       <Filter>game\utils</Filter>
     </ClInclude>
-    <ClInclude Include="game\systems\ui\ultralight\UltraLightUIRenderSystem.h">
-      <Filter>game\systems\ui\ultralightweight</Filter>
-    </ClInclude>
     <ClInclude Include="game\components\ui\ultralight\ViewComponent.h">
       <Filter>game\components\ui\ultralight</Filter>
     </ClInclude>
     <ClInclude Include="game\components\ui\ultralight\RendererComponent.h">
       <Filter>game\components\ui\ultralight</Filter>
     </ClInclude>
-    <ClInclude Include="game\systems\ui\ultralight\UltraLightLoggerSystem.h">
-      <Filter>game\systems\ui\ultralightweight</Filter>
+    <ClInclude Include="game\systems\terrain\FlatTerrainGenerator.h">
+      <Filter>game\systems\terrain</Filter>
     </ClInclude>
-    <ClInclude Include="game\systems\ui\ultralight\UltraLightUISystem.h">
-      <Filter>game\systems\ui\ultralightweight</Filter>
-    </ClInclude>
-    <ClInclude Include="game\systems\ui\ultralight\UltraLightGLTextureSurface.h">
-      <Filter>game\systems\ui\ultralightweight</Filter>
+    <ClInclude Include="game\systems\ui\NoesisUISystem.h">
+      <Filter>game\systems\ui\noesisgui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -362,17 +356,11 @@
     <ClCompile Include="game\utils\NumericUtils.cpp">
       <Filter>game\utils</Filter>
     </ClCompile>
-    <ClCompile Include="game\systems\ui\ultralight\UltraLightUIRenderSystem.cpp">
-      <Filter>game\systems\ui\ultralightweight</Filter>
+    <ClCompile Include="game\systems\terrain\FlatTerrainGenerator.cpp">
+      <Filter>game\systems\terrain</Filter>
     </ClCompile>
-    <ClCompile Include="game\systems\ui\ultralight\UltraLightLoggerSystem.cpp">
-      <Filter>game\systems\ui\ultralightweight</Filter>
-    </ClCompile>
-    <ClCompile Include="game\systems\ui\ultralight\UltraLightUISystem.cpp">
-      <Filter>game\systems\ui\ultralightweight</Filter>
-    </ClCompile>
-    <ClCompile Include="game\systems\ui\ultralight\UltraLightGLTextureSurface.cpp">
-      <Filter>game\systems\ui\ultralightweight</Filter>
+    <ClCompile Include="game\systems\ui\NoesisUISystem.cpp">
+      <Filter>game\systems\ui\noesisgui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -415,21 +403,6 @@
     <None Include="res\shaders\debug_depth_shader.vert">
       <Filter>res\shaders</Filter>
     </None>
-    <None Include="third_party\UltraLight\README.md">
-      <Filter>third_party\UltraLight</Filter>
-    </None>
-    <None Include="third_party\UltraLight\bin\AppCore.dll">
-      <Filter>third_party\UltraLight\bin</Filter>
-    </None>
-    <None Include="third_party\UltraLight\bin\Ultralight.dll">
-      <Filter>third_party\UltraLight\bin</Filter>
-    </None>
-    <None Include="third_party\UltraLight\bin\UltralightCore.dll">
-      <Filter>third_party\UltraLight\bin</Filter>
-    </None>
-    <None Include="third_party\UltraLight\bin\WebCore.dll">
-      <Filter>third_party\UltraLight\bin</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\textures\blocks_atlas.png">
@@ -440,53 +413,78 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="third_party\UltraLight\LOG.txt">
-      <Filter>third_party\UltraLight</Filter>
-    </Text>
-    <Text Include="third_party\UltraLight\CMakeLists.txt">
-      <Filter>third_party\UltraLight</Filter>
-    </Text>
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="third_party\UltraLight\lib\AppCore.lib">
-      <Filter>third_party\UltraLight\lib</Filter>
-    </Library>
-    <Library Include="third_party\UltraLight\lib\Ultralight.lib">
-      <Filter>third_party\UltraLight\lib</Filter>
-    </Library>
-    <Library Include="third_party\UltraLight\lib\UltralightCore.lib">
-      <Filter>third_party\UltraLight\lib</Filter>
-    </Library>
-    <Library Include="third_party\UltraLight\lib\WebCore.lib">
-      <Filter>third_party\UltraLight\lib</Filter>
-    </Library>
-  </ItemGroup>
-  <ItemGroup>
-    <CopyFileToFolders Include="third_party\UltraLight\bin\Ultralight.dll" />
-    <CopyFileToFolders Include="third_party\UltraLight\bin\UltralightCore.dll" />
-    <CopyFileToFolders Include="third_party\UltraLight\bin\WebCore.dll" />
-    <CopyFileToFolders Include="third_party\UltraLight\bin\Ultralight.dll" />
-    <CopyFileToFolders Include="third_party\UltraLight\bin\UltralightCore.dll" />
-    <CopyFileToFolders Include="third_party\UltraLight\bin\WebCore.dll" />
-    <CopyFileToFolders Include="third_party\UltraLight\bin\Ultralight.dll" />
-    <CopyFileToFolders Include="third_party\UltraLight\bin\UltralightCore.dll" />
-    <CopyFileToFolders Include="third_party\UltraLight\bin\WebCore.dll" />
-    <CopyFileToFolders Include="third_party\UltraLight\lib\Ultralight.lib" />
-    <CopyFileToFolders Include="third_party\UltraLight\lib\UltralightCore.lib" />
-    <CopyFileToFolders Include="third_party\UltraLight\lib\WebCore.lib" />
-    <CopyFileToFolders Include="third_party\UltraLight\lib\Ultralight.lib" />
-    <CopyFileToFolders Include="third_party\UltraLight\lib\UltralightCore.lib" />
-    <CopyFileToFolders Include="third_party\UltraLight\lib\WebCore.lib" />
-    <CopyFileToFolders Include="third_party\UltraLight\lib\Ultralight.lib" />
-    <CopyFileToFolders Include="third_party\UltraLight\lib\UltralightCore.lib" />
-    <CopyFileToFolders Include="third_party\UltraLight\lib\WebCore.lib" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\Bin\uwp_x86\Noesis.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\Bin\uwp_x86_64\Noesis.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\Bin\windows_x86\Noesis.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\Bin\windows_x86_64\Noesis.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\Bin\windows_x86_64\NoesisApp.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.31\lib\net45\Design\Microsoft.Xaml.Behaviors.Design.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.31\lib\net45\Microsoft.Xaml.Behaviors.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.31\lib\net5.0-windows7.0\Design\Microsoft.Xaml.Behaviors.DesignTools.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.31\lib\net5.0-windows7.0\Microsoft.Xaml.Behaviors.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.31\lib\netcoreapp3.1\Design\Microsoft.Xaml.Behaviors.DesignTools.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.31\lib\netcoreapp3.1\Microsoft.Xaml.Behaviors.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.37\lib\net45\Design\Microsoft.Xaml.Behaviors.Design.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.37\lib\net45\Microsoft.Xaml.Behaviors.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.37\lib\net5.0-windows7.0\Design\Microsoft.Xaml.Behaviors.DesignTools.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.37\lib\net5.0-windows7.0\Microsoft.Xaml.Behaviors.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.37\lib\netcoreapp3.1\Design\Microsoft.Xaml.Behaviors.DesignTools.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.37\lib\netcoreapp3.1\Microsoft.Xaml.Behaviors.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\Noesis.GUI.Extensions.3.0.14\lib\net45\Noesis.GUI.Extensions.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\Noesis.GUI.Extensions.3.0.14\lib\net5.0-windows7.0\Noesis.GUI.Extensions.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\Noesis.GUI.Extensions.3.0.14\lib\netcoreapp3.1\Noesis.GUI.Extensions.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\Noesis.GUI.Extensions.3.0.8\lib\net45\Noesis.GUI.Extensions.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\System.Buffers.4.5.1\lib\netstandard1.1\System.Buffers.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\System.Buffers.4.5.1\lib\netstandard2.0\System.Buffers.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\System.Buffers.4.5.1\ref\net45\System.Buffers.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\System.Buffers.4.5.1\ref\netstandard1.1\System.Buffers.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\System.Buffers.4.5.1\ref\netstandard2.0\System.Buffers.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\System.Memory.4.5.5\lib\net461\System.Memory.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\System.Memory.4.5.5\lib\netstandard1.1\System.Memory.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\System.Memory.4.5.5\lib\netstandard2.0\System.Memory.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\System.Runtime.CompilerServices.Unsafe.4.5.3\lib\net461\System.Runtime.CompilerServices.Unsafe.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\System.Runtime.CompilerServices.Unsafe.4.5.3\lib\netcoreapp2.0\System.Runtime.CompilerServices.Unsafe.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\System.Runtime.CompilerServices.Unsafe.4.5.3\lib\netstandard1.0\System.Runtime.CompilerServices.Unsafe.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\System.Runtime.CompilerServices.Unsafe.4.5.3\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\System.Runtime.CompilerServices.Unsafe.4.5.3\ref\net461\System.Runtime.CompilerServices.Unsafe.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\System.Runtime.CompilerServices.Unsafe.4.5.3\ref\netstandard1.0\System.Runtime.CompilerServices.Unsafe.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\System.Runtime.CompilerServices.Unsafe.4.5.3\ref\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\Src\Packages\Samples\BlendTutorial\Data\obj\Debug\TempPE\Properties.Resources.Designer.cs.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\Src\Packages\Samples\Buttons\Data\obj\Debug\TempPE\Properties.Resources.Designer.cs.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\Src\Packages\Samples\CustomAnimation\Data\obj\Debug\TempPE\Properties.Resources.Designer.cs.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\Src\Packages\Samples\Gallery\Data\obj\Debug\TempPE\Properties.Resources.Designer.cs.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\Src\Packages\Samples\HelloWorld\Data\obj\Debug\TempPE\Properties.Resources.Designer.cs.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\Src\Packages\Samples\Integration\Data\obj\Debug\TempPE\Properties.Resources.Designer.cs.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\Src\Packages\Samples\Inventory\Data\obj\Debug\TempPE\Properties.Resources.Designer.cs.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\Src\Packages\Samples\Localization\Data\obj\Debug\TempPE\Properties.Resources.Designer.cs.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\Src\Packages\Samples\Login\Data\obj\Debug\TempPE\Properties.Resources.Designer.cs.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\Src\Packages\Samples\Menu3D\Data\obj\Debug\TempPE\Properties.Resources.Designer.cs.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\Src\Packages\Samples\QuestLog\Data\obj\Debug\TempPE\Properties.Resources.Designer.cs.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\Src\Packages\Samples\Scoreboard\Data\obj\Debug\TempPE\Properties.Resources.Designer.cs.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\Src\Packages\Samples\TicTacToe\Data\obj\Debug\TempPE\Properties.Resources.Designer.cs.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\Src\Packages\Samples\UserControl\Data\obj\Debug\TempPE\Properties.Resources.Designer.cs.dll" />
     <CopyFileToFolders Include="third_party\**\*.dll" />
+    <CopyFileToFolders Include="third_party\**\*.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\Lib\uwp_x86\Noesis.lib" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\Lib\uwp_x86_64\Noesis.lib" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\Lib\windows_x86\Noesis.lib" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\Lib\windows_x86_64\Noesis.lib" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\Lib\windows_x86_64\NoesisApp.lib" />
+    <CopyFileToFolders Include="third_party\**\*.lib" />
+    <CopyFileToFolders Include="third_party\**\*.lib" />
     <CopyFileToFolders Include="third_party\**\*.dll" />
     <CopyFileToFolders Include="third_party\**\*.dll" />
     <CopyFileToFolders Include="third_party\**\*.dll" />
     <CopyFileToFolders Include="third_party\**\*.lib" />
     <CopyFileToFolders Include="third_party\**\*.lib" />
     <CopyFileToFolders Include="third_party\**\*.lib" />
-    <CopyFileToFolders Include="third_party\**\*.lib" />
+    <CopyFileToFolders Include="third_party\**\*.dll">
+      <Filter>third_party</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.lib" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.lib" />
   </ItemGroup>
 </Project>

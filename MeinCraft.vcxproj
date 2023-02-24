@@ -88,13 +88,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions);ENTT_ID_TYPE=uint64_t</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(MSBuildProjectDirectory)\;$(MSBuildProjectDirectory)\third_party\UltraLight\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(MSBuildProjectDirectory)\;$(SolutuonDir)third_party\NoesisGUI\Src\Packages\Render\GLRenderDevice\Include;$(SolutuonDir)third_party\NoesisGUI\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Ultralight.lib;UltralightCore.lib;WebCore.lib;AppCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Noesis.lib;NoesisApp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)third_party\NoesisGUI\Lib\windows_x86_64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -105,7 +106,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions);ENTT_ID_TYPE=uint64_t</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(MSBuildProjectDirectory)\;$(MSBuildProjectDirectory)\third_party\UltraLight\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(MSBuildProjectDirectory)\;$(SolutuonDir)third_party\NoesisGUI\Src\Packages\Render\GLRenderDevice\Include;$(SolutuonDir)third_party\NoesisGUI\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -113,7 +114,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Ultralight.lib;UltralightCore.lib;WebCore.lib;AppCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Noesis.lib;NoesisApp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)third_party\NoesisGUI\Lib\windows_x86_64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -122,13 +124,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);ENTT_ID_TYPE=uint64_t</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(MSBuildProjectDirectory)\;$(MSBuildProjectDirectory)\third_party\UltraLight\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(MSBuildProjectDirectory)\;$(SolutuonDir)third_party\NoesisGUI\Src\Packages\Render\GLRenderDevice\Include;$(SolutuonDir)third_party\NoesisGUI\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Ultralight.lib;UltralightCore.lib;WebCore.lib;AppCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Noesis.lib;NoesisApp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)third_party\NoesisGUI\Lib\windows_x86_64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -139,7 +142,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);ENTT_ID_TYPE=uint64_t</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(MSBuildProjectDirectory)\;$(MSBuildProjectDirectory)\third_party\UltraLight\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(MSBuildProjectDirectory)\;$(SolutuonDir)third_party\NoesisGUI\Src\Packages\Render\GLRenderDevice\Include;$(SolutuonDir)third_party\NoesisGUI\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -147,7 +150,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Ultralight.lib;UltralightCore.lib;WebCore.lib;AppCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Noesis.lib;NoesisApp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)third_party\NoesisGUI\Lib\windows_x86_64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -200,11 +204,9 @@
     <ClInclude Include="game\systems\terrain\ChunkMeshCullSystem.h" />
     <ClInclude Include="game\systems\terrain\ChunkMeshSystem.h" />
     <ClInclude Include="game\systems\terrain\ChunkSpawnerSystem.h" />
+    <ClInclude Include="game\systems\terrain\FlatTerrainGenerator.h" />
     <ClInclude Include="game\systems\terrain\NoiseTerrainGenerator.h" />
-    <ClInclude Include="game\systems\ui\ultralight\UltraLightGLTextureSurface.h" />
-    <ClInclude Include="game\systems\ui\ultralight\UltraLightLoggerSystem.h" />
-    <ClInclude Include="game\systems\ui\ultralight\UltraLightUIRenderSystem.h" />
-    <ClInclude Include="game\systems\ui\ultralight\UltraLightUISystem.h" />
+    <ClInclude Include="game\systems\ui\NoesisUISystem.h" />
     <ClInclude Include="game\systems\utils\FPSCounterSystem.h" />
     <ClInclude Include="game\utils\FileUtils.h" />
     <ClInclude Include="game\utils\LRUCache.h" />
@@ -226,11 +228,9 @@
     <ClCompile Include="game\systems\terrain\ChunkMeshCullSystem.cpp" />
     <ClCompile Include="game\systems\terrain\ChunkMeshSystem.cpp" />
     <ClCompile Include="game\systems\terrain\ChunkSpawnerSystem.cpp" />
+    <ClCompile Include="game\systems\terrain\FlatTerrainGenerator.cpp" />
     <ClCompile Include="game\systems\terrain\NoiseTerrainGenerator.cpp" />
-    <ClCompile Include="game\systems\ui\ultralight\UltraLightGLTextureSurface.cpp" />
-    <ClCompile Include="game\systems\ui\ultralight\UltraLightLoggerSystem.cpp" />
-    <ClCompile Include="game\systems\ui\ultralight\UltraLightUIRenderSystem.cpp" />
-    <ClCompile Include="game\systems\ui\ultralight\UltraLightUISystem.cpp" />
+    <ClCompile Include="game\systems\ui\NoesisUISystem.cpp" />
     <ClCompile Include="game\systems\utils\FPSCounterSystem.cpp" />
     <ClCompile Include="game\utils\FileUtils.cpp" />
     <ClCompile Include="game\utils\NumericUtils.cpp" />
@@ -243,14 +243,12 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <CopyFileToFolders Include="third_party\**\*.dll">
-      <DeploymentContent>true</DeploymentContent>
+    <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.dll">
       <FileType>Document</FileType>
     </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
-    <CopyFileToFolders Include="third_party\**\*.lib">
-      <DeploymentContent>true</DeploymentContent>
+    <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.lib">
       <FileType>Document</FileType>
     </CopyFileToFolders>
   </ItemGroup>
@@ -268,29 +266,10 @@
     <None Include="res\shaders\transparent_blocks_shader.frag" />
     <None Include="res\shaders\transparent_blocks_shader.vert" />
     <None Include="third_party\FastNoise\LICENSE" />
-    <None Include="third_party\UltraLight\bin\AppCore.dll" />
-    <None Include="third_party\UltraLight\bin\Ultralight.dll" />
-    <None Include="third_party\UltraLight\bin\UltralightCore.dll" />
-    <None Include="third_party\UltraLight\bin\WebCore.dll" />
-    <None Include="third_party\UltraLight\README.md" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\icons\logo.png" />
     <Image Include="res\textures\blocks_atlas.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="third_party\UltraLight\CMakeLists.txt" />
-    <Text Include="third_party\UltraLight\LOG.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="third_party\UltraLight\lib\AppCore.lib">
-      <DeploymentContent>true</DeploymentContent>
-    </Library>
-    <Library Include="third_party\UltraLight\lib\Ultralight.lib">
-      <DeploymentContent>true</DeploymentContent>
-    </Library>
-    <Library Include="third_party\UltraLight\lib\UltralightCore.lib" />
-    <Library Include="third_party\UltraLight\lib\WebCore.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

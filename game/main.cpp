@@ -24,9 +24,8 @@
 #include "systems/terrain/ChunkMeshSystem.h"
 #include "systems/terrain/ChunkSpawnerSystem.h"
 #include "systems/terrain/NoiseTerrainGenerator.h"
-#include "systems/ui/ultralight/UltraLightLoggerSystem.h"
-#include "systems/ui/ultralight/UltraLightUIRenderSystem.h"
-#include "systems/ui/ultralight/UltraLightUISystem.h"
+#include "systems/terrain/FlatTerrainGenerator.h"
+#include "systems/ui/NoesisUISystem.h"
 #include "systems/utils/FPSCounterSystem.h"
 
 #include "utils/NumericUtils.h"
@@ -62,7 +61,7 @@ void InitCamera(World & World_)
     .Camera = TCameraBundle
     {
       .Position = TPositionComponent{
-        .Position = { 0.0f, 65.f, 0.0f }
+        .Position = { 0.0f, 1.f, 0.0f }
       }
     },
     .Perspective =
@@ -104,7 +103,7 @@ void InitTerrain(World & World_)
   {
     .TerrainGenerationStrategy = [](const glm::vec3 & _Position) -> TBlockComponent
     {
-      static CNoiseTerrainGenerator Generator(time(nullptr));
+      static CFlatTerrainGenerator Generator(time(nullptr));
 
       return Generator.Generate(_Position);
     }
@@ -136,9 +135,7 @@ void InitLight(World & World_)
 
 void InitUI(World & World_)
 {
-  World_.AddSystem<CUltraLightUIRenderSystem>();
-  World_.AddSystem<CUltraLightUISystem>();
-  World_.AddSystem<CUltraLightUILoggerSystem>();
+  World_.AddSystem<CNoesisUISystem>();
 }
 
 void InitMetrics(World & World_)

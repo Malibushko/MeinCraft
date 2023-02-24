@@ -29,7 +29,7 @@ public: // Interface
 
   [[nodiscard]] bool Intersect(const TAABBVolumeComponent & Volume) const;
 
-  [[nodiscard]] bool Intersect(...) const;
+  [[nodiscard]] bool Intersect(std::monostate) const;
 
   [[nodiscard]] size_t GetViewDistance() const;
 

@@ -72,7 +72,7 @@ bool CFrustum::Intersect(const TAABBVolumeComponent & Volume) const
 	return true;
 }
 
-bool CFrustum::Intersect(...) const
+bool CFrustum::Intersect(std::monostate) const
 {
 	return false;
 }
