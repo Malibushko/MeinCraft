@@ -40,6 +40,7 @@ public: // Interface
   static EBlockFace GetDefaultBlockMeshFaces(const TBlockComponent & Block);
 
   static std::string GetIconPath(const TBlockComponent & Block);
+
 protected: // Service
 
   void LoadConfigs();
