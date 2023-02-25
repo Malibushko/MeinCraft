@@ -268,7 +268,7 @@ EBlockFace CBlockFactory::GetDefaultBlockMeshFaces(const TBlockComponent& Block)
 
 std::string CBlockFactory::GetIconPath(const TBlockComponent & Block)
 {
-  return std::string(BLOCK_ICONS_CACHE_PATH) + Instance().m_BlockInfos.at(Block.Type).Name + ".png";
+  return std::string(BLOCK_ICONS_CACHE_PATH) + std::to_string(static_cast<int>(Block.Type)) + ".png";
 }
 
 void CBlockFactory::LoadConfigs()

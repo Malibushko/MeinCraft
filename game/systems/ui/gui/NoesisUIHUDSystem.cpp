@@ -4,8 +4,12 @@
 #include <spdlog/spdlog.h>
 
 #include "HUDItemsPanelItem.h"
+#include "game/components/content/inventory/InventoryComponent.h"
+#include "game/components/content/inventory/ItemComponent.h"
 #include "game/components/display/DisplayComponent.h"
 #include "game/components/input/MouseWheelData.h"
+#include "game/components/terrain/BlockComponent.h"
+#include "game/factory/BlockFactory.h"
 
 static constexpr int ITEMS_PANEL_ITEMS_COUNT = 9;
 
@@ -29,7 +33,7 @@ void CNoesisUIHUDSystem::OnCreate(registry_t & Registry_)
   m_View->SetFlags(Noesis::RenderFlags_PPAA | Noesis::RenderFlags_LCD);
   m_View->SetSize(Display.Width, Display.Height);
 
-  m_View->GetRenderer()->Init(NoesisApp::GLFactory::CreateDevice(false));
+  m_View->GetRenderer()->Init(NoesisApp::GLFactory::CreateDevice(true));
 
   m_DataModel = Noesis::MakePtr<CHUDDataModel>();
 
@@ -64,8 +68,27 @@ void CNoesisUIHUDSystem::OnDestroy(registry_t & Registry_)
 
 void CNoesisUIHUDSystem::InitItemsPanel(registry_t & Registry)
 {
+  TInventoryComponent & Inventory = QuerySingle<TInventoryComponent>(Registry);
+
   for (int i = 0; i < ITEMS_PANEL_ITEMS_COUNT; i++)
-    m_DataModel->AddItemsPanelItem(Noesis::MakePtr<THUDItemsPanelItem>());
+  {
+    const auto     ItemData   = Noesis::MakePtr<THUDItemsPanelItem>();
+    const entity_t ItemEntity = Inventory.ItemsPanel[i];
+
+    if (ItemEntity != entt::null)
+    {
+      TItemComponent & Item = Registry.get<TItemComponent>(ItemEntity);
+
+      ItemData->SetCount(Item.Count);
+      ItemData->SetItemEntity(ItemEntity);
+
+      // TODO: refactor by moving icon management to a separate system
+      if (TBlockComponent * BlockComponent = Registry.try_get<TBlockComponent>(ItemEntity))
+        ItemData->SetIconPath(CBlockFactory::GetIconPath(*BlockComponent).data());
+    }
+
+    m_DataModel->AddItemsPanelItem(ItemData);
+  }
 
   m_DataModel->SetActiveItemsPanelItem(0);
 }

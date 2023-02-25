@@ -42,14 +42,26 @@
                             </Style>
                         </Image.Style>
                     </Image>
-                    <Viewbox x:Name="Icon" Grid.Row="1" Grid.Column="1" RenderTransformOrigin="0.5,0.5">
-                        <noesis:Element.Transform3D>
-                            <noesis:CompositeTransform3D TranslateZ="5"/>
-                        </noesis:Element.Transform3D>
-                        <Viewbox.RenderTransform>
-                            <ScaleTransform/>
-                        </Viewbox.RenderTransform>
+                    <Viewbox x:Name="Icon" RenderTransformOrigin="0.5,0.5">
+                        <Image Source="{Binding IconPath}"></Image>
                     </Viewbox>
+                    <Border Grid.Row="1" Background="Black" Opacity="0.5" Padding="0" Margin="0">
+                        <TextBlock Text="{Binding ItemCount}" FontFamily="fonts/#minecraftia" FontSize="16" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ItemCount}" Value="0">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding ItemCount}" Value="1">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </Border>
                 </Grid>
             </Border>
         </Grid>

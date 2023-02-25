@@ -1,6 +1,8 @@
 #include "World.h"
 #include "components/camera/PerspectiveCameraBundle.h"
 #include "components/camera/PerspectiveCameraComponent.h"
+#include "components/content/inventory/BlockItemBundle.h"
+#include "components/content/inventory/InventoryComponent.h"
 #include "components/display/DisplayComponent.h"
 #include "components/display/GLFWWindowComponent.h"
 #include "components/lightning/DirectedLightBundle.h"
@@ -37,6 +39,7 @@ void InitCoreSystems(World & World_);
 void InitTerrain(World & World_);
 void InitLight(World & World_);
 void InitUI(World & World_);
+void InitInventory(World & World_);
 void InitMetrics(World & World_);
 
 int main()
@@ -48,6 +51,7 @@ int main()
        .AddStartupFunction(InitCoreSystems)
        .AddStartupFunction(InitTerrain)
        .AddStartupFunction(InitLight)
+       .AddStartupFunction(InitInventory)
        .AddStartupFunction(InitUI)
        .AddStartupFunction(InitMetrics);
   World.Run();
@@ -138,6 +142,41 @@ void InitUI(World & World_)
 {
   World_.AddSystem<CNoesisUISystem>()
         .AddSystem<CNoesisUIHUDSystem>();
+}
+
+void InitInventory(World & World_)
+{
+  std::array<entity_t, 3> InitialItems
+  {
+    World_.Registry().create(),
+    World_.Registry().create(),
+    World_.Registry().create()
+  };
+
+  std::array<EBlockType, 3> BlockTypes =
+  {
+    EBlockType::Grass,
+    EBlockType::CobbleStone,
+    EBlockType::Sand
+  };
+
+  for (int i = 0; i < InitialItems.size(); i++)
+  {
+    AddBundle(World_.Registry(), InitialItems[i], TBlockItemBundle
+    {
+      .ItemData = TItemComponent{.Count = 10, .StackSize = 64},
+      .Block    = TBlockComponent{.Type = BlockTypes[i] }
+    });
+  }
+
+  TInventoryComponent Inventory;
+
+  Inventory.Inventory .fill(entt::null);
+  Inventory.ItemsPanel.fill(entt::null);
+
+  std::ranges::copy(std::as_const(InitialItems), Inventory.ItemsPanel.begin());
+
+  World_.Spawn<TInventoryComponent>(std::move(Inventory));
 }
 
 void InitMetrics(World & World_)

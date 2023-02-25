@@ -136,6 +136,12 @@
     <Filter Include="game\systems\ui\noesisgui\gui\hud">
       <UniqueIdentifier>{1faefdb4-3145-4f93-aad1-34ff54b8f499}</UniqueIdentifier>
     </Filter>
+    <Filter Include="game\components\content">
+      <UniqueIdentifier>{8ce98cc7-cf73-4ac9-9952-136d11336c95}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\components\content\inventory">
+      <UniqueIdentifier>{82aa1639-9f31-4140-8bf4-7512bfe48870}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\entity\Entity.h">
@@ -320,6 +326,15 @@
     </ClInclude>
     <ClInclude Include="game\systems\ui\gui\HUDDataModel.h">
       <Filter>game\systems\ui\noesisgui\gui\hud</Filter>
+    </ClInclude>
+    <ClInclude Include="game\components\content\inventory\InventoryComponent.h">
+      <Filter>game\components\content\inventory</Filter>
+    </ClInclude>
+    <ClInclude Include="game\components\content\inventory\ItemComponent.h">
+      <Filter>game\components\content\inventory</Filter>
+    </ClInclude>
+    <ClInclude Include="game\components\content\inventory\BlockItemBundle.h">
+      <Filter>game\components\content\inventory</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

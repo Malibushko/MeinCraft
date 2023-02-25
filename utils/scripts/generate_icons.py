@@ -209,7 +209,7 @@ for block in blocks_uv_config["blocks"]:
     
     create_block_vao(block["uv"], atlas_size)
 
-    rot_x = pyrr.Matrix44.from_x_rotation(0.5)
+    rot_x = pyrr.Matrix44.from_x_rotation(0.35)
     rot_y = pyrr.Matrix44.from_y_rotation(0.5)
 
     glUniformMatrix4fv(rotation_loc, 1, GL_FALSE, pyrr.matrix44.multiply(rot_x, rot_y))

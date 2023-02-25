@@ -79,12 +79,12 @@ void AddBundle(registry_t & Registry_ ,entity_t Entity_, T && Bundle_)
   });
 }
 
-template<class T>
-registry_t & Spawn(registry_t & Registry_, T && Component_)
+template<class ... T>
+registry_t & Spawn(registry_t & Registry_, T && ...Component_)
 {
   entity_t Entity = Registry_.create();
 
-  Registry_.emplace<T>(Entity, std::forward<T>(Component_));
+  (Registry_.emplace<T>(Entity, std::forward<T>(Component_)), ...);
 
   return Registry_;
 }

@@ -4,9 +4,9 @@
 
 NS_IMPLEMENT_REFLECTION(THUDItemsPanelItem)
 {
-  NsProp("IconPath", &THUDItemsPanelItem::IconPath);
-  NsProp("Count",    &THUDItemsPanelItem::ItemCount);
-  NsProp("IsActive", &THUDItemsPanelItem::IsActive);
+  NsProp("IconPath",  &THUDItemsPanelItem::IconPath);
+  NsProp("ItemCount", &THUDItemsPanelItem::ItemCount);
+  NsProp("IsActive",  &THUDItemsPanelItem::IsActive);
 }
 
 //

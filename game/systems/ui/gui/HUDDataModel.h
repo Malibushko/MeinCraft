@@ -19,6 +19,8 @@ public: // Interface
 
   THUDItemsPanelItem * GetItemsPanelItem(size_t Index);
 
+  void SetItemsPanelItem(size_t Index, THUDItemsPanelItem * Item);
+
   void SetActiveItemsPanelItem(size_t Index);
 
   size_t GetActiveItemsPanelItemIndex() const;

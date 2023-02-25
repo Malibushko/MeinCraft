@@ -2,6 +2,8 @@
 
 #include <NsCore/ReflectionImplement.h>
 
+#include "game/factory/BlockFactory.h"
+
 NS_IMPLEMENT_REFLECTION(CHUDDataModel)
 {
   NsProp("Items",           &CHUDDataModel::m_ItemsPanel);
@@ -39,6 +41,11 @@ THUDItemsPanelItem * CHUDDataModel::GetItemsPanelItem(size_t Index)
   return m_ItemsPanel->Get(Index);
 }
 
+void CHUDDataModel::SetItemsPanelItem(size_t Index, THUDItemsPanelItem * Item)
+{
+  m_ItemsPanel->Set(Index, Item);
+}
+
 void CHUDDataModel::SetActiveItemsPanelItem(size_t Index)
 {
   if (m_ActiveItemsPanelItem)
@@ -48,8 +55,6 @@ void CHUDDataModel::SetActiveItemsPanelItem(size_t Index)
 
   if (m_ActiveItemsPanelItem)
     m_ActiveItemsPanelItem.GetPtr()->SetActive(true);
-
-  OnPropertyChanged("Items");
 }
 
 size_t CHUDDataModel::GetActiveItemsPanelItemIndex() const
