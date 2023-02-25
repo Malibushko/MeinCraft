@@ -121,6 +121,21 @@
     <Filter Include="game\systems\ui\noesisgui">
       <UniqueIdentifier>{306725b9-7eaa-4865-b4ac-9bf8cf61ae73}</UniqueIdentifier>
     </Filter>
+    <Filter Include="res\ui">
+      <UniqueIdentifier>{443f13b0-ea0f-427e-9434-947fef408840}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="res\fonts">
+      <UniqueIdentifier>{6532f4df-9bc8-4665-bfaa-9d1d636ba46f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="res\ui\tiles">
+      <UniqueIdentifier>{cf16bde6-90b7-4b14-b750-1355d86dd710}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\systems\ui\noesisgui\gui">
+      <UniqueIdentifier>{f0793be7-7f41-4fc8-a110-3d77ca12f681}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\systems\ui\noesisgui\gui\hud">
+      <UniqueIdentifier>{1faefdb4-3145-4f93-aad1-34ff54b8f499}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\entity\Entity.h">
@@ -297,6 +312,15 @@
     <ClInclude Include="game\systems\ui\NoesisUISystem.h">
       <Filter>game\systems\ui\noesisgui</Filter>
     </ClInclude>
+    <ClInclude Include="game\systems\ui\gui\NoesisUIHUDSystem.h">
+      <Filter>game\systems\ui\noesisgui\gui\hud</Filter>
+    </ClInclude>
+    <ClInclude Include="game\systems\ui\gui\HUDItemsPanelItem.h">
+      <Filter>game\systems\ui\noesisgui\gui\hud</Filter>
+    </ClInclude>
+    <ClInclude Include="game\systems\ui\gui\HUDDataModel.h">
+      <Filter>game\systems\ui\noesisgui\gui\hud</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="game\Main.cpp">
@@ -361,6 +385,15 @@
     </ClCompile>
     <ClCompile Include="game\systems\ui\NoesisUISystem.cpp">
       <Filter>game\systems\ui\noesisgui</Filter>
+    </ClCompile>
+    <ClCompile Include="game\systems\ui\gui\NoesisUIHUDSystem.cpp">
+      <Filter>game\systems\ui\noesisgui\gui\hud</Filter>
+    </ClCompile>
+    <ClCompile Include="game\systems\ui\gui\HUDItemsPanelItem.cpp">
+      <Filter>game\systems\ui\noesisgui\gui\hud</Filter>
+    </ClCompile>
+    <ClCompile Include="game\systems\ui\gui\HUDDataModel.cpp">
+      <Filter>game\systems\ui\noesisgui\gui\hud</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -473,12 +506,6 @@
     <CopyFileToFolders Include="third_party\NoesisGUI\Lib\windows_x86_64\NoesisApp.lib" />
     <CopyFileToFolders Include="third_party\**\*.lib" />
     <CopyFileToFolders Include="third_party\**\*.lib" />
-    <CopyFileToFolders Include="third_party\**\*.dll" />
-    <CopyFileToFolders Include="third_party\**\*.dll" />
-    <CopyFileToFolders Include="third_party\**\*.dll" />
-    <CopyFileToFolders Include="third_party\**\*.lib" />
-    <CopyFileToFolders Include="third_party\**\*.lib" />
-    <CopyFileToFolders Include="third_party\**\*.lib" />
     <CopyFileToFolders Include="third_party\**\*.dll">
       <Filter>third_party</Filter>
     </CopyFileToFolders>
@@ -486,5 +513,32 @@
     <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.lib" />
     <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.dll" />
     <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.lib" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.lib" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.lib" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="res\fonts\minecraftia.ttf">
+      <Filter>res\fonts</Filter>
+    </Font>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="res\fonts\readme.txt">
+      <Filter>res\fonts</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="res\ui\HUD.xaml">
+      <Filter>res\ui</Filter>
+    </Page>
+    <Page Include="res\ui\Resources.xaml">
+      <Filter>res\ui</Filter>
+    </Page>
+    <Page Include="res\ui\HUDResources.xaml">
+      <Filter>res\ui</Filter>
+    </Page>
   </ItemGroup>
 </Project>

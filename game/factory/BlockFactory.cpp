@@ -21,6 +21,7 @@
 
 static constexpr std::string_view BLOCK_UV_CONFIG_PATH   = "res/configs/blocks_uv.json";
 static constexpr std::string_view BLOCK_INFO_CONFIG_PATH = "res/configs/blocks.json";
+static constexpr std::string_view BLOCK_ICONS_CACHE_PATH = "res/icons/";
 
 static constexpr std::array<glm::vec3, 4> CUBE_FACES[]
 {
@@ -263,6 +264,11 @@ EBlockFace CBlockFactory::GetDefaultBlockMeshFaces(const TBlockComponent& Block)
     return EBlockFace::All;
 
   return EBlockFace::None;
+}
+
+std::string CBlockFactory::GetIconPath(const TBlockComponent & Block)
+{
+  return std::string(BLOCK_ICONS_CACHE_PATH) + Instance().m_BlockInfos.at(Block.Type).Name + ".png";
 }
 
 void CBlockFactory::LoadConfigs()

@@ -88,7 +88,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions);ENTT_ID_TYPE=uint64_t</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(MSBuildProjectDirectory)\;$(SolutuonDir)third_party\NoesisGUI\Src\Packages\Render\GLRenderDevice\Include;$(SolutuonDir)third_party\NoesisGUI\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(MSBuildProjectDirectory)\;$(SolutuonDir)third_party\NoesisGUI\Src\Packages\App\Providers\Include;$(SolutuonDir)third_party\NoesisGUI\Src\Packages\Render\GLRenderDevice\Include;$(SolutuonDir)third_party\NoesisGUI\Src\Packages\App\ApplicationLauncher\Include;$(SolutuonDir)third_party\NoesisGUI\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -106,7 +106,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions);ENTT_ID_TYPE=uint64_t</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(MSBuildProjectDirectory)\;$(SolutuonDir)third_party\NoesisGUI\Src\Packages\Render\GLRenderDevice\Include;$(SolutuonDir)third_party\NoesisGUI\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(MSBuildProjectDirectory)\;$(SolutuonDir)third_party\NoesisGUI\Src\Packages\App\Providers\Include;$(SolutuonDir)third_party\NoesisGUI\Src\Packages\Render\GLRenderDevice\Include;$(SolutuonDir)third_party\NoesisGUI\Src\Packages\App\ApplicationLauncher\Include;$(SolutuonDir)third_party\NoesisGUI\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -124,7 +124,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);ENTT_ID_TYPE=uint64_t</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(MSBuildProjectDirectory)\;$(SolutuonDir)third_party\NoesisGUI\Src\Packages\Render\GLRenderDevice\Include;$(SolutuonDir)third_party\NoesisGUI\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(MSBuildProjectDirectory)\;$(SolutuonDir)third_party\NoesisGUI\Src\Packages\App\Providers\Include;$(SolutuonDir)third_party\NoesisGUI\Src\Packages\Render\GLRenderDevice\Include;$(SolutuonDir)third_party\NoesisGUI\Src\Packages\App\ApplicationLauncher\Include;$(SolutuonDir)third_party\NoesisGUI\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -142,7 +142,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);ENTT_ID_TYPE=uint64_t</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(MSBuildProjectDirectory)\;$(SolutuonDir)third_party\NoesisGUI\Src\Packages\Render\GLRenderDevice\Include;$(SolutuonDir)third_party\NoesisGUI\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(MSBuildProjectDirectory)\;$(SolutuonDir)third_party\NoesisGUI\Src\Packages\App\Providers\Include;$(SolutuonDir)third_party\NoesisGUI\Src\Packages\Render\GLRenderDevice\Include;$(SolutuonDir)third_party\NoesisGUI\Src\Packages\App\ApplicationLauncher\Include;$(SolutuonDir)third_party\NoesisGUI\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -206,6 +206,9 @@
     <ClInclude Include="game\systems\terrain\ChunkSpawnerSystem.h" />
     <ClInclude Include="game\systems\terrain\FlatTerrainGenerator.h" />
     <ClInclude Include="game\systems\terrain\NoiseTerrainGenerator.h" />
+    <ClInclude Include="game\systems\ui\gui\HUDItemsPanelItem.h" />
+    <ClInclude Include="game\systems\ui\gui\HUDDataModel.h" />
+    <ClInclude Include="game\systems\ui\gui\NoesisUIHUDSystem.h" />
     <ClInclude Include="game\systems\ui\NoesisUISystem.h" />
     <ClInclude Include="game\systems\utils\FPSCounterSystem.h" />
     <ClInclude Include="game\utils\FileUtils.h" />
@@ -230,6 +233,9 @@
     <ClCompile Include="game\systems\terrain\ChunkSpawnerSystem.cpp" />
     <ClCompile Include="game\systems\terrain\FlatTerrainGenerator.cpp" />
     <ClCompile Include="game\systems\terrain\NoiseTerrainGenerator.cpp" />
+    <ClCompile Include="game\systems\ui\gui\HUDItemsPanelItem.cpp" />
+    <ClCompile Include="game\systems\ui\gui\HUDDataModel.cpp" />
+    <ClCompile Include="game\systems\ui\gui\NoesisUIHUDSystem.cpp" />
     <ClCompile Include="game\systems\ui\NoesisUISystem.cpp" />
     <ClCompile Include="game\systems\utils\FPSCounterSystem.cpp" />
     <ClCompile Include="game\utils\FileUtils.cpp" />
@@ -270,6 +276,21 @@
   <ItemGroup>
     <Image Include="res\icons\logo.png" />
     <Image Include="res\textures\blocks_atlas.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="res\fonts\minecraftia.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="res\fonts\readme.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="res\ui\HUD.xaml">
+      <DeploymentContent>true</DeploymentContent>
+    </Page>
+    <Page Include="res\ui\HUDResources.xaml" />
+    <Page Include="res\ui\Resources.xaml">
+      <DeploymentContent>true</DeploymentContent>
+    </Page>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -26,6 +26,7 @@
 #include "systems/terrain/NoiseTerrainGenerator.h"
 #include "systems/terrain/FlatTerrainGenerator.h"
 #include "systems/ui/NoesisUISystem.h"
+#include "systems/ui/gui/NoesisUIHUDSystem.h"
 #include "systems/utils/FPSCounterSystem.h"
 
 #include "utils/NumericUtils.h"
@@ -135,7 +136,8 @@ void InitLight(World & World_)
 
 void InitUI(World & World_)
 {
-  World_.AddSystem<CNoesisUISystem>();
+  World_.AddSystem<CNoesisUISystem>()
+        .AddSystem<CNoesisUIHUDSystem>();
 }
 
 void InitMetrics(World & World_)
