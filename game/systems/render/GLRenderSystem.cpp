@@ -126,10 +126,12 @@ void GLRenderSystem::OnUpdate(registry_t & Registry_, float Delta_)
   };
 
   // Solid objects
+
   glEnable(GL_DEPTH_TEST);
+  glEnable(GL_BLEND);
+
   glDepthFunc(GL_LESS);
   glDepthMask(GL_TRUE);
-  glDisable(GL_BLEND);
 
   glEnable(GL_CULL_FACE);
   glCullFace(GL_FRONT);
@@ -152,7 +154,6 @@ void GLRenderSystem::OnUpdate(registry_t & Registry_, float Delta_)
   // Transparent objects
 
   glDepthMask(GL_FALSE);
-  glEnable(GL_BLEND);
   glBlendFunci(0, GL_ONE, GL_ONE);
   glBlendFunci(1, GL_ZERO, GL_ONE_MINUS_SRC_COLOR);
   glBlendEquation(GL_FUNC_ADD);
@@ -164,9 +165,7 @@ void GLRenderSystem::OnUpdate(registry_t & Registry_, float Delta_)
   RenderPass(Registry_.view<TGLTranslucentMeshComponent, TGLShaderComponent, TTransformComponent>());
 
   // Draw composite image
-
   glDepthFunc(GL_ALWAYS);
-  glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   glBindFramebuffer(GL_FRAMEBUFFER, m_SolidFBO);
 
