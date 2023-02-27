@@ -69,21 +69,21 @@ inline glm::ivec3 WorldToChunkPosition(glm::vec3 Position)
   return glm::ivec3(X, Y, Z);
 }
 
-inline std::vector<glm::ivec2> GetAdjascentChunkPositions(glm::ivec3 ChunkPosition)
+inline std::vector<glm::ivec2> GetAdjascentChunkPositions(glm::ivec3 BlockPosition)
 {
   std::vector<glm::ivec2> Result;
 
-  if (ChunkPosition.x == 0)
-    Result.emplace_back(0, -1);
-
-  if (ChunkPosition.x == TChunkComponent::CHUNK_SIZE_X)
-    Result.emplace_back(0, 1);
-
-  if (ChunkPosition.z == 0)
+  if (BlockPosition.x == 0)
     Result.emplace_back(-1, 0);
 
-  if (ChunkPosition.z == TChunkComponent::CHUNK_SIZE_Z)
+  if (BlockPosition.x == TChunkComponent::CHUNK_SIZE_X - 1)
     Result.emplace_back(1, 0);
+
+  if (BlockPosition.z == 0)
+    Result.emplace_back(0, -1);
+
+  if (BlockPosition.z == TChunkComponent::CHUNK_SIZE_Z - 1)
+    Result.emplace_back(0, 1);
 
   return Result;
 }
