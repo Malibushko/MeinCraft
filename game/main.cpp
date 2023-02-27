@@ -17,6 +17,7 @@
 #include "resources/TextureLibrary.h"
 
 #include "systems/camera/CameraSystem.h"
+#include "systems/content/PlayerTargetActionSystem.h"
 #include "systems/content/TargetControllerSystem.h"
 #include "systems/content/TargetBlockHighlightSystem.h"
 #include "systems/display/GLFWWindowSystem.h"
@@ -24,6 +25,7 @@
 #include "systems/physics/PhysicsSystem.h"
 #include "systems/render/GLMeshSystem.h"
 #include "systems/render/GLRenderSystem.h"
+#include "systems/terrain/ChunkBlocksControllerSystem.h"
 #include "systems/terrain/ChunkDespawnerSystem.h"
 #include "systems/terrain/ChunkMeshCullSystem.h"
 #include "systems/terrain/ChunkMeshSystem.h"
@@ -122,6 +124,7 @@ void InitTerrain(World & World_)
 
   World_.AddSystem<CChunkSpawnerSystem>()
         .AddSystem<CChunkDespawnerSystem>()
+        .AddSystem<CChunkBlocksControllerSystem>()
         .AddSystem<CChunkMeshCullSystem>()
         .AddSystem<CChunkMeshSystem>();
 }
@@ -193,5 +196,6 @@ void InitMetrics(World & World_)
 void InitGameplayFeatures(World& World_)
 {
   World_.AddSystem<CTargetControllerSystem>();
+  World_.AddSystem<CPlayerTargetActionSystem>();
   World_.AddSystem<CTargetBlockHighlightSystem>();
 }

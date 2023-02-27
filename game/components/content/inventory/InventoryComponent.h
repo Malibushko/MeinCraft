@@ -13,4 +13,5 @@ struct TInventoryComponent
 
   std::array<entity_t, MAX_INVENTORY_SIZE>   Inventory;
   std::array<entity_t, MAX_ITEMS_PANEL_SIZE> ItemsPanel;
+  size_t                                     SelectedItemIndex{};
 };

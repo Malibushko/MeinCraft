@@ -45,6 +45,8 @@ void CChunkMeshSystem::OnDestroy(registry_t & Registry_)
 
 void CChunkMeshSystem::RecreateChunkMesh(registry_t & Registry_, entity_t ChunkEntity, TChunkComponent & Chunk) const
 {
+  DestroyChunkMesh(Registry_, Chunk);
+
   // TODO: support multiple meshes per chunk and allow and group them by shader
   TGLUnbakedSolidMeshComponent       SolidMeshComponent;
   TGLUnbakedTranslucentMeshComponent TranslucentMeshComponent;
@@ -147,5 +149,13 @@ void CChunkMeshSystem::RecreateChunkMesh(registry_t & Registry_, entity_t ChunkE
 
     Chunk.Meshes.emplace_back(TranslucentMeshEntity);
   }
+}
+
+void CChunkMeshSystem::DestroyChunkMesh(registry_t & Registry, TChunkComponent & Chunk) const
+{
+  for (const auto & Mesh : Chunk.Meshes)
+    Registry.destroy(Mesh);
+
+  Chunk.Meshes.clear();
 }
 

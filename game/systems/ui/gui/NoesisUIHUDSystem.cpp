@@ -94,7 +94,7 @@ void CNoesisUIHUDSystem::InitItemsPanel(registry_t & Registry)
     m_DataModel->AddItemsPanelItem(ItemData);
   }
 
-  m_DataModel->SetActiveItemsPanelItem(0);
+  m_DataModel->SetActiveItemsPanelItem(Inventory.SelectedItemIndex);
 }
 
 void CNoesisUIHUDSystem::ProcessInput(registry_t & Registry)
@@ -124,6 +124,8 @@ void CNoesisUIHUDSystem::ProcessInput(registry_t & Registry)
       }
     }
   }
+
+  QuerySingle<TInventoryComponent>(Registry).SelectedItemIndex = m_DataModel->GetActiveItemsPanelItemIndex();
 }
 
 void CNoesisUIHUDSystem::UpdateDebugPanel(registry_t & Registry)

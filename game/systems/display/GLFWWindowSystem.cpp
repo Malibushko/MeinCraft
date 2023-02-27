@@ -12,6 +12,7 @@
 #include "game/components/display/GLFWWindowComponent.h"
 #include "game/components/display/DisplayComponent.h"
 #include "game/components/input/KeyboardState.h"
+#include "game/components/input/MouseClickData.h"
 #include "game/components/input/MouseMovementData.h"
 #include "game/components/input/MouseWheelData.h"
 
@@ -147,6 +148,22 @@ static int KeyboardKeyToGLFWKey(EKeyboardKey Key)
   return GLFW_KEY_UNKNOWN;
 }
 
+
+static EMouseButton GLFWMouseButtonToButton(int Button)
+{
+  switch (Button)
+  {
+    case GLFW_MOUSE_BUTTON_LEFT:
+      return EMouseButton::Left;
+    case GLFW_MOUSE_BUTTON_RIGHT:
+      return EMouseButton::Right;
+    case GLFW_MOUSE_BUTTON_MIDDLE:
+      return EMouseButton::Middle;
+  }
+
+  return EMouseButton::Invalid;
+}
+
 //
 // Construction/Destruction
 //
@@ -193,6 +210,7 @@ void CGLFWWindowSystem::OnFrameEnd(registry_t & Registry_)
 {
   Registry_.clear<TMouseMovementData>();
   Registry_.clear<TMouseWheelData>();
+  Registry_.clear<TMouseClickData>();
 
   glfwPollEvents();
   glfwSwapBuffers(m_Window);
@@ -274,6 +292,15 @@ void CGLFWWindowSystem::InitGLFWWindow(registry_t & Registry, TGLFWWindowCompone
 
     Mouse.DeltaX = OffsetX_;
     Mouse.DeltaY = OffsetY_;
+  });
+
+  glfwSetMouseButtonCallback(Window.Window, [](GLFWwindow * Window, int Button, int Action, int Modes)
+  {
+    const auto    Registry       = static_cast<registry_t*>(glfwGetWindowUserPointer(Window));
+    const auto & [Entity, Mouse] = Create<TMouseClickData>(*Registry);
+
+    Mouse.Button = GLFWMouseButtonToButton(Button);
+    Mouse.Action = Action == GLFW_PRESS ? EMouseClickAction::Press : EMouseClickAction::Release;
   });
 
   glfwSetErrorCallback([](int Error_, const char * Description_)

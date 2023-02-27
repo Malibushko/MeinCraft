@@ -32,12 +32,17 @@ struct TChunkComponent
   {
     return Blocks[ChunkPosition.x + CHUNK_SIZE_X * (ChunkPosition.y + CHUNK_SIZE_Y * ChunkPosition.z)];
   }
+
+  entity_t & GetBlockAt(glm::ivec3 ChunkPosition)
+  {
+    return Blocks[ChunkPosition.x + CHUNK_SIZE_X * (ChunkPosition.y + CHUNK_SIZE_Y * ChunkPosition.z)];
+  }
 };
 
 inline glm::ivec2 ToChunkCoordinates(const glm::vec3 & Position_)
 {
-  const int X = std::floor(Position_.x / TChunkComponent::CHUNK_SIZE_X);
-  const int Y = std::floor(Position_.z / TChunkComponent::CHUNK_SIZE_Z);
+  const int X = static_cast<int>(std::floor(Position_.x / TChunkComponent::CHUNK_SIZE_X));
+  const int Y = static_cast<int>(std::floor(Position_.z / TChunkComponent::CHUNK_SIZE_Z));
 
   return { X, Y };
 }
@@ -62,4 +67,23 @@ inline glm::ivec3 WorldToChunkPosition(glm::vec3 Position)
   if (Z < 0) Z += TChunkComponent::CHUNK_SIZE_Z;
 
   return glm::ivec3(X, Y, Z);
+}
+
+inline std::vector<glm::ivec2> GetAdjascentChunkPositions(glm::ivec3 ChunkPosition)
+{
+  std::vector<glm::ivec2> Result;
+
+  if (ChunkPosition.x == 0)
+    Result.emplace_back(0, -1);
+
+  if (ChunkPosition.x == TChunkComponent::CHUNK_SIZE_X)
+    Result.emplace_back(0, 1);
+
+  if (ChunkPosition.z == 0)
+    Result.emplace_back(-1, 0);
+
+  if (ChunkPosition.z == TChunkComponent::CHUNK_SIZE_Z)
+    Result.emplace_back(1, 0);
+
+  return Result;
 }

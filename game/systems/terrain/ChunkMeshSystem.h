@@ -24,4 +24,6 @@ public: // ISystem
 protected: // Service
 
   void RecreateChunkMesh(registry_t & Registry_, entity_t ChunkEntity, TChunkComponent & Chunk) const;
+
+  void DestroyChunkMesh(registry_t & Registry, TChunkComponent & Chunk) const;
 };

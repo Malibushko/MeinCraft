@@ -67,9 +67,6 @@
     <Filter Include="game\systems\terrain">
       <UniqueIdentifier>{8ae5224e-6dc9-425c-8738-a07b0192e8a4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="game\components\request">
-      <UniqueIdentifier>{c89c94a8-ddcd-4c85-98dd-68b4e25a9192}</UniqueIdentifier>
-    </Filter>
     <Filter Include="game\factory">
       <UniqueIdentifier>{686b03d4-4408-40a6-8254-2ad03fc6ddff}</UniqueIdentifier>
     </Filter>
@@ -264,9 +261,6 @@
     <ClInclude Include="game\utils\NumericUtils.h">
       <Filter>game\utils</Filter>
     </ClInclude>
-    <ClInclude Include="game\components\requests\BlockMeshRequest.h">
-      <Filter>game\components\request</Filter>
-    </ClInclude>
     <ClInclude Include="game\factory\BlockFactory.h">
       <Filter>game\factory</Filter>
     </ClInclude>
@@ -363,6 +357,18 @@
     <ClInclude Include="game\components\content\CameraTargetComponent.h">
       <Filter>game\components\content</Filter>
     </ClInclude>
+    <ClInclude Include="game\systems\content\PlayerTargetActionSystem.h">
+      <Filter>game\systems\content</Filter>
+    </ClInclude>
+    <ClInclude Include="game\components\input\MouseClickData.h">
+      <Filter>game\components\input</Filter>
+    </ClInclude>
+    <ClInclude Include="game\components\requests\PlayerHitRequest.h">
+      <Filter>game\components\requests</Filter>
+    </ClInclude>
+    <ClInclude Include="game\systems\terrain\ChunkBlocksControllerSystem.h">
+      <Filter>game\systems\terrain</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="game\Main.cpp">
@@ -445,6 +451,12 @@
     </ClCompile>
     <ClCompile Include="game\systems\content\TargetControllerSystem.cpp">
       <Filter>game\systems\content</Filter>
+    </ClCompile>
+    <ClCompile Include="game\systems\content\PlayerTargetActionSystem.cpp">
+      <Filter>game\systems\content</Filter>
+    </ClCompile>
+    <ClCompile Include="game\systems\terrain\ChunkBlocksControllerSystem.cpp">
+      <Filter>game\systems\terrain</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -554,16 +566,16 @@
     <CopyFileToFolders Include="third_party\NoesisGUI\Src\Packages\Samples\Scoreboard\Data\obj\Debug\TempPE\Properties.Resources.Designer.cs.dll" />
     <CopyFileToFolders Include="third_party\NoesisGUI\Src\Packages\Samples\TicTacToe\Data\obj\Debug\TempPE\Properties.Resources.Designer.cs.dll" />
     <CopyFileToFolders Include="third_party\NoesisGUI\Src\Packages\Samples\UserControl\Data\obj\Debug\TempPE\Properties.Resources.Designer.cs.dll" />
-    <CopyFileToFolders Include="third_party\**\*.dll" />
     <CopyFileToFolders Include="third_party\NoesisGUI\Lib\uwp_x86\Noesis.lib" />
     <CopyFileToFolders Include="third_party\NoesisGUI\Lib\uwp_x86_64\Noesis.lib" />
     <CopyFileToFolders Include="third_party\NoesisGUI\Lib\windows_x86\Noesis.lib" />
     <CopyFileToFolders Include="third_party\NoesisGUI\Lib\windows_x86_64\Noesis.lib" />
     <CopyFileToFolders Include="third_party\NoesisGUI\Lib\windows_x86_64\NoesisApp.lib" />
-    <CopyFileToFolders Include="third_party\**\*.lib" />
     <CopyFileToFolders Include="third_party\**\*.dll">
       <Filter>third_party</Filter>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.lib" />
     <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.dll" />
     <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.lib" />
     <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.dll" />
