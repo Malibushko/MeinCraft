@@ -17,8 +17,11 @@
 #include "resources/TextureLibrary.h"
 
 #include "systems/camera/CameraSystem.h"
+#include "systems/content/TargetControllerSystem.h"
+#include "systems/content/TargetBlockHighlightSystem.h"
 #include "systems/display/GLFWWindowSystem.h"
 #include "systems/lightning/DirectedLightMovementSystem.h"
+#include "systems/physics/PhysicsSystem.h"
 #include "systems/render/GLMeshSystem.h"
 #include "systems/render/GLRenderSystem.h"
 #include "systems/terrain/ChunkDespawnerSystem.h"
@@ -41,6 +44,7 @@ void InitLight(World & World_);
 void InitUI(World & World_);
 void InitInventory(World & World_);
 void InitMetrics(World & World_);
+void InitGameplayFeatures(World & World_);
 
 int main()
 {
@@ -53,6 +57,7 @@ int main()
        .AddStartupFunction(InitLight)
        .AddStartupFunction(InitInventory)
        .AddStartupFunction(InitUI)
+       .AddStartupFunction(InitGameplayFeatures)
        .AddStartupFunction(InitMetrics);
   World.Run();
 }
@@ -99,7 +104,8 @@ void InitCoreSystems(World & World_)
   World_.AddSystem<CGLFWWindowSystem>()
         .AddSystem<GLMeshSystem>()
         .AddSystem<CCameraSystem>()
-        .AddSystem<GLRenderSystem>();
+        .AddSystem<GLRenderSystem>()
+        .AddSystem<CPhysicsSystem>();
 }
 
 void InitTerrain(World & World_)
@@ -108,7 +114,7 @@ void InitTerrain(World & World_)
   {
     .TerrainGenerationStrategy = [](const glm::vec3 & _Position) -> TBlockComponent
     {
-      static CFlatTerrainGenerator Generator(time(nullptr));
+      static CNoiseTerrainGenerator Generator(time(nullptr));
 
       return Generator.Generate(_Position);
     }
@@ -182,4 +188,10 @@ void InitInventory(World & World_)
 void InitMetrics(World & World_)
 {
   World_.AddSystem<CFPSCounterSystem>();
+}
+
+void InitGameplayFeatures(World& World_)
+{
+  World_.AddSystem<CTargetControllerSystem>();
+  World_.AddSystem<CTargetBlockHighlightSystem>();
 }

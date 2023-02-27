@@ -139,4 +139,9 @@ struct TKeyboardState
   {
     return KeyStates[static_cast<size_t>(Key)];
   }
+
+  EKeyState operator[](size_t Key) const
+  {
+    return KeyStates[Key];
+  }
 };

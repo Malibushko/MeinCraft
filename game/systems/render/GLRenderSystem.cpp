@@ -76,7 +76,7 @@ void GLRenderSystem::OnUpdate(registry_t & Registry_, float Delta_)
     GLuint PreviousShader = 0;
     GLuint PreviousTexture = 0;
 
-    for (auto && [Entity, Mesh, Shader, Texture, Transform] : Meshes.each())
+    for (auto && [Entity, Mesh, Shader, Transform] : Meshes.each())
     {
       if (const TBoundingVolumeComponent * BBComponent = Registry_.try_get<TBoundingVolumeComponent>(Entity))
       {
@@ -103,17 +103,20 @@ void GLRenderSystem::OnUpdate(registry_t & Registry_, float Delta_)
           &Transform.Transform[0][0]
         );
 
-      assert(Texture.IsValid());
-
-      if (PreviousTexture != Texture.TextureID)
+      if (const auto * Texture = Registry_.try_get<TGLTextureComponent>(Entity))
       {
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, Texture.TextureID);
+        assert(Texture->IsValid());
 
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, m_DepthTexture);
+        if (PreviousTexture != Texture->TextureID)
+        {
+          glActiveTexture(GL_TEXTURE0);
+          glBindTexture(GL_TEXTURE_2D, Texture->TextureID);
 
-        PreviousTexture = Texture.TextureID;
+          glActiveTexture(GL_TEXTURE1);
+          glBindTexture(GL_TEXTURE_2D, m_DepthTexture);
+
+          PreviousTexture = Texture->TextureID;
+        }
       }
 
       glBindVertexArray(Mesh.VAO);
@@ -131,7 +134,7 @@ void GLRenderSystem::OnUpdate(registry_t & Registry_, float Delta_)
   glEnable(GL_CULL_FACE);
   glCullFace(GL_FRONT);
 
-  auto && SolidObjects = Registry_.view<TGLSolidMeshComponent, TGLShaderComponent, TGLTextureComponent, TTransformComponent>();
+  auto && SolidObjects = Registry_.view<TGLSolidMeshComponent, TGLShaderComponent, TTransformComponent>();
 
   glBindFramebuffer(GL_FRAMEBUFFER, m_DepthFBO);
   glClear(GL_DEPTH_BUFFER_BIT);
@@ -158,7 +161,7 @@ void GLRenderSystem::OnUpdate(registry_t & Registry_, float Delta_)
   glClearBufferfv(GL_COLOR, 0, &ZeroFillVector[0]);
   glClearBufferfv(GL_COLOR, 1, &OneFillVector[0]);
 
-  RenderPass(Registry_.view<TGLTranslucentMeshComponent, TGLShaderComponent, TGLTextureComponent, TTransformComponent>());
+  RenderPass(Registry_.view<TGLTranslucentMeshComponent, TGLShaderComponent, TTransformComponent>());
 
   // Draw composite image
 

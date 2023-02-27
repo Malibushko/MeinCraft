@@ -1,4 +1,6 @@
 #pragma once
+#include <glad/glad.h>
+
 #include "core/entity/Component.h"
 #include <glm/vec3.hpp>
 

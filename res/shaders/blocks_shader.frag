@@ -57,9 +57,9 @@ float ShadowCalculation(vec4 LightSpaceFragmentPosition)
 
 	for (int x = -1; x <= 1; ++x)
 		for (int y = -1; y <= 1; ++y)
-			Shadow += texture(u_DepthMap, vec3(LightSpaceFragmentPosition3D.xy, LightSpaceFragmentPosition3D.z - Bias));
+			Shadow += texture(u_DepthMap, vec3(LightSpaceFragmentPosition3D.xy + vec2(x, y), LightSpaceFragmentPosition3D.z - Bias));
 
-	return Shadow / 36.0;
+	return (Shadow / 9.0);
 }
 
 vec4 ApplyDirectedLight(in vec4 Color)

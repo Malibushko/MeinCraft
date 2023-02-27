@@ -27,6 +27,12 @@ T & GetComponent(registry_t & Registry, entity_t Entity)
 }
 
 template<class ... T>
+decltype(auto) GetComponents(registry_t & Registry, entity_t Entity)
+{
+  return Registry.get<T...>(Entity);
+}
+
+template<class ... T>
 decltype(auto) QuerySingle(registry_t & Registry_)
 {
   return Registry_.get<T...>(Registry_.view<T...>().front());

@@ -162,12 +162,14 @@
     <ClInclude Include="core\entity\Entity.h" />
     <ClInclude Include="core\entity\FrameListenerSystem.h" />
     <ClInclude Include="core\entity\Registry.h" />
+    <ClInclude Include="core\entity\Request.h" />
     <ClInclude Include="core\entity\System.h" />
     <ClInclude Include="game\components\camera\CameraBasisComponent.h" />
     <ClInclude Include="game\components\camera\CameraBundle.h" />
     <ClInclude Include="game\components\camera\GlobalTransformComponent.h" />
     <ClInclude Include="game\components\camera\PerspectiveCameraBundle.h" />
     <ClInclude Include="game\components\camera\PerspectiveCameraComponent.h" />
+    <ClInclude Include="game\components\content\CameraTargetComponent.h" />
     <ClInclude Include="game\components\content\inventory\InventoryComponent.h" />
     <ClInclude Include="game\components\content\inventory\BlockItemBundle.h" />
     <ClInclude Include="game\components\content\inventory\ItemComponent.h" />
@@ -188,6 +190,7 @@
     <ClInclude Include="game\components\render\GLTextureComponent.h" />
     <ClInclude Include="game\components\render\GLUnbakedMeshComponent.h" />
     <ClInclude Include="game\components\requests\BlockMeshRequest.h" />
+    <ClInclude Include="game\components\requests\RaycastRequest.h" />
     <ClInclude Include="game\components\terrain\VisibleBlockFacesComponent.h" />
     <ClInclude Include="game\components\terrain\BlockComponent.h" />
     <ClInclude Include="game\components\terrain\ChunkComponent.h" />
@@ -199,8 +202,11 @@
     <ClInclude Include="game\resources\ShaderLibrary.h" />
     <ClInclude Include="game\resources\TextureLibrary.h" />
     <ClInclude Include="game\systems\camera\CameraSystem.h" />
+    <ClInclude Include="game\systems\content\TargetControllerSystem.h" />
+    <ClInclude Include="game\systems\content\TargetBlockHighlightSystem.h" />
     <ClInclude Include="game\systems\display\GLFWWindowSystem.h" />
     <ClInclude Include="game\systems\lightning\DirectedLightMovementSystem.h" />
+    <ClInclude Include="game\systems\physics\PhysicsSystem.h" />
     <ClInclude Include="game\systems\render\GLMeshSystem.h" />
     <ClInclude Include="game\systems\render\GLRenderSystem.h" />
     <ClInclude Include="game\systems\terrain\ChunkDespawnerSystem.h" />
@@ -226,8 +232,11 @@
     <ClCompile Include="game\resources\ShaderLibrary.cpp" />
     <ClCompile Include="game\resources\TextureLibrary.cpp" />
     <ClCompile Include="game\systems\camera\CameraSystem.cpp" />
+    <ClCompile Include="game\systems\content\TargetControllerSystem.cpp" />
+    <ClCompile Include="game\systems\content\TargetBlockHighlightSystem.cpp" />
     <ClCompile Include="game\systems\display\GLFWWindowSystem.cpp" />
     <ClCompile Include="game\systems\lightning\DirectedLightMovementSystem.cpp" />
+    <ClCompile Include="game\systems\physics\PhysicsSystem.cpp" />
     <ClCompile Include="game\systems\render\GLMeshSystem.cpp" />
     <ClCompile Include="game\systems\render\GLRenderSystem.cpp" />
     <ClCompile Include="game\systems\terrain\ChunkDespawnerSystem.cpp" />
@@ -262,6 +271,8 @@
     </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
+    <None Include="res\shaders\blocks_outline_shader.frag" />
+    <None Include="res\shaders\blocks_outline_shader.vert" />
     <None Include="res\shaders\blocks_shader.frag" />
     <None Include="res\shaders\blocks_shader.vert" />
     <None Include="res\shaders\composite_shader.frag" />

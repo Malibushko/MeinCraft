@@ -32,6 +32,8 @@ protected: // Service
 
   void ProcessInput(registry_t & Registry);
 
+  void UpdateDebugPanel(registry_t & Registry);
+
 protected: // Members
 
   Noesis::Ptr<Noesis::IView> m_View;

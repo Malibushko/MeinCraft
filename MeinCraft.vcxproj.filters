@@ -142,6 +142,15 @@
     <Filter Include="game\components\content\inventory">
       <UniqueIdentifier>{82aa1639-9f31-4140-8bf4-7512bfe48870}</UniqueIdentifier>
     </Filter>
+    <Filter Include="game\systems\physics">
+      <UniqueIdentifier>{87f89e2d-34e0-4884-86ec-5b3aacc2e169}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\components\requests">
+      <UniqueIdentifier>{5312d06b-6b79-4dbe-95d2-724c9816919d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\systems\content">
+      <UniqueIdentifier>{d27f36bb-205f-4b92-94a6-f51acbead3e6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\entity\Entity.h">
@@ -336,6 +345,24 @@
     <ClInclude Include="game\components\content\inventory\BlockItemBundle.h">
       <Filter>game\components\content\inventory</Filter>
     </ClInclude>
+    <ClInclude Include="game\systems\physics\PhysicsSystem.h">
+      <Filter>game\systems\physics</Filter>
+    </ClInclude>
+    <ClInclude Include="core\entity\Request.h">
+      <Filter>core\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="game\components\requests\RaycastRequest.h">
+      <Filter>game\components\requests</Filter>
+    </ClInclude>
+    <ClInclude Include="game\systems\content\TargetBlockHighlightSystem.h">
+      <Filter>game\systems\content</Filter>
+    </ClInclude>
+    <ClInclude Include="game\systems\content\TargetControllerSystem.h">
+      <Filter>game\systems\content</Filter>
+    </ClInclude>
+    <ClInclude Include="game\components\content\CameraTargetComponent.h">
+      <Filter>game\components\content</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="game\Main.cpp">
@@ -410,6 +437,15 @@
     <ClCompile Include="game\systems\ui\gui\HUDDataModel.cpp">
       <Filter>game\systems\ui\noesisgui\gui\hud</Filter>
     </ClCompile>
+    <ClCompile Include="game\systems\physics\PhysicsSystem.cpp">
+      <Filter>game\systems\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="game\systems\content\TargetBlockHighlightSystem.cpp">
+      <Filter>game\systems\content</Filter>
+    </ClCompile>
+    <ClCompile Include="game\systems\content\TargetControllerSystem.cpp">
+      <Filter>game\systems\content</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\blocks_shader.frag">
@@ -449,6 +485,12 @@
       <Filter>res\shaders</Filter>
     </None>
     <None Include="res\shaders\debug_depth_shader.vert">
+      <Filter>res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\blocks_outline_shader.frag">
+      <Filter>res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\blocks_outline_shader.vert">
       <Filter>res\shaders</Filter>
     </None>
   </ItemGroup>
@@ -513,17 +555,17 @@
     <CopyFileToFolders Include="third_party\NoesisGUI\Src\Packages\Samples\TicTacToe\Data\obj\Debug\TempPE\Properties.Resources.Designer.cs.dll" />
     <CopyFileToFolders Include="third_party\NoesisGUI\Src\Packages\Samples\UserControl\Data\obj\Debug\TempPE\Properties.Resources.Designer.cs.dll" />
     <CopyFileToFolders Include="third_party\**\*.dll" />
-    <CopyFileToFolders Include="third_party\**\*.dll" />
     <CopyFileToFolders Include="third_party\NoesisGUI\Lib\uwp_x86\Noesis.lib" />
     <CopyFileToFolders Include="third_party\NoesisGUI\Lib\uwp_x86_64\Noesis.lib" />
     <CopyFileToFolders Include="third_party\NoesisGUI\Lib\windows_x86\Noesis.lib" />
     <CopyFileToFolders Include="third_party\NoesisGUI\Lib\windows_x86_64\Noesis.lib" />
     <CopyFileToFolders Include="third_party\NoesisGUI\Lib\windows_x86_64\NoesisApp.lib" />
     <CopyFileToFolders Include="third_party\**\*.lib" />
-    <CopyFileToFolders Include="third_party\**\*.lib" />
     <CopyFileToFolders Include="third_party\**\*.dll">
       <Filter>third_party</Filter>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.lib" />
     <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.dll" />
     <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.lib" />
     <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.dll" />
