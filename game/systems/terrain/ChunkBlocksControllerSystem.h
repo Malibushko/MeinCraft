@@ -21,5 +21,7 @@ protected: // Service
 
   void ProcessRequests(registry_t & _Registry);
 
+  void ProcessBlockCreateRequests(registry_t & Registry);
+
   void ProcessBlockHitRequests(registry_t & Registry);
 };

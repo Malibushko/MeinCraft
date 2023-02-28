@@ -34,7 +34,8 @@ void CTargetControllerSystem::OnCreate(registry_t& Registry_)
 
 void CTargetControllerSystem::OnUpdate(registry_t & Registry_, float Delta_)
 {
-  m_NeedToUpdateTarget = HasComponent<TCameraChangedEvent>(Registry_);
+  // TODO: optimize by reacting to different events if possible
+  m_NeedToUpdateTarget = true; /*HasComponent<TCameraChangedEvent>(Registry_)*/;
 
   auto & Target = QuerySingle<TCameraTargetComponent>(Registry_);
 
@@ -45,11 +46,12 @@ void CTargetControllerSystem::OnUpdate(registry_t & Registry_, float Delta_)
 
   for (const auto & [Entity, Request] : Registry_.view<TRaycastRequest>().each())
   {
-    if (Request.Owner == this && Request.IsFulfilled)
+    if (Request.Owner == this && Request.Status == ERequestStatus::Fulfilled)
     {
-      Target.Target        = Request.RaycastHit;
-      Target.WorldPosition = Request.EndPosition;
-      Target.Refreshed     = true;
+      Target.Target              = Request.RaycastHit;
+      Target.OriginPosition      = *Request.StartPosition;
+      Target.TargetWorldPosition = Request.EndPosition;
+      Target.Refreshed           = true;
 
       Registry_.erase<TRaycastRequest>(Entity);
 

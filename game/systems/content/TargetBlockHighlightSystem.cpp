@@ -48,6 +48,8 @@ const std::vector<glm::vec2> BLOCK_HIGHLIGH_UV
   glm::vec2(1.0, 0.0),
 };
 
+static constexpr glm::vec3 HIGHLIGHT_SCALE_FACTOR = glm::vec3(1.01);
+
 //
 // Construction/Destruction
 //
@@ -110,7 +112,7 @@ void CTargetBlockHighlightSystem::UpdateTarget(registry_t & Registry, TCameraTar
 
   TTransformComponent Transform
   {
-    .Transform = glm::translate(glm::mat4(1.0), glm::floor(Target.WorldPosition))
+    .Transform = glm::scale(glm::translate(glm::mat4(1.0), glm::floor(Target.TargetWorldPosition)), HIGHLIGHT_SCALE_FACTOR)
   };
 
   Registry.emplace_or_replace<TTransformComponent>(m_MeshEntity, Transform);

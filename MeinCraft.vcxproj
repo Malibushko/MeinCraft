@@ -190,6 +190,8 @@
     <ClInclude Include="game\components\render\GLShaderComponent.h" />
     <ClInclude Include="game\components\render\GLTextureComponent.h" />
     <ClInclude Include="game\components\render\GLUnbakedMeshComponent.h" />
+    <ClInclude Include="game\components\requests\BlockCreateRequest.h" />
+    <ClInclude Include="game\components\requests\ItemUseRequest.h" />
     <ClInclude Include="game\components\requests\PlayerHitRequest.h" />
     <ClInclude Include="game\components\requests\RaycastRequest.h" />
     <ClInclude Include="game\components\terrain\VisibleBlockFacesComponent.h" />
@@ -203,6 +205,8 @@
     <ClInclude Include="game\resources\ShaderLibrary.h" />
     <ClInclude Include="game\resources\TextureLibrary.h" />
     <ClInclude Include="game\systems\camera\CameraSystem.h" />
+    <ClInclude Include="game\systems\content\BlockItemUseSystem.h" />
+    <ClInclude Include="game\systems\content\InventorySystem.h" />
     <ClInclude Include="game\systems\content\PlayerTargetActionSystem.h" />
     <ClInclude Include="game\systems\content\TargetControllerSystem.h" />
     <ClInclude Include="game\systems\content\TargetBlockHighlightSystem.h" />
@@ -211,6 +215,7 @@
     <ClInclude Include="game\systems\physics\PhysicsSystem.h" />
     <ClInclude Include="game\systems\render\GLMeshSystem.h" />
     <ClInclude Include="game\systems\render\GLRenderSystem.h" />
+    <ClInclude Include="game\systems\requests\RequestsSystem.h" />
     <ClInclude Include="game\systems\terrain\ChunkBlocksControllerSystem.h" />
     <ClInclude Include="game\systems\terrain\ChunkDespawnerSystem.h" />
     <ClInclude Include="game\systems\terrain\ChunkMeshCullSystem.h" />
@@ -225,6 +230,7 @@
     <ClInclude Include="game\systems\utils\FPSCounterSystem.h" />
     <ClInclude Include="game\utils\FileUtils.h" />
     <ClInclude Include="game\utils\LRUCache.h" />
+    <ClInclude Include="game\utils\MathUtils.h" />
     <ClInclude Include="game\utils\NumericUtils.h" />
     <ClInclude Include="game\World.h" />
     <ClInclude Include="third_party\FastNoise\FastNoiseLite.h" />
@@ -235,6 +241,8 @@
     <ClCompile Include="game\resources\ShaderLibrary.cpp" />
     <ClCompile Include="game\resources\TextureLibrary.cpp" />
     <ClCompile Include="game\systems\camera\CameraSystem.cpp" />
+    <ClCompile Include="game\systems\content\BlockItemUseSystem.cpp" />
+    <ClCompile Include="game\systems\content\InventorySystem.cpp" />
     <ClCompile Include="game\systems\content\PlayerTargetActionSystem.cpp" />
     <ClCompile Include="game\systems\content\TargetControllerSystem.cpp" />
     <ClCompile Include="game\systems\content\TargetBlockHighlightSystem.cpp" />
@@ -243,6 +251,7 @@
     <ClCompile Include="game\systems\physics\PhysicsSystem.cpp" />
     <ClCompile Include="game\systems\render\GLMeshSystem.cpp" />
     <ClCompile Include="game\systems\render\GLRenderSystem.cpp" />
+    <ClCompile Include="game\systems\requests\RequestsSystem.cpp" />
     <ClCompile Include="game\systems\terrain\ChunkBlocksControllerSystem.cpp" />
     <ClCompile Include="game\systems\terrain\ChunkDespawnerSystem.cpp" />
     <ClCompile Include="game\systems\terrain\ChunkMeshCullSystem.cpp" />
@@ -256,6 +265,7 @@
     <ClCompile Include="game\systems\ui\NoesisUISystem.cpp" />
     <ClCompile Include="game\systems\utils\FPSCounterSystem.cpp" />
     <ClCompile Include="game\utils\FileUtils.cpp" />
+    <ClCompile Include="game\utils\MathUtils.cpp" />
     <ClCompile Include="game\utils\NumericUtils.cpp" />
     <ClCompile Include="game\World.cpp" />
     <ClCompile Include="game\Main.cpp" />

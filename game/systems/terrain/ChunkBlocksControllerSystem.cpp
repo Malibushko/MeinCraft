@@ -1,6 +1,7 @@
 ﻿#include "ChunkBlocksControllerSystem.h"
 
 #include "core/components/PositionComponent.h"
+#include "game/components/requests/BlockCreateRequest.h"
 #include "game/components/requests/PlayerHitRequest.h"
 #include "game/components/terrain/BlockComponent.h"
 #include "game/components/terrain/ChunkComponent.h"
@@ -36,6 +37,47 @@ void CChunkBlocksControllerSystem::OnDestroy(registry_t & Registry_)
 void CChunkBlocksControllerSystem::ProcessRequests(registry_t & Registry)
 {
   ProcessBlockHitRequests(Registry);
+  ProcessBlockCreateRequests(Registry);
+}
+
+void CChunkBlocksControllerSystem::ProcessBlockCreateRequests(registry_t & Registry)
+{
+  for (auto [Entity, CreateRequest] : Registry.view<TBlockCreateRequest>().each())
+  {
+    if (CreateRequest.Status != ERequestStatus::Created)
+      return;
+
+    TTerrainComponent & Terrain            = QuerySingle<TTerrainComponent>(Registry);
+    entity_t            ChunkEntity        = Terrain.GetChunkAt(CreateRequest.WorldPosition);
+
+    if (ChunkEntity == entt::null)
+    {
+      CreateRequest.Status = ERequestStatus::Rejected;
+
+      continue;
+    }
+
+    TChunkComponent &   Chunk              = Registry.get<TChunkComponent>(ChunkEntity);
+    const glm::ivec3    BlockChunkPosition = WorldToChunkPosition(CreateRequest.WorldPosition);
+
+    if (entity_t & BlockEntity = Chunk.GetBlockAt(BlockChunkPosition); BlockEntity != entt::null)
+    {
+      CreateRequest.Status = ERequestStatus::Rejected;
+    }
+    else
+    {
+      BlockEntity = Registry.create();
+
+      AddComponent<TBlockComponent>(Registry, BlockEntity, TBlockComponent
+      {
+        .Type = CreateRequest.Type
+      });
+
+      Chunk.State = EChunkState::Dirty;
+
+      CreateRequest.Status = ERequestStatus::Fulfilled;
+    }
+  }
 }
 
 void CChunkBlocksControllerSystem::ProcessBlockHitRequests(registry_t& Registry)
@@ -59,17 +101,13 @@ void CChunkBlocksControllerSystem::ProcessBlockHitRequests(registry_t& Registry)
 
     const glm::ivec2 TargetChunkPosition = ToChunkCoordinates(HitRequest.TargetPosition);
 
-    // почему то не обновляются блоки у соседних чанков
     for (const auto & ChunkPosition : GetAdjascentChunkPositions(BlockChunkPosition))
     {
       if (entity_t ChunkEntity = Terrain.GetChunkAt(TargetChunkPosition + ChunkPosition); ChunkEntity != entt::null)
         Registry.get<TChunkComponent>(ChunkEntity).State = EChunkState::Dirty;
     }
 
-    if (HitRequest.DestroyWhenFulfilled)
-      Registry.destroy(Entity);
-    else
-      HitRequest.IsFulfilled = true;
+    HitRequest.Status = ERequestStatus::Fulfilled;
   }
 }
 

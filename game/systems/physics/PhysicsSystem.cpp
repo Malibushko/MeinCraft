@@ -43,7 +43,7 @@ void CPhysicsSystem::ProcessRaycastRequests(registry_t& Registry)
 {
   for (const auto & [Entity, Request] :Registry.view<TRaycastRequest>().each())
   {
-    if (Request.IsFulfilled)
+    if (Request.Status != ERequestStatus::Created)
       continue;
 
     if (!Request.StartPosition.has_value())
@@ -56,7 +56,7 @@ void CPhysicsSystem::ProcessRaycastRequests(registry_t& Registry)
 
     Request.RaycastHit  = HitEntity;
     Request.EndPosition = EndPosition;
-    Request.IsFulfilled = true;
+    Request.Status      = ERequestStatus::Fulfilled;
   }
 }
 

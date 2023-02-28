@@ -10,6 +10,7 @@
 #include "game/components/content/inventory/InventoryComponent.h"
 #include "game/components/events/CameraChangedEvent.h"
 #include "game/components/input/MouseClickData.h"
+#include "game/components/requests/ItemUseRequest.h"
 #include "game/components/requests/PlayerHitRequest.h"
 #include "game/components/requests/RaycastRequest.h"
 #include "game/components/terrain/BlockComponent.h"
@@ -47,16 +48,21 @@ void CPlayerTargetActionSystem::OnUpdate(registry_t & Registry_, float Delta_)
           auto [_, HitData] = Create<TPlayerHitRequest>(Registry_);
 
           HitData.Target         = Target.Target;
-          HitData.TargetPosition = Target.WorldPosition;
+          HitData.TargetPosition = Target.TargetWorldPosition;
         }
       }
       else
       {
         auto & Inventory = QuerySingle<TInventoryComponent>(Registry_);
 
-        entity_t SelectedEntity = Inventory.Inventory[Inventory.SelectedItemIndex];
+        const entity_t SelectedEntity = Inventory.ItemsPanel[Inventory.SelectedItemIndex];
 
-        // Create<TItemUseRequest>(Registry_);
+        if (SelectedEntity != entt::null)
+        {
+          auto [Entity, Request] = Create<TItemUseRequest>(Registry_);
+
+          Request.Item = SelectedEntity;
+        }
       }
     }
   }

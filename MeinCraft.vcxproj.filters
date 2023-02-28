@@ -148,6 +148,9 @@
     <Filter Include="game\systems\content">
       <UniqueIdentifier>{d27f36bb-205f-4b92-94a6-f51acbead3e6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="game\systems\requests">
+      <UniqueIdentifier>{12003101-ec05-4c67-9263-bef5a6d3b8c7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\entity\Entity.h">
@@ -369,6 +372,24 @@
     <ClInclude Include="game\systems\terrain\ChunkBlocksControllerSystem.h">
       <Filter>game\systems\terrain</Filter>
     </ClInclude>
+    <ClInclude Include="game\components\requests\ItemUseRequest.h">
+      <Filter>game\components\requests</Filter>
+    </ClInclude>
+    <ClInclude Include="game\systems\content\BlockItemUseSystem.h">
+      <Filter>game\systems\content</Filter>
+    </ClInclude>
+    <ClInclude Include="game\systems\content\InventorySystem.h">
+      <Filter>game\systems\content</Filter>
+    </ClInclude>
+    <ClInclude Include="game\utils\MathUtils.h">
+      <Filter>game\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="game\components\requests\BlockCreateRequest.h">
+      <Filter>game\components\requests</Filter>
+    </ClInclude>
+    <ClInclude Include="game\systems\requests\RequestsSystem.h">
+      <Filter>game\systems\requests</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="game\Main.cpp">
@@ -458,6 +479,18 @@
     <ClCompile Include="game\systems\terrain\ChunkBlocksControllerSystem.cpp">
       <Filter>game\systems\terrain</Filter>
     </ClCompile>
+    <ClCompile Include="game\systems\content\BlockItemUseSystem.cpp">
+      <Filter>game\systems\content</Filter>
+    </ClCompile>
+    <ClCompile Include="game\systems\content\InventorySystem.cpp">
+      <Filter>game\systems\content</Filter>
+    </ClCompile>
+    <ClCompile Include="game\utils\MathUtils.cpp">
+      <Filter>game\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="game\systems\requests\RequestsSystem.cpp">
+      <Filter>game\systems\requests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\blocks_shader.frag">
@@ -515,65 +548,161 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <CopyFileToFolders Include="third_party\NoesisGUI\Bin\uwp_x86\Noesis.dll" />
-    <CopyFileToFolders Include="third_party\NoesisGUI\Bin\uwp_x86_64\Noesis.dll" />
-    <CopyFileToFolders Include="third_party\NoesisGUI\Bin\windows_x86\Noesis.dll" />
-    <CopyFileToFolders Include="third_party\NoesisGUI\Bin\windows_x86_64\Noesis.dll" />
-    <CopyFileToFolders Include="third_party\NoesisGUI\Bin\windows_x86_64\NoesisApp.dll" />
-    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.31\lib\net45\Design\Microsoft.Xaml.Behaviors.Design.dll" />
-    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.31\lib\net45\Microsoft.Xaml.Behaviors.dll" />
-    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.31\lib\net5.0-windows7.0\Design\Microsoft.Xaml.Behaviors.DesignTools.dll" />
-    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.31\lib\net5.0-windows7.0\Microsoft.Xaml.Behaviors.dll" />
-    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.31\lib\netcoreapp3.1\Design\Microsoft.Xaml.Behaviors.DesignTools.dll" />
-    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.31\lib\netcoreapp3.1\Microsoft.Xaml.Behaviors.dll" />
-    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.37\lib\net45\Design\Microsoft.Xaml.Behaviors.Design.dll" />
-    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.37\lib\net45\Microsoft.Xaml.Behaviors.dll" />
-    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.37\lib\net5.0-windows7.0\Design\Microsoft.Xaml.Behaviors.DesignTools.dll" />
-    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.37\lib\net5.0-windows7.0\Microsoft.Xaml.Behaviors.dll" />
-    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.37\lib\netcoreapp3.1\Design\Microsoft.Xaml.Behaviors.DesignTools.dll" />
-    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.37\lib\netcoreapp3.1\Microsoft.Xaml.Behaviors.dll" />
-    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\Noesis.GUI.Extensions.3.0.14\lib\net45\Noesis.GUI.Extensions.dll" />
-    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\Noesis.GUI.Extensions.3.0.14\lib\net5.0-windows7.0\Noesis.GUI.Extensions.dll" />
-    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\Noesis.GUI.Extensions.3.0.14\lib\netcoreapp3.1\Noesis.GUI.Extensions.dll" />
-    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\Noesis.GUI.Extensions.3.0.8\lib\net45\Noesis.GUI.Extensions.dll" />
-    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll" />
-    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\System.Buffers.4.5.1\lib\netstandard1.1\System.Buffers.dll" />
-    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\System.Buffers.4.5.1\lib\netstandard2.0\System.Buffers.dll" />
-    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\System.Buffers.4.5.1\ref\net45\System.Buffers.dll" />
-    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\System.Buffers.4.5.1\ref\netstandard1.1\System.Buffers.dll" />
-    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\System.Buffers.4.5.1\ref\netstandard2.0\System.Buffers.dll" />
-    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\System.Memory.4.5.5\lib\net461\System.Memory.dll" />
-    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\System.Memory.4.5.5\lib\netstandard1.1\System.Memory.dll" />
-    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\System.Memory.4.5.5\lib\netstandard2.0\System.Memory.dll" />
-    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\System.Runtime.CompilerServices.Unsafe.4.5.3\lib\net461\System.Runtime.CompilerServices.Unsafe.dll" />
-    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\System.Runtime.CompilerServices.Unsafe.4.5.3\lib\netcoreapp2.0\System.Runtime.CompilerServices.Unsafe.dll" />
-    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\System.Runtime.CompilerServices.Unsafe.4.5.3\lib\netstandard1.0\System.Runtime.CompilerServices.Unsafe.dll" />
-    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\System.Runtime.CompilerServices.Unsafe.4.5.3\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll" />
-    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\System.Runtime.CompilerServices.Unsafe.4.5.3\ref\net461\System.Runtime.CompilerServices.Unsafe.dll" />
-    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\System.Runtime.CompilerServices.Unsafe.4.5.3\ref\netstandard1.0\System.Runtime.CompilerServices.Unsafe.dll" />
-    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\System.Runtime.CompilerServices.Unsafe.4.5.3\ref\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll" />
-    <CopyFileToFolders Include="third_party\NoesisGUI\Src\Packages\Samples\BlendTutorial\Data\obj\Debug\TempPE\Properties.Resources.Designer.cs.dll" />
-    <CopyFileToFolders Include="third_party\NoesisGUI\Src\Packages\Samples\Buttons\Data\obj\Debug\TempPE\Properties.Resources.Designer.cs.dll" />
-    <CopyFileToFolders Include="third_party\NoesisGUI\Src\Packages\Samples\CustomAnimation\Data\obj\Debug\TempPE\Properties.Resources.Designer.cs.dll" />
-    <CopyFileToFolders Include="third_party\NoesisGUI\Src\Packages\Samples\Gallery\Data\obj\Debug\TempPE\Properties.Resources.Designer.cs.dll" />
-    <CopyFileToFolders Include="third_party\NoesisGUI\Src\Packages\Samples\HelloWorld\Data\obj\Debug\TempPE\Properties.Resources.Designer.cs.dll" />
-    <CopyFileToFolders Include="third_party\NoesisGUI\Src\Packages\Samples\Integration\Data\obj\Debug\TempPE\Properties.Resources.Designer.cs.dll" />
-    <CopyFileToFolders Include="third_party\NoesisGUI\Src\Packages\Samples\Inventory\Data\obj\Debug\TempPE\Properties.Resources.Designer.cs.dll" />
-    <CopyFileToFolders Include="third_party\NoesisGUI\Src\Packages\Samples\Localization\Data\obj\Debug\TempPE\Properties.Resources.Designer.cs.dll" />
-    <CopyFileToFolders Include="third_party\NoesisGUI\Src\Packages\Samples\Login\Data\obj\Debug\TempPE\Properties.Resources.Designer.cs.dll" />
-    <CopyFileToFolders Include="third_party\NoesisGUI\Src\Packages\Samples\Menu3D\Data\obj\Debug\TempPE\Properties.Resources.Designer.cs.dll" />
-    <CopyFileToFolders Include="third_party\NoesisGUI\Src\Packages\Samples\QuestLog\Data\obj\Debug\TempPE\Properties.Resources.Designer.cs.dll" />
-    <CopyFileToFolders Include="third_party\NoesisGUI\Src\Packages\Samples\Scoreboard\Data\obj\Debug\TempPE\Properties.Resources.Designer.cs.dll" />
-    <CopyFileToFolders Include="third_party\NoesisGUI\Src\Packages\Samples\TicTacToe\Data\obj\Debug\TempPE\Properties.Resources.Designer.cs.dll" />
-    <CopyFileToFolders Include="third_party\NoesisGUI\Src\Packages\Samples\UserControl\Data\obj\Debug\TempPE\Properties.Resources.Designer.cs.dll" />
-    <CopyFileToFolders Include="third_party\NoesisGUI\Lib\uwp_x86\Noesis.lib" />
-    <CopyFileToFolders Include="third_party\NoesisGUI\Lib\uwp_x86_64\Noesis.lib" />
-    <CopyFileToFolders Include="third_party\NoesisGUI\Lib\windows_x86\Noesis.lib" />
-    <CopyFileToFolders Include="third_party\NoesisGUI\Lib\windows_x86_64\Noesis.lib" />
-    <CopyFileToFolders Include="third_party\NoesisGUI\Lib\windows_x86_64\NoesisApp.lib" />
-    <CopyFileToFolders Include="third_party\**\*.dll">
+    <CopyFileToFolders Include="third_party\NoesisGUI\Bin\uwp_x86\Noesis.dll">
       <Filter>third_party</Filter>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="third_party\NoesisGUI\Bin\uwp_x86_64\Noesis.dll">
+      <Filter>third_party</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="third_party\NoesisGUI\Bin\windows_x86\Noesis.dll">
+      <Filter>third_party</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="third_party\NoesisGUI\Bin\windows_x86_64\Noesis.dll">
+      <Filter>third_party</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="third_party\NoesisGUI\Bin\windows_x86_64\NoesisApp.dll">
+      <Filter>third_party</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.31\lib\net45\Design\Microsoft.Xaml.Behaviors.Design.dll">
+      <Filter>third_party</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.31\lib\net45\Microsoft.Xaml.Behaviors.dll">
+      <Filter>third_party</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.31\lib\net5.0-windows7.0\Design\Microsoft.Xaml.Behaviors.DesignTools.dll">
+      <Filter>third_party</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.31\lib\net5.0-windows7.0\Microsoft.Xaml.Behaviors.dll">
+      <Filter>third_party</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.31\lib\netcoreapp3.1\Design\Microsoft.Xaml.Behaviors.DesignTools.dll">
+      <Filter>third_party</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.31\lib\netcoreapp3.1\Microsoft.Xaml.Behaviors.dll">
+      <Filter>third_party</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.37\lib\net45\Design\Microsoft.Xaml.Behaviors.Design.dll">
+      <Filter>third_party</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.37\lib\net45\Microsoft.Xaml.Behaviors.dll">
+      <Filter>third_party</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.37\lib\net5.0-windows7.0\Design\Microsoft.Xaml.Behaviors.DesignTools.dll">
+      <Filter>third_party</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.37\lib\net5.0-windows7.0\Microsoft.Xaml.Behaviors.dll">
+      <Filter>third_party</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.37\lib\netcoreapp3.1\Design\Microsoft.Xaml.Behaviors.DesignTools.dll">
+      <Filter>third_party</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.37\lib\netcoreapp3.1\Microsoft.Xaml.Behaviors.dll">
+      <Filter>third_party</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\Noesis.GUI.Extensions.3.0.14\lib\net45\Noesis.GUI.Extensions.dll">
+      <Filter>third_party</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\Noesis.GUI.Extensions.3.0.14\lib\net5.0-windows7.0\Noesis.GUI.Extensions.dll">
+      <Filter>third_party</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\Noesis.GUI.Extensions.3.0.14\lib\netcoreapp3.1\Noesis.GUI.Extensions.dll">
+      <Filter>third_party</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\Noesis.GUI.Extensions.3.0.8\lib\net45\Noesis.GUI.Extensions.dll">
+      <Filter>third_party</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll">
+      <Filter>third_party</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\System.Buffers.4.5.1\lib\netstandard1.1\System.Buffers.dll">
+      <Filter>third_party</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\System.Buffers.4.5.1\lib\netstandard2.0\System.Buffers.dll">
+      <Filter>third_party</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\System.Buffers.4.5.1\ref\net45\System.Buffers.dll">
+      <Filter>third_party</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\System.Buffers.4.5.1\ref\netstandard1.1\System.Buffers.dll">
+      <Filter>third_party</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\System.Buffers.4.5.1\ref\netstandard2.0\System.Buffers.dll">
+      <Filter>third_party</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\System.Memory.4.5.5\lib\net461\System.Memory.dll">
+      <Filter>third_party</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\System.Memory.4.5.5\lib\netstandard1.1\System.Memory.dll">
+      <Filter>third_party</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\System.Memory.4.5.5\lib\netstandard2.0\System.Memory.dll">
+      <Filter>third_party</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\System.Runtime.CompilerServices.Unsafe.4.5.3\lib\net461\System.Runtime.CompilerServices.Unsafe.dll">
+      <Filter>third_party</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\System.Runtime.CompilerServices.Unsafe.4.5.3\lib\netcoreapp2.0\System.Runtime.CompilerServices.Unsafe.dll">
+      <Filter>third_party</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\System.Runtime.CompilerServices.Unsafe.4.5.3\lib\netstandard1.0\System.Runtime.CompilerServices.Unsafe.dll">
+      <Filter>third_party</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\System.Runtime.CompilerServices.Unsafe.4.5.3\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll">
+      <Filter>third_party</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\System.Runtime.CompilerServices.Unsafe.4.5.3\ref\net461\System.Runtime.CompilerServices.Unsafe.dll">
+      <Filter>third_party</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\System.Runtime.CompilerServices.Unsafe.4.5.3\ref\netstandard1.0\System.Runtime.CompilerServices.Unsafe.dll">
+      <Filter>third_party</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="third_party\NoesisGUI\Build\packages\System.Runtime.CompilerServices.Unsafe.4.5.3\ref\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll">
+      <Filter>third_party</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="third_party\NoesisGUI\Src\Packages\Samples\BlendTutorial\Data\obj\Debug\TempPE\Properties.Resources.Designer.cs.dll">
+      <Filter>third_party</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="third_party\NoesisGUI\Src\Packages\Samples\Buttons\Data\obj\Debug\TempPE\Properties.Resources.Designer.cs.dll">
+      <Filter>third_party</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="third_party\NoesisGUI\Src\Packages\Samples\CustomAnimation\Data\obj\Debug\TempPE\Properties.Resources.Designer.cs.dll">
+      <Filter>third_party</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="third_party\NoesisGUI\Src\Packages\Samples\Gallery\Data\obj\Debug\TempPE\Properties.Resources.Designer.cs.dll">
+      <Filter>third_party</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="third_party\NoesisGUI\Src\Packages\Samples\HelloWorld\Data\obj\Debug\TempPE\Properties.Resources.Designer.cs.dll">
+      <Filter>third_party</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="third_party\NoesisGUI\Src\Packages\Samples\Integration\Data\obj\Debug\TempPE\Properties.Resources.Designer.cs.dll">
+      <Filter>third_party</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="third_party\NoesisGUI\Src\Packages\Samples\Inventory\Data\obj\Debug\TempPE\Properties.Resources.Designer.cs.dll">
+      <Filter>third_party</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="third_party\NoesisGUI\Src\Packages\Samples\Localization\Data\obj\Debug\TempPE\Properties.Resources.Designer.cs.dll">
+      <Filter>third_party</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="third_party\NoesisGUI\Src\Packages\Samples\Login\Data\obj\Debug\TempPE\Properties.Resources.Designer.cs.dll">
+      <Filter>third_party</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="third_party\NoesisGUI\Src\Packages\Samples\Menu3D\Data\obj\Debug\TempPE\Properties.Resources.Designer.cs.dll">
+      <Filter>third_party</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="third_party\NoesisGUI\Src\Packages\Samples\QuestLog\Data\obj\Debug\TempPE\Properties.Resources.Designer.cs.dll">
+      <Filter>third_party</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="third_party\NoesisGUI\Src\Packages\Samples\Scoreboard\Data\obj\Debug\TempPE\Properties.Resources.Designer.cs.dll">
+      <Filter>third_party</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="third_party\NoesisGUI\Src\Packages\Samples\TicTacToe\Data\obj\Debug\TempPE\Properties.Resources.Designer.cs.dll">
+      <Filter>third_party</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="third_party\NoesisGUI\Src\Packages\Samples\UserControl\Data\obj\Debug\TempPE\Properties.Resources.Designer.cs.dll">
+      <Filter>third_party</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.lib" />
     <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.dll" />
     <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.lib" />
     <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.dll" />

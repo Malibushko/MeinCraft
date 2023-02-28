@@ -134,9 +134,5 @@ void CNoesisUIHUDSystem::UpdateDebugPanel(registry_t & Registry)
   auto & Target              = QuerySingle<TCameraTargetComponent>(Registry);
 
   m_DataModel->SetDebugPosition(Position.Position);
-  m_DataModel->SetDebugTargetPosition(Target.WorldPosition);
+  m_DataModel->SetDebugTargetPosition(Target.TargetWorldPosition);
 }
-
-
-
-
