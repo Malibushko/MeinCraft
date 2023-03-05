@@ -21,10 +21,11 @@ struct TChunkComponent
   static constexpr int CHUNK_SIZE_X = 16;
   static constexpr int CHUNK_SIZE_Y = 384;
   static constexpr int CHUNK_SIZE_Z = 16;
+  static constexpr int BLOCKS_COUNT = CHUNK_SIZE_X * CHUNK_SIZE_Y * CHUNK_SIZE_Z;
 
   EChunkState State{EChunkState::Dirty};
 
-  std::array<entity_t, CHUNK_SIZE_X * CHUNK_SIZE_Y * CHUNK_SIZE_Z> Blocks;
+  std::array<entity_t, BLOCKS_COUNT> Blocks;
 
   std::vector<entity_t> Meshes;
 
@@ -47,13 +48,13 @@ inline glm::ivec2 ToChunkCoordinates(const glm::vec3 & Position_)
   return { X, Y };
 }
 
-inline glm::vec3 FromChunkCoordinates(const glm::ivec2 & ChunkPosition_)
+inline glm::ivec3 FromChunkCoordinates(const glm::ivec2 & ChunkPosition_)
 {
-  return glm::vec3(
+  return {
     ChunkPosition_.x * TChunkComponent::CHUNK_SIZE_X,
     0.0f,
     ChunkPosition_.y * TChunkComponent::CHUNK_SIZE_Z
-  );
+  };
 }
 
 inline glm::ivec3 WorldToChunkPosition(glm::vec3 Position)
@@ -86,4 +87,15 @@ inline std::vector<glm::ivec2> GetAdjascentChunkPositions(glm::ivec3 BlockPositi
     Result.emplace_back(0, 1);
 
   return Result;
+}
+
+inline glm::ivec3 BlockIndexToPosition(size_t Index)
+{
+  constexpr size_t XYSize = TChunkComponent::CHUNK_SIZE_X * TChunkComponent::CHUNK_SIZE_Y;
+
+  const int Z = static_cast<int>(Index) / XYSize;
+  const int Y = (static_cast<int>(Index) % XYSize) / TChunkComponent::CHUNK_SIZE_X;
+  const int X = (static_cast<int>(Index) % XYSize) % TChunkComponent::CHUNK_SIZE_X;
+
+  return { X, Y, Z };
 }

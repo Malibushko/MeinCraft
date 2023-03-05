@@ -85,7 +85,11 @@ entity_t CPhysicsSystem::GetEntityAt(registry_t & Registry, glm::vec3 Position) 
 
   const TTerrainComponent & Terrain     = QuerySingle<TTerrainComponent>(Registry);
   const entity_t            ChunkEntity = Terrain.GetChunkAt(Position);
-  const TChunkComponent &   Chunk       = GetComponent<TChunkComponent>(Registry, ChunkEntity);
+
+  if (ChunkEntity == entt::null)
+    return entt::null;
+
+  const TChunkComponent & Chunk = GetComponent<TChunkComponent>(Registry, ChunkEntity);
 
   return Chunk.GetBlockAt(WorldToChunkPosition(Position));
 }

@@ -83,5 +83,4 @@ protected: // Members
 
   std::map<EBlockType, TBlockUV>   m_BlockUVs;
   std::map<EBlockType, TBlockInfo> m_BlockInfos;
-
 };

@@ -19,7 +19,7 @@
 // Config
 //
 
-static constexpr int CHUNK_SPAWN_RADIUS = 11;
+static constexpr int CHUNK_SPAWN_RADIUS = 5;
 
 static_assert((CHUNK_SPAWN_RADIUS & 1) && "Spawn Distance must be odd!");
 
@@ -47,28 +47,28 @@ void CChunkSpawnerSystem::OnUpdate(registry_t & Registry_, float Delta_)
 
   std::unordered_set<glm::ivec2> ChunksToUpdate;
 
-  for (auto && [Entity, Transform, Position] : CameraViews)
-  {
-    glm::ivec2 PlayerPosition = ToChunkCoordinates(Position.Position);
-
-    for (int X = -CHUNK_SPAWN_RADIUS / 2; X < CHUNK_SPAWN_RADIUS / 2; X++)
+    for (auto && [Entity, Transform, Position] : CameraViews)
     {
-      for (int Y = -CHUNK_SPAWN_RADIUS / 2; Y < CHUNK_SPAWN_RADIUS / 2; Y++)
+      glm::ivec2 PlayerPosition = ToChunkCoordinates(Position.Position);
+
+      for (int X = -CHUNK_SPAWN_RADIUS / 2; X < CHUNK_SPAWN_RADIUS / 2; X++)
       {
-        const glm::ivec2 ChunkPosition = PlayerPosition + glm::ivec2(X, Y);
-
-        if (!Terrain.Chunks.contains(ChunkPosition))
+        for (int Y = -CHUNK_SPAWN_RADIUS / 2; Y < CHUNK_SPAWN_RADIUS / 2; Y++)
         {
-          SpawnChunkAt(Registry_, Terrain, ChunkPosition);
+          const glm::ivec2 ChunkPosition = PlayerPosition + glm::ivec2(X, Y);
 
-          ChunksToUpdate.insert(ChunkPosition + glm::ivec2(1, 0));
-          ChunksToUpdate.insert(ChunkPosition + glm::ivec2(-1, 0));
-          ChunksToUpdate.insert(ChunkPosition + glm::ivec2(0, 1));
-          ChunksToUpdate.insert(ChunkPosition + glm::ivec2(0, -1));
+          if (!Terrain.Chunks.contains(ChunkPosition))
+          {
+            SpawnChunkAt(Registry_, Terrain, ChunkPosition);
+
+            ChunksToUpdate.insert(ChunkPosition + glm::ivec2(1, 0));
+            ChunksToUpdate.insert(ChunkPosition + glm::ivec2(-1, 0));
+            ChunksToUpdate.insert(ChunkPosition + glm::ivec2(0, 1));
+            ChunksToUpdate.insert(ChunkPosition + glm::ivec2(0, -1));
+          }
         }
       }
     }
-  }
 
   for (auto & ChunkPosition : ChunksToUpdate)
   {
@@ -96,36 +96,29 @@ void CChunkSpawnerSystem::SpawnChunkAt(
 {
   auto && [Entity, Chunk] = Create<TChunkComponent>(Registry_);
 
-  for (int X = 0; X < TChunkComponent::CHUNK_SIZE_X; X++)
+  for (int Index = 0; Index < TChunkComponent::BLOCKS_COUNT; Index++)
   {
-    for (int Y = 0; Y < TChunkComponent::CHUNK_SIZE_Y; Y++)
+    const glm::vec3 BlockPosition = FromChunkCoordinates(ChunkPosition) + BlockIndexToPosition(Index);
+
+    TBlockComponent Block = Terrain.TerrainGenerationStrategy(BlockPosition);
+
+    if (!Block.IsVisible())
     {
-      for (int Z = 0; Z < TChunkComponent::CHUNK_SIZE_Z; Z++)
-      {
-        const int        Index           = X + TChunkComponent::CHUNK_SIZE_X * (Y + TChunkComponent::CHUNK_SIZE_Y * Z);
-        const glm::vec3  BlockPosition   = FromChunkCoordinates(ChunkPosition) + glm::vec3(X, Y, Z);
+      Chunk.Blocks[Index] = entt::null;
 
-        TBlockComponent Block = Terrain.TerrainGenerationStrategy(BlockPosition);
-
-        if (!Block.IsVisible())
-        {
-          Chunk.Blocks[Index] = entt::null;
-
-          continue;
-        }
-
-        const auto [BlockEntity, BlockComponent] = Create<TBlockComponent>(Registry_);
-
-        BlockComponent = Block;
-
-        Chunk.Blocks[Index] = BlockEntity;
-      }
+      continue;
     }
+
+    const auto [BlockEntity, BlockComponent] = Create<TBlockComponent>(Registry_);
+
+    BlockComponent = Block;
+
+    Chunk.Blocks[Index] = BlockEntity;
   }
 
   TTransformComponent ChunkTransform
   {
-    .Transform = glm::translate(glm::mat4(1.0f), FromChunkCoordinates(ChunkPosition))
+    .Transform = glm::translate(glm::mat4(1.0f), glm::vec3(FromChunkCoordinates(ChunkPosition)))
   };
 
   AddComponent(Registry_, Entity, std::move(ChunkTransform));

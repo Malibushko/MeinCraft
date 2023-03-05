@@ -99,46 +99,38 @@ void CChunkMeshCullSystem::UpdateBlocksFaces(registry_t& Registry, TTerrainCompo
     { 0, -1, 0},
   };
 
-  for (int X = 0; X < TChunkComponent::CHUNK_SIZE_X; X++)
+  for (size_t Index = 0; Index < TChunkComponent::BLOCKS_COUNT; Index++)
   {
-    for (int Y = 0; Y < TChunkComponent::CHUNK_SIZE_Y; Y++)
+    if (Chunk.Blocks[Index] == entt::null)
+      continue;
+
+    const glm::ivec3 BlockPosition = BlockIndexToPosition(Index);
+
+    const bool IsThisBlockTransparent = CBlockFactory::IsBlockTransparent(Registry.get<TBlockComponent>(Chunk.Blocks[Index]));
+
+    const auto IsBlockVisible = [&](entity_t BlockEntity) -> bool
     {
-      for (int Z = 0; Z < TChunkComponent::CHUNK_SIZE_Z; Z++)
-      {
-        const int Index = X + TChunkComponent::CHUNK_SIZE_X * (Y + TChunkComponent::CHUNK_SIZE_Y * Z);
+      if (IsThisBlockTransparent)
+        return BlockEntity != entt::null;
 
-        if (Chunk.Blocks[Index] == entt::null)
-          continue;
+      return BlockEntity != entt::null && !CBlockFactory::IsBlockTransparent(Registry.get<TBlockComponent>(BlockEntity));
+    };
 
-        const glm::ivec3 BlockPosition = glm::ivec3(X, Y, Z);
+    TVisibleBlockFacesComponent Faces
+    {
+      .Faces = CBlockFactory::GetDefaultBlockMeshFaces(Registry.get<TBlockComponent>(Chunk.Blocks[Index]))
+    };
 
-        const bool IsThisBlockTransparent = CBlockFactory::IsBlockTransparent(Registry.get<TBlockComponent>(Chunk.Blocks[Index]));
+    for (int i = 0; i < 6; i++)
+    {
+      const glm::vec3 NeighbourPosition = NeighbourOffsets[i] + BlockPosition;
 
-        const auto IsBlockVisible = [&](entity_t BlockEntity) -> bool
-        {
-          if (IsThisBlockTransparent)
-            return BlockEntity != entt::null;
+      const auto [BlockEntity, IsChunkExist] = GetBlockAt(NeighbourPosition);
 
-          return BlockEntity != entt::null && !CBlockFactory::IsBlockTransparent(Registry.get<TBlockComponent>(BlockEntity));
-        };
-
-        TVisibleBlockFacesComponent Faces
-        {
-          .Faces = CBlockFactory::GetDefaultBlockMeshFaces(Registry.get<TBlockComponent>(Chunk.Blocks[Index]))
-        };
-
-        for (int i = 0; i < 6; i++)
-        {
-          const glm::vec3 NeighbourPosition = NeighbourOffsets[i] + BlockPosition;
-
-          const auto [BlockEntity, IsChunkExist] = GetBlockAt(NeighbourPosition);
-
-          if (IsChunkExist && !IsBlockVisible(BlockEntity))
-            Faces.Faces = Faces.Faces | static_cast<EBlockFace>(1 << i);
-        }
-
-        Registry.emplace_or_replace<TVisibleBlockFacesComponent>(Chunk.Blocks[Index], Faces);
-      }
+      if (IsChunkExist && !IsBlockVisible(BlockEntity))
+        Faces.Faces = Faces.Faces | static_cast<EBlockFace>(1 << i);
     }
+
+    Registry.emplace_or_replace<TVisibleBlockFacesComponent>(Chunk.Blocks[Index], Faces);
   }
 }

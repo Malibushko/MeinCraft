@@ -55,55 +55,49 @@ void CChunkMeshSystem::RecreateChunkMesh(registry_t & Registry_, entity_t ChunkE
 
   TTransformComponent ChunkTransform = Registry_.get<TTransformComponent>(ChunkEntity);
 
-  for (int X = 0; X < TChunkComponent::CHUNK_SIZE_X; X++)
+  for (size_t Index = 0; Index < TChunkComponent::BLOCKS_COUNT; Index++)
   {
-    for (int Y = 0; Y < TChunkComponent::CHUNK_SIZE_Y; Y++)
+    if (Chunk.Blocks[Index] == entt::null)
+      continue;
+
+    auto && [Block, Faces] = Registry_.get<TBlockComponent, TVisibleBlockFacesComponent>(Chunk.Blocks[Index]);
+
+    if (Faces.Faces == EBlockFace::None)
+      continue;
+
+    TGLUnbakedSolidMeshComponent BlockMesh     = CBlockFactory::GetMeshForBlock(Block, Faces.Faces);
+    std::vector<glm::vec2>       BlockUV       = CBlockFactory::GetUVForBlock(Block, Faces.Faces);
+    EMeshType                    BlockMeshType = CBlockFactory::GetMeshTypeForBlock(Block);
+    const glm::ivec3             BlockPosition = BlockIndexToPosition(Index);
+
+    const auto AppendToMesh = [&]<EMeshType T>(TGLUnbakedMeshComponent<T> &ChunkMesh)
     {
-      for (int Z = 0; Z < TChunkComponent::CHUNK_SIZE_Z; Z++)
-      {
-        const int Index = X + TChunkComponent::CHUNK_SIZE_X * (Y + TChunkComponent::CHUNK_SIZE_Y * Z);
+      for (auto & Vertex : BlockMesh.Vertices)
+        Vertex += BlockPosition;
 
-        if (Chunk.Blocks[Index] == entt::null)
-          continue;
+      for (auto & Index : BlockMesh.Indices)
+        Index += static_cast<unsigned short>(ChunkMesh.Vertices.size());
 
-        auto && [Block, Faces] = Registry_.get<TBlockComponent, TVisibleBlockFacesComponent>(Chunk.Blocks[Index]);
+      ChunkMesh.Vertices.insert(ChunkMesh.Vertices.end(), BlockMesh.Vertices.begin(), BlockMesh.Vertices.end());
+      ChunkMesh.Indices.insert(ChunkMesh.Indices.end(), BlockMesh.Indices.begin(), BlockMesh.Indices.end());
+      ChunkMesh.UV.insert(ChunkMesh.UV.end(), BlockUV.begin(), BlockUV.end());
+      ChunkMesh.Normals.insert(ChunkMesh.Normals.end(), BlockMesh.Normals.begin(), BlockMesh.Normals.end());
+    };
 
-        if (Faces.Faces == EBlockFace::None)
-          continue;
 
-        TGLUnbakedSolidMeshComponent BlockMesh     = CBlockFactory::GetMeshForBlock(Block, Faces.Faces);
-        std::vector<glm::vec2>       BlockUV       = CBlockFactory::GetUVForBlock(Block, Faces.Faces);
-        EMeshType                    BlockMeshType = CBlockFactory::GetMeshTypeForBlock(Block);
+    switch (BlockMeshType)
+    {
+      case EMeshType::Translucent:
+        AppendToMesh(TranslucentMeshComponent);
 
-        const auto AppendToMesh = [&]<EMeshType T>(TGLUnbakedMeshComponent<T> & ChunkMesh)
-        {
-          for (auto & Vertex : BlockMesh.Vertices)
-            Vertex += glm::vec3(X, Y, Z);
+        TransclucentMeshShader = CBlockFactory::GetShaderForBlock(Block);
+        break;
 
-          for (auto & Index : BlockMesh.Indices)
-            Index += static_cast<unsigned short>(ChunkMesh.Vertices.size());
+      default:
+        AppendToMesh(SolidMeshComponent);
 
-          ChunkMesh.Vertices.insert(ChunkMesh.Vertices.end(), BlockMesh.Vertices.begin(), BlockMesh.Vertices.end());
-          ChunkMesh.Indices.insert(ChunkMesh.Indices.end(),   BlockMesh.Indices.begin(), BlockMesh.Indices.end());
-          ChunkMesh.UV.insert(ChunkMesh.UV.end(),             BlockUV.begin(), BlockUV.end());
-          ChunkMesh.Normals.insert(ChunkMesh.Normals.end(),   BlockMesh.Normals.begin(), BlockMesh.Normals.end());
-        };
-
-        switch (BlockMeshType)
-        {
-          case EMeshType::Translucent:
-            AppendToMesh(TranslucentMeshComponent);
-
-            TransclucentMeshShader = CBlockFactory::GetShaderForBlock(Block);
-            break;
-
-          default:
-            AppendToMesh(SolidMeshComponent);
-
-            SolidMeshShader = CBlockFactory::GetShaderForBlock(Block);
-            break;
-        }
-      }
+        SolidMeshShader = CBlockFactory::GetShaderForBlock(Block);
+        break;
     }
   }
 
