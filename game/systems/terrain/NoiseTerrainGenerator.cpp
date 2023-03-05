@@ -55,8 +55,6 @@ TBlockComponent CNoiseTerrainGenerator::GenerateImpl(glm::vec3 _Position)
       return TBlockComponent{ .Type = EBlockType::Sand };
 
     return TBlockComponent{ .Type = EBlockType::Grass };
-
-    return TBlockComponent{ .Type = EBlockType::Dirt };
   }
 
   if (_Position.y <= WATER_LEVEl && Generate(glm::vec3(_Position.x, _Position.y - 1.f, _Position.z)).Type != EBlockType::Air)

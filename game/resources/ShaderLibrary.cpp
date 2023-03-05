@@ -115,3 +115,13 @@ TGLShaderComponent CShaderLibrary::Load(
 
   return Library.m_ShaderCache.emplace(ShaderID, Library.m_ShaderLoader(ShaderPath)).first->second;
 }
+
+std::vector<TGLShaderComponent> CShaderLibrary::GetLoadedShaders()
+{
+  std::vector<TGLShaderComponent> Shaders;
+
+  for (auto & [Hash, Shader] : Library.m_ShaderCache)
+    Shaders.push_back(Shader);
+
+  return Shaders;
+}

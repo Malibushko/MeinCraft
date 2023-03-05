@@ -187,6 +187,7 @@
     <ClInclude Include="game\components\physics\AABBVolumeComponent.h" />
     <ClInclude Include="game\components\physics\BoundingVolume.h" />
     <ClInclude Include="game\components\render\GLMeshComponent.h" />
+    <ClInclude Include="game\components\render\GLRenderPassData.h" />
     <ClInclude Include="game\components\render\GLShaderComponent.h" />
     <ClInclude Include="game\components\render\GLTextureComponent.h" />
     <ClInclude Include="game\components\render\GLUnbakedMeshComponent.h" />
@@ -214,7 +215,12 @@
     <ClInclude Include="game\systems\lightning\DirectedLightMovementSystem.h" />
     <ClInclude Include="game\systems\physics\PhysicsSystem.h" />
     <ClInclude Include="game\systems\render\GLMeshSystem.h" />
+    <ClInclude Include="game\systems\render\GLRenderDepthPassSystem.h" />
+    <ClInclude Include="game\systems\render\GLRenderScreenPassSystem.h" />
+    <ClInclude Include="game\systems\render\GLRenderSolidPassSystem.h" />
+    <ClInclude Include="game\systems\render\GLRenderTransparentPassSystem.h" />
     <ClInclude Include="game\systems\render\GLRenderSystem.h" />
+    <ClInclude Include="game\systems\render\GLRenderUniformObjectsSystem.h" />
     <ClInclude Include="game\systems\requests\RequestsSystem.h" />
     <ClInclude Include="game\systems\terrain\ChunkBlocksControllerSystem.h" />
     <ClInclude Include="game\systems\terrain\ChunkDespawnerSystem.h" />
@@ -232,6 +238,7 @@
     <ClInclude Include="game\utils\LRUCache.h" />
     <ClInclude Include="game\utils\MathUtils.h" />
     <ClInclude Include="game\utils\NumericUtils.h" />
+    <ClInclude Include="game\utils\GLRenderUtils.h" />
     <ClInclude Include="game\World.h" />
     <ClInclude Include="third_party\FastNoise\FastNoiseLite.h" />
   </ItemGroup>
@@ -250,7 +257,12 @@
     <ClCompile Include="game\systems\lightning\DirectedLightMovementSystem.cpp" />
     <ClCompile Include="game\systems\physics\PhysicsSystem.cpp" />
     <ClCompile Include="game\systems\render\GLMeshSystem.cpp" />
+    <ClCompile Include="game\systems\render\GLRenderDepthPassSystem.cpp" />
+    <ClCompile Include="game\systems\render\GLRenderScreenPassSystem.cpp" />
+    <ClCompile Include="game\systems\render\GLRenderSolidPassSystem.cpp" />
+    <ClCompile Include="game\systems\render\GLRenderTransparentPassSystem.cpp" />
     <ClCompile Include="game\systems\render\GLRenderSystem.cpp" />
+    <ClCompile Include="game\systems\render\GLRenderUniformObjectsSystem.cpp" />
     <ClCompile Include="game\systems\requests\RequestsSystem.cpp" />
     <ClCompile Include="game\systems\terrain\ChunkBlocksControllerSystem.cpp" />
     <ClCompile Include="game\systems\terrain\ChunkDespawnerSystem.cpp" />

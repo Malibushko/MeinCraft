@@ -19,6 +19,8 @@ public: // Interface
 
   static TGLShaderComponent Load(std::string_view ShaderPath);
 
+  static std::vector<TGLShaderComponent> GetLoadedShaders();
+
 protected: // Members
 
   std::map<entt::id_type, TGLShaderComponent> m_ShaderCache;

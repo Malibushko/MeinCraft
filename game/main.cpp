@@ -26,7 +26,12 @@
 #include "systems/lightning/DirectedLightMovementSystem.h"
 #include "systems/physics/PhysicsSystem.h"
 #include "systems/render/GLMeshSystem.h"
+#include "systems/render/GLRenderDepthPassSystem.h"
+#include "systems/render/GLRenderScreenPassSystem.h"
+#include "systems/render/GLRenderSolidPassSystem.h"
 #include "systems/render/GLRenderSystem.h"
+#include "systems/render/GLRenderTransparentPassSystem.h"
+#include "systems/render/GLRenderUniformObjectsSystem.h"
 #include "systems/requests/RequestsSystem.h"
 #include "systems/terrain/ChunkBlocksControllerSystem.h"
 #include "systems/terrain/ChunkDespawnerSystem.h"
@@ -109,7 +114,14 @@ void InitCoreSystems(World & World_)
   World_.AddSystem<CGLFWWindowSystem>()
         .AddSystem<GLMeshSystem>()
         .AddSystem<CCameraSystem>()
+
         .AddSystem<GLRenderSystem>()
+        .AddSystem<GLRenderUniformObjectsSystem>()
+        .AddSystem<GLRenderDepthPassSystem>()
+        .AddSystem<GLRenderSolidPassSystem>()
+        .AddSystem<GLRenderTransparentPassSystem>()
+        .AddSystem<GLRenderScreenPassSystem>()
+
         .AddSystem<CPhysicsSystem>()
         .AddSystem<CRequestsSystem>();
 }
