@@ -23,6 +23,7 @@
 #include "systems/content/TargetControllerSystem.h"
 #include "systems/content/TargetBlockHighlightSystem.h"
 #include "systems/display/GLFWWindowSystem.h"
+#include "systems/lightning/DirectedLightMeshSystem.h"
 #include "systems/lightning/DirectedLightMovementSystem.h"
 #include "systems/physics/PhysicsSystem.h"
 #include "systems/render/GLMeshSystem.h"
@@ -160,7 +161,8 @@ void InitLight(World & World_)
     }
   });
 
-  World_.AddSystem<CDirectedLightMovementSystem>();
+  World_.AddSystem<CDirectedLightMovementSystem>()
+        .AddSystem<CDirectedLightMeshSystem>();
 }
 
 void InitUI(World & World_)

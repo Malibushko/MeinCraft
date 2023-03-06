@@ -9,6 +9,7 @@
 #include "game/components/content/CameraTargetComponent.h"
 #include "game/components/events/CameraChangedEvent.h"
 #include "game/components/requests/RaycastRequest.h"
+#include "game/components/tags/InvisibleMeshTag.h"
 #include "game/components/terrain/BlockComponent.h"
 #include "game/factory/BlockFactory.h"
 #include "game/resources/ShaderLibrary.h"
@@ -108,6 +109,7 @@ void CTargetBlockHighlightSystem::UpdateTarget(registry_t & Registry, TCameraTar
     });
 
     Registry.emplace_or_replace<TGLShaderComponent>(m_MeshEntity, CShaderLibrary::Load("res/shaders/blocks_outline_shader"));
+    Registry.emplace_or_replace<TInvisibleMeshTag>(m_MeshEntity, TInvisibleMeshTag{});
   }
 
   TTransformComponent Transform

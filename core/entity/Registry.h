@@ -70,6 +70,12 @@ void AddComponent(registry_t & Registry_, entity_t Entity_, T && Component_)
 }
 
 template<class T>
+void AddTag(registry_t & Registry, entity_t Entity)
+{
+  Registry.emplace<T>(Entity);
+}
+
+template<class T>
 void AddBundle(registry_t & Registry_ ,entity_t Entity_, T && Bundle_)
 {
   boost::pfr::for_each_field(std::forward<T>(Bundle_), [&](auto && Field_)

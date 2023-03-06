@@ -15,7 +15,14 @@ layout(std140, binding=0) uniform MatricesBlock
   mat4 MVP;
 };
 
-layout(std140) uniform LightBlock
+layout(std140, binding=1) uniform CameraBlock
+{
+  float ViewDistance;
+  vec3  CameraDirection;
+  vec3  CameraPosition;
+};
+
+layout(std140, binding=2) uniform LightBlock
 {
 	float DirectedLightIntensity;
 	vec3  DirectedLightDirection;

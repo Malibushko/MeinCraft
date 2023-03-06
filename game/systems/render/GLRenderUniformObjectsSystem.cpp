@@ -11,6 +11,7 @@
 #include "game/components/lightning/LightComponent.h"
 #include "game/components/render/GLRenderPassData.h"
 #include "game/components/render/GLShaderComponent.h"
+#include "game/utils/GLRenderUtils.h"
 
 //
 // ISystem
@@ -118,7 +119,7 @@ void GLRenderUniformObjectsSystem::UpdateLightUBO(registry_t & Registry_)
   static_assert(std::is_standard_layout_v<TLightUBO>);
 
   auto && [DirectedLight, Light] = QuerySingle<TDirectedLightComponent, TLightComponent>(Registry_);
-  auto & RenderData = QuerySingle<TGLRenderPassData>(Registry_);
+  auto & RenderData              = QuerySingle<TGLRenderPassData>(Registry_);
 
   const glm::mat4 LightProjection = glm::ortho(-100.f, 100.f, -100.f, 100.f, 0.1f, 250.f);
   const glm::mat4 LightView       = glm::lookAt(DirectedLight.Direction, glm::vec3(0.f), glm::vec3(0.f, 1.f, 0.f));
@@ -149,14 +150,7 @@ void GLRenderUniformObjectsSystem::OnShaderCreated(registry_t & Registry, entity
   TGLShaderComponent & ShaderComponent = Registry.get<TGLShaderComponent>(Entity);
 
   if (ShaderComponent.IsValid())
-  {
-    magic_enum::enum_for_each<EUniformBlock>([&](EUniformBlock UniformBlock)
-    {
-      const auto & BlockName = magic_enum::enum_name(UniformBlock);
-      const auto   BlockID = glGetUniformBlockIndex(ShaderComponent.ShaderID, BlockName.data());
-
-      if (BlockID != GL_INVALID_INDEX)
-        glUniformBlockBinding(ShaderComponent.ShaderID, BlockID, static_cast<GLuint>(UniformBlock));
-    });
-  }
+    BindShaderUniformBlocks(ShaderComponent);
+  else
+    spdlog::warn("GLRenderUniformObjectsSystem::OnShaderCreated: Shader is not valid");
 }

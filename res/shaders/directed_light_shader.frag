@@ -1,6 +1,5 @@
 #version 460 core
-layout (location = 0) in vec3 aPosition;
-layout (location = 1) in vec2 aTextureCoord;
+out vec4 FragColor;
 
 layout(std140, binding=0) uniform MatricesBlock
 {
@@ -24,11 +23,7 @@ layout(std140, binding=2) uniform LightBlock
 	mat4  DirectedLightSpaceMatrix;
 };
 
-uniform mat4 u_Transform;
-
-out vec2 TextureCoords;
 void main()
 {
-	gl_Position = DirectedLightSpaceMatrix * u_Transform * vec4(aPosition, 1.f);
-	TextureCoords = aTextureCoord;
+    FragColor = vec4(DirectedLightColor * DirectedLightIntensity, 1.0);
 }

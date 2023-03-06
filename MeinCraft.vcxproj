@@ -195,6 +195,7 @@
     <ClInclude Include="game\components\requests\ItemUseRequest.h" />
     <ClInclude Include="game\components\requests\PlayerHitRequest.h" />
     <ClInclude Include="game\components\requests\RaycastRequest.h" />
+    <ClInclude Include="game\components\tags\InvisibleMeshTag.h" />
     <ClInclude Include="game\components\terrain\VisibleBlockFacesComponent.h" />
     <ClInclude Include="game\components\terrain\BlockComponent.h" />
     <ClInclude Include="game\components\terrain\ChunkComponent.h" />
@@ -212,6 +213,7 @@
     <ClInclude Include="game\systems\content\TargetControllerSystem.h" />
     <ClInclude Include="game\systems\content\TargetBlockHighlightSystem.h" />
     <ClInclude Include="game\systems\display\GLFWWindowSystem.h" />
+    <ClInclude Include="game\systems\lightning\DirectedLightMeshSystem.h" />
     <ClInclude Include="game\systems\lightning\DirectedLightMovementSystem.h" />
     <ClInclude Include="game\systems\physics\PhysicsSystem.h" />
     <ClInclude Include="game\systems\render\GLMeshSystem.h" />
@@ -254,6 +256,7 @@
     <ClCompile Include="game\systems\content\TargetControllerSystem.cpp" />
     <ClCompile Include="game\systems\content\TargetBlockHighlightSystem.cpp" />
     <ClCompile Include="game\systems\display\GLFWWindowSystem.cpp" />
+    <ClCompile Include="game\systems\lightning\DirectedLightMeshSystem.cpp" />
     <ClCompile Include="game\systems\lightning\DirectedLightMovementSystem.cpp" />
     <ClCompile Include="game\systems\physics\PhysicsSystem.cpp" />
     <ClCompile Include="game\systems\render\GLMeshSystem.cpp" />
@@ -308,6 +311,8 @@
     <None Include="res\shaders\debug_depth_shader.vert" />
     <None Include="res\shaders\depth_shader.frag" />
     <None Include="res\shaders\depth_shader.vert" />
+    <None Include="res\shaders\directed_light_shader.frag" />
+    <None Include="res\shaders\directed_light_shader.vert" />
     <None Include="res\shaders\screen_shader.frag" />
     <None Include="res\shaders\screen_shader.vert" />
     <None Include="res\shaders\transparent_blocks_shader.frag" />

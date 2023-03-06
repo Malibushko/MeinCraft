@@ -19,4 +19,10 @@ protected: // Members
   TGLShaderComponent m_ScreenShader;
 
   GLuint             m_ScreenQuadVAO{};
+
+#ifdef DEBUG_DEPTH
+
+  TGLShaderComponent m_DebugDepthShader;
+
+#endif
 };

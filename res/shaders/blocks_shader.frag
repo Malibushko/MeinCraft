@@ -9,21 +9,21 @@ in vec4 LightFragmentPosition;
 layout(binding = 0) uniform sampler2D       u_Texture_0;
 layout(binding = 1) uniform sampler2DShadow u_DepthMap;
 
-layout(std140) uniform MatricesBlock
+layout(std140, binding=0) uniform MatricesBlock
 {
   mat4 Projection;
   mat4 View;
   mat4 MVP;
 };
 
-layout(std140) uniform CameraBlock
+layout(std140, binding=1) uniform CameraBlock
 {
   float ViewDistance;
   vec3  CameraDirection;
   vec3  CameraPosition;
 };
 
-layout(std140) uniform LightBlock
+layout(std140, binding=2) uniform LightBlock
 {
 	float DirectedLightIntensity;
 	vec3  DirectedLightDirection;
@@ -48,28 +48,26 @@ vec4 ApplyFog(in vec4 Color)
 
 float ShadowCalculation(vec4 LightSpaceFragmentPosition)
 {
-	vec3 LightSpaceFragmentPosition3D = LightSpaceFragmentPosition.xyz / LightSpaceFragmentPosition.w;
+  vec3 LightSpaceFragmentPosition3D = LightSpaceFragmentPosition.xyz / LightSpaceFragmentPosition.w;
 
-	LightSpaceFragmentPosition3D = LightSpaceFragmentPosition3D * 0.5f + 0.5f;
+  LightSpaceFragmentPosition3D = LightSpaceFragmentPosition3D * 0.5f + 0.5f;
 
-	float Bias   = max(0.05 * (1.0 - dot(Normal, normalize(DirectedLightDirection.xyz))), 0.005);
-	float Shadow = 0.0;
+  if (LightSpaceFragmentPosition3D.z > 1.0)
+  	return 1.0;
 
-	for (int x = -1; x <= 1; ++x)
-		for (int y = -1; y <= 1; ++y)
-			Shadow += texture(u_DepthMap, vec3(LightSpaceFragmentPosition3D.xy + vec2(x, y), LightSpaceFragmentPosition3D.z - Bias));
-
-	return (Shadow / 9.0);
+  return texture(u_DepthMap, LightSpaceFragmentPosition3D);
 }
 
-vec4 ApplyDirectedLight(in vec4 Color)
+vec4 ApplyLights(in vec4 Color)
 {
-  // TODO: refactor
-  vec3  Ambient = Color.xyz * 0.25;
-  float Diffuse = max(dot(Normal, normalize(DirectedLightDirection.xyz)), 0.0);
+  float Diffuse = max(dot(normalize(DirectedLightDirection), normalize(Normal)), 0.0);
+
+  vec3 AmbientComponent = Color.xyz * vec3(0.25);
+  vec3 DiffuseComponent = Color.xyz * Diffuse * DirectedLightColor;
+
   float Shadow = ShadowCalculation(LightFragmentPosition);
 
-  return vec4(Ambient + Shadow * Color.xyz * (Diffuse * DirectedLightColor.rgb) * DirectedLightIntensity, Color.w);
+  return vec4(AmbientComponent + (Shadow * DiffuseComponent), 1.0);
 }
 
 void main()
@@ -79,7 +77,7 @@ void main()
 	if (Color.a < 0.1)
 		discard;
 
-	Color = ApplyDirectedLight(Color);
+	Color = ApplyLights(Color);
 	Color = ApplyFog(Color);
 
 	FragColor = Color;

@@ -41,6 +41,8 @@ public: // Interface
 
   static std::string GetIconPath(const TBlockComponent & Block);
 
+  static TGLUnbakedSolidMeshComponent CreateRawCubeMesh();
+
 protected: // Service
 
   void LoadConfigs();

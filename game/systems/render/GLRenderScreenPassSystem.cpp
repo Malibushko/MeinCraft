@@ -13,8 +13,14 @@ void GLRenderScreenPassSystem::OnCreate(registry_t & Registry_)
 {
   auto & RenderData = QueryOrCreate<TGLRenderPassData>(Registry_);
 
-  m_CompositeShader.ShaderID = CShaderLibrary::Load("res/shaders/composite_shader").ShaderID;
-  m_ScreenShader.ShaderID    = CShaderLibrary::Load("res/shaders/screen_shader").ShaderID;
+  m_CompositeShader = CShaderLibrary::Load("res/shaders/composite_shader");
+  m_ScreenShader    = CShaderLibrary::Load("res/shaders/screen_shader");
+
+#ifdef DEBUG_DEPTH
+
+  m_DebugDepthShader = CShaderLibrary::Load("res/shaders/debug_depth_shader");
+
+#endif
 
   if (!m_CompositeShader.IsValid() || !m_ScreenShader.IsValid())
     spdlog::critical("!!! ERROR: Failed to load composite or screen shader !!!");
@@ -74,10 +80,21 @@ void GLRenderScreenPassSystem::OnUpdate(registry_t & Registry_, float Delta_)
   glClearColor(0.f, 0.f, 0.f, 0.f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
+#ifdef DEBUG_DEPTH
+
+  glUseProgram(m_DebugDepthShader.ShaderID);
+  glActiveTexture(GL_TEXTURE0);
+  glBindTexture(GL_TEXTURE_2D, RenderData.DepthTexture);
+
+#else
+
   glUseProgram(m_ScreenShader.ShaderID);
 
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, RenderData.SolidTexture);
+
+#endif
+
   glBindVertexArray(m_ScreenQuadVAO);
   glDrawArrays(GL_TRIANGLES, 0, 6);
 }

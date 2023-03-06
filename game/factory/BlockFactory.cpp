@@ -26,51 +26,65 @@ static constexpr std::string_view BLOCK_ICONS_CACHE_PATH = "res/icons/";
 static constexpr std::array<glm::vec3, 4> CUBE_FACES[]
 {
   {
-    // Left
-    glm::vec3{ -0.5f, -0.5f, -0.5f },
-    glm::vec3{ -0.5f,  0.5f, -0.5f },
-    glm::vec3{ -0.5f,  0.5f,  0.5f },
-    glm::vec3{ -0.5f, -0.5f,  0.5f },
+    // Front
+    glm::vec3(-0.5f, -0.5f,  0.5f),
+    glm::vec3(0.5f, -0.5f,  0.5f),
+    glm::vec3(0.5f,  0.5f,  0.5f),
+    glm::vec3(-0.5f,  0.5f,  0.5f)
+  },
+  {
+    // Back
+    glm::vec3(-0.5f, -0.5f, -0.5f),
+    glm::vec3(-0.5f,  0.5f, -0.5f),
+    glm::vec3(0.5f,  0.5f, -0.5f),
+    glm::vec3(0.5f, -0.5f, -0.5f)
+  },
+  // Left
+  {
+    glm::vec3(-0.5f, -0.5f, -0.5f),
+    glm::vec3(-0.5f, -0.5f,  0.5f),
+    glm::vec3(-0.5f,  0.5f,  0.5f),
+    glm::vec3(-0.5f,  0.5f, -0.5f)
   },
   {
     // Right
-    glm::vec3{  0.5f, -0.5f, -0.5f },
-    glm::vec3{  0.5f, -0.5f,  0.5f },
-    glm::vec3{  0.5f,  0.5f, 0.5f  },
-    glm::vec3{  0.5f,  0.5f, -0.5f },
-  },
-  {
-    // Front
-    glm::vec3{ -0.5f, -0.5f, -0.5f },
-    glm::vec3{ -0.5f,  0.5f, -0.5f },
-    glm::vec3{  0.5f,  0.5f, -0.5f },
-    glm::vec3{  0.5f, -0.5f, -0.5f }
-  },
-  {
-     // Back
-     glm::vec3{ -0.5f, -0.5f,  0.5f },
-     glm::vec3{  0.5f, -0.5f,  0.5f },
-     glm::vec3{  0.5f,  0.5f,  0.5f },
-     glm::vec3{ -0.5f,  0.5f,  0.5f }
+    glm::vec3(0.5f, -0.5f, -0.5f),
+    glm::vec3(0.5f,  0.5f, -0.5f),
+    glm::vec3(0.5f,  0.5f,  0.5f),
+    glm::vec3(0.5f, -0.5f,  0.5f)
   },
   {
     // Top
-    glm::vec3{ -0.5f,  0.5f,  0.5f },
-    glm::vec3{  0.5f,  0.5f,  0.5f },
-    glm::vec3{  0.5f,  0.5f, -0.5f },
-    glm::vec3{ -0.5f,  0.5f, -0.5f },
+    glm::vec3(-0.5f,  0.5f, -0.5f),
+    glm::vec3(-0.5f,  0.5f,  0.5f),
+    glm::vec3(0.5f,  0.5f,  0.5f),
+    glm::vec3(0.5f,  0.5f, -0.5f)
   },
   {
     // Bottom
-    glm::vec3{ -0.5f, -0.5f,  0.5f },
-    glm::vec3{ -0.5f, -0.5f, -0.5f },
-    glm::vec3{  0.5f, -0.5f, -0.5f },
-    glm::vec3{  0.5f, -0.5f,  0.5f }
+    glm::vec3(-0.5f, -0.5f, -0.5f),
+    glm::vec3(0.5f, -0.5f, -0.5f),
+    glm::vec3(0.5f, -0.5f,  0.5f),
+    glm::vec3(-0.5f, -0.5f,  0.5f)
   }
 };
 
 static constexpr std::array<glm::vec3, 4> CUBE_NORMALS[]  =
 {
+  // Front
+  {
+    glm::vec3{  0.f,  0.f,  1.f },
+    glm::vec3{  0.f,  0.f,  1.f },
+    glm::vec3{  0.f,  0.f,  1.f },
+    glm::vec3{  0.f,  0.f,  1.f },
+  },
+  // Back
+  {
+    glm::vec3{  0.f,  0.f, -1.f },
+    glm::vec3{  0.f,  0.f, -1.f },
+    glm::vec3{  0.f,  0.f, -1.f },
+    glm::vec3{  0.f,  0.f, -1.f },
+  },
   // Left
   {
     glm::vec3{ -1.f,  0.f,  0.f },
@@ -84,20 +98,6 @@ static constexpr std::array<glm::vec3, 4> CUBE_NORMALS[]  =
     glm::vec3{  1.f,  0.f,  0.f },
     glm::vec3{  1.f,  0.f,  0.f },
     glm::vec3{  1.f,  0.f,  0.f },
-  },
-  // Back
-  {
-    glm::vec3{  0.f,  0.f, -1.f },
-    glm::vec3{  0.f,  0.f, -1.f },
-    glm::vec3{  0.f,  0.f, -1.f },
-    glm::vec3{  0.f,  0.f, -1.f },
-  },
-  // Front
-  {
-    glm::vec3{  0.f,  0.f,  1.f },
-    glm::vec3{  0.f,  0.f,  1.f },
-    glm::vec3{  0.f,  0.f,  1.f },
-    glm::vec3{  0.f,  0.f,  1.f },
   },
   // Top
   {
@@ -117,17 +117,11 @@ static constexpr std::array<glm::vec3, 4> CUBE_NORMALS[]  =
 
 static constexpr std::array<unsigned short, 6> CUBE_INDICES[] =
 {
-  // Front
   {0, 1, 2, 2, 3, 0},
-  // Back
   {4, 5, 6, 6, 7, 4},
-  // Left
   {8, 9, 10, 10, 11, 8},
-  // Right
   {12, 13, 14, 14, 15, 12},
-  // Top
   {16, 17, 18, 18, 19, 16},
-  // Bottom
   {20, 21, 22, 22, 23, 20}
 };
 
@@ -189,19 +183,18 @@ std::vector<glm::vec2> CBlockFactory::GetUVForBlock(const TBlockComponent & Bloc
   {
     if (Faces & (1 << FaceIndex))
     {
-      const EBlockFace Face = static_cast<EBlockFace>(1 << FaceIndex);
-
-      glm::vec2 UVMin = Instance().m_BlockUVs[Block.Type].Faces[FaceIndex];
-      glm::vec2 UVMax = UVMin + Instance().m_BlockQuadSize;
+      const EBlockFace Face  = static_cast<EBlockFace>(1 << FaceIndex);
+      const glm::vec2  UVMin = Instance().m_BlockUVs[Block.Type].Faces[FaceIndex];
+      const glm::vec2  UVMax = UVMin + Instance().m_BlockQuadSize;
 
       switch (Face)
       {
         case EBlockFace::Right:
-          UV.insert(UV.end(), { {UVMax.x, UVMax.y}, {UVMin.x, UVMax.y}, {UVMin.x, UVMin.y}, {UVMax.x, UVMin.y}, });
+          UV.insert(UV.end(), { {UVMin.x, UVMax.y}, {UVMin.x, UVMin.y}, {UVMax.x, UVMin.y}, {UVMax.x, UVMax.y} });
           break;
 
         case EBlockFace::Left:
-          UV.insert(UV.end(), { {UVMax.x, UVMax.y}, {UVMax.x, UVMin.y}, {UVMin.x, UVMin.y}, {UVMin.x, UVMax.y} });
+          UV.insert(UV.end(), { {UVMin.x, UVMax.y}, {UVMax.x, UVMax.y}, {UVMax.x, UVMin.y}, {UVMin.x, UVMin.y}});
           break;
 
         case EBlockFace::Top:
@@ -210,11 +203,11 @@ std::vector<glm::vec2> CBlockFactory::GetUVForBlock(const TBlockComponent & Bloc
           break;
 
         case EBlockFace::Front:
-          UV.insert(UV.end(), { {UVMax.x, UVMax.y}, {UVMax.x, UVMin.y}, {UVMin.x, UVMin.y}, {UVMin.x, UVMax.y}, });
+          UV.insert(UV.end(), { {UVMin.x, UVMax.y}, {UVMax.x, UVMax.y}, {UVMax.x, UVMin.y}, {UVMin.x, UVMin.y}, });
           break;
 
         case EBlockFace::Back:
-          UV.insert(UV.end(), { {UVMin.x, UVMax.y}, {UVMax.x, UVMax.y}, {UVMax.x, UVMin.y}, {UVMin.x, UVMin.y} });
+          UV.insert(UV.end(), { {UVMax.x, UVMax.y}, {UVMax.x, UVMin.y}, {UVMin.x, UVMin.y}, {UVMin.x, UVMax.y}});
           break;
       }
     }
@@ -269,6 +262,20 @@ EBlockFace CBlockFactory::GetDefaultBlockMeshFaces(const TBlockComponent& Block)
 std::string CBlockFactory::GetIconPath(const TBlockComponent & Block)
 {
   return std::string(BLOCK_ICONS_CACHE_PATH) + std::to_string(static_cast<int>(Block.Type)) + ".png";
+}
+
+TGLUnbakedSolidMeshComponent CBlockFactory::CreateRawCubeMesh()
+{
+  TGLUnbakedSolidMeshComponent Mesh;
+
+  for (int FaceIndex = 0; FaceIndex < 6; ++FaceIndex)
+  {
+    Mesh.Vertices.insert(Mesh.Vertices.end(), CUBE_FACES[FaceIndex].begin(),   CUBE_FACES[FaceIndex].end());
+    Mesh.Indices .insert(Mesh.Indices.end(),  CUBE_INDICES[FaceIndex].begin(), CUBE_INDICES[FaceIndex].end());
+    Mesh.Normals .insert(Mesh.Normals.end(),  CUBE_NORMALS[FaceIndex].begin(), CUBE_NORMALS[FaceIndex].end());
+  }
+
+  return Mesh;
 }
 
 void CBlockFactory::LoadConfigs()

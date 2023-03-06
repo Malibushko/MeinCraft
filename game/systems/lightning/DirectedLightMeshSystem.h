@@ -1,9 +1,7 @@
 #pragma once
-#include <glad/glad.h>
 #include "core/entity/System.h"
-#include "game/components/render/GLShaderComponent.h"
 
-class GLRenderDepthPassSystem : public ISystem
+class CDirectedLightMeshSystem : public ISystem
 {
 public: // ISystem
 
@@ -15,6 +13,5 @@ public: // ISystem
 
 protected: // Members
 
-  GLuint             m_FBO{};
-  TGLShaderComponent m_Shader;
+  entity_t m_MeshEntity{ entt::null };
 };

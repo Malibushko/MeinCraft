@@ -151,6 +151,9 @@
     <Filter Include="game\systems\requests">
       <UniqueIdentifier>{12003101-ec05-4c67-9263-bef5a6d3b8c7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="game\components\tags">
+      <UniqueIdentifier>{a54457bd-1eeb-430a-ab22-88204164e5cb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\entity\Entity.h">
@@ -411,6 +414,12 @@
     <ClInclude Include="game\utils\GLRenderUtils.h">
       <Filter>game\utils</Filter>
     </ClInclude>
+    <ClInclude Include="game\systems\lightning\DirectedLightMeshSystem.h">
+      <Filter>game\systems\lightning</Filter>
+    </ClInclude>
+    <ClInclude Include="game\components\tags\InvisibleMeshTag.h">
+      <Filter>game\components\tags</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="game\Main.cpp">
@@ -527,6 +536,9 @@
     <ClCompile Include="game\systems\render\GLRenderScreenPassSystem.cpp">
       <Filter>game\systems\render</Filter>
     </ClCompile>
+    <ClCompile Include="game\systems\lightning\DirectedLightMeshSystem.cpp">
+      <Filter>game\systems\lightning</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\blocks_shader.frag">
@@ -572,6 +584,12 @@
       <Filter>res\shaders</Filter>
     </None>
     <None Include="res\shaders\blocks_outline_shader.vert">
+      <Filter>res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\directed_light_shader.vert">
+      <Filter>res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\directed_light_shader.frag">
       <Filter>res\shaders</Filter>
     </None>
   </ItemGroup>

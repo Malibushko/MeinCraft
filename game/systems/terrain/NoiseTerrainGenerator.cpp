@@ -16,6 +16,15 @@ static constexpr int MINIMUM_TREE_CROWN_WIDTH  = 4;
 static constexpr int MINIMUM_TREE_CROWN_HEIGHT = 2;
 static constexpr int MINIMUM_TREE_CROWN_DEPTH  = 4;
 
+static const std::unordered_map<glm::vec3, EBlockType> TREE_MESH =
+{
+  {{0, 0, 0}, EBlockType::Wood},
+  {{0, 1, 0}, EBlockType::Wood},
+  {{0, 2, 0}, EBlockType::Wood},
+  {{0, 3, 0}, EBlockType::Wood},
+  {{0, 4, 0}, EBlockType::Wood},
+};
+
 //
 // Construction/Destruction
 //
@@ -54,7 +63,20 @@ TBlockComponent CNoiseTerrainGenerator::GenerateImpl(glm::vec3 _Position)
     if (Elevation < 0.2f)
       return TBlockComponent{ .Type = EBlockType::Sand };
 
-    return TBlockComponent{ .Type = EBlockType::Grass };
+    if (Generate(glm::vec3(_Position.x, _Position.y + 1.f, _Position.z)).Type == EBlockType::Air)
+    {
+
+      if (m_Noise.GetNoise(_Position.x * 50.f, _Position.z * 50.f) > 0.85f && _Position.y > 15)
+      {
+        SpawnTreeAt(_Position);
+
+        return Generate(_Position);
+      }
+
+      return TBlockComponent{ .Type = EBlockType::Grass };
+    }
+
+    return TBlockComponent{ .Type = EBlockType::Dirt };
   }
 
   if (_Position.y <= WATER_LEVEl && Generate(glm::vec3(_Position.x, _Position.y - 1.f, _Position.z)).Type != EBlockType::Air)

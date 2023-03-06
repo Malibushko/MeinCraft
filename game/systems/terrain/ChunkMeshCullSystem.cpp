@@ -45,7 +45,7 @@ void CChunkMeshCullSystem::OnDestroy(registry_t& Registry_)
 // Service
 //
 
-void CChunkMeshCullSystem::UpdateBlocksFaces(registry_t& Registry, TTerrainComponent& Terrain,
+void CChunkMeshCullSystem::UpdateBlocksFaces(registry_t & Registry, TTerrainComponent & Terrain,
   const glm::ivec2 & ChunkPosition, TChunkComponent & Chunk)
 {
   const auto GetBlockAt = [&](glm::ivec3 BlockPosition) -> std::pair<entity_t, bool>
@@ -91,10 +91,10 @@ void CChunkMeshCullSystem::UpdateBlocksFaces(registry_t& Registry, TTerrainCompo
 
   static const glm::ivec3 NeighbourOffsets[6] =
   {
+    { 0, 0, +1},
+    { 0, 0, -1},
     { -1, 0, 0},
     { +1, 0, 0},
-    { 0, 0, -1},
-    { 0, 0, +1},
     { 0, +1, 0},
     { 0, -1, 0},
   };

@@ -1,4 +1,5 @@
 #pragma once
+#include <magic_enum.hpp>
 #include <glad/glad.h>
 
 #include "core/entity/Registry.h"
@@ -6,6 +7,7 @@
 #include "game/components/render/GLRenderPassData.h"
 #include "game/components/render/GLShaderComponent.h"
 #include "game/components/render/GLTextureComponent.h"
+#include "game/systems/render/GLRenderUniformObjectsSystem.h"
 
 void RenderMeshes(registry_t & Registry, auto && Meshes)
 {
@@ -61,15 +63,14 @@ void RenderMeshes(registry_t & Registry, auto && Meshes)
   }
 }
 
-void RenderMeshesWithShader(registry_t & Registry, auto && Meshes, TGLShaderComponent Shader)
+void RenderMeshesWithShader(registry_t & Registry, auto && Meshes, TGLShaderComponent ForceShader)
 {
   auto & RenderData = QuerySingle<TGLRenderPassData>(Registry);
 
-  GLuint PreviousShader = 0;
   GLuint PreviousTexture = 0;
 
-  assert(Shader.IsValid());
-  glUseProgram(Shader.ShaderID);
+  assert(ForceShader.IsValid());
+  glUseProgram(ForceShader.ShaderID);
 
   for (auto && [Entity, Mesh, Shader, Transform] : Meshes)
   {
@@ -82,7 +83,7 @@ void RenderMeshesWithShader(registry_t & Registry, auto && Meshes, TGLShaderComp
     assert(Mesh.IsBaked());
 
     glUniformMatrix4fv(
-      glGetUniformLocation(Shader.ShaderID, "u_Transform"),
+      glGetUniformLocation(ForceShader.ShaderID, "u_Transform"),
       1,
       GL_FALSE,
       &Transform.Transform[0][0]
@@ -108,4 +109,16 @@ void RenderMeshesWithShader(registry_t & Registry, auto && Meshes, TGLShaderComp
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, Mesh.EBO);
     glDrawElements(GL_TRIANGLES, Mesh.IndicesCount, GL_UNSIGNED_SHORT, nullptr);
   }
+}
+
+inline void BindShaderUniformBlocks(TGLShaderComponent & Shader)
+{
+  magic_enum::enum_for_each<EUniformBlock>([&](EUniformBlock UniformBlock)
+  {
+    const auto & BlockName = magic_enum::enum_name(UniformBlock);
+    const auto   BlockID = glGetUniformBlockIndex(Shader.ShaderID, BlockName.data());
+
+    if (BlockID != GL_INVALID_INDEX)
+      glUniformBlockBinding(Shader.ShaderID, BlockID, static_cast<GLuint>(UniformBlock));
+  });
 }
