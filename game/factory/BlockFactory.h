@@ -43,6 +43,8 @@ public: // Interface
 
   static TGLUnbakedSolidMeshComponent CreateRawCubeMesh();
 
+  static int GetBlockEmitLightFactor(TBlockComponent Block);
+
 protected: // Service
 
   void LoadConfigs();

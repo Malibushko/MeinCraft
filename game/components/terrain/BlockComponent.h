@@ -16,7 +16,8 @@ enum class EBlockType
   Sand            = 12,
   // TODO: support variations
   Wood            = 17,
-  Leaves          = 18
+  Leaves          = 18,
+  GlowStone       = 89
 };
 
 struct TBlockComponent

@@ -7,7 +7,7 @@ struct TPointLightComponent
 {
   static constexpr ComponentTag ComponentTag{};
 
-  float Constant;
-  float Linear;
-  float Quadratic;
+  float FadeConstant{};
+  float FadeLinear{};
+  float FadeQuadratic{};
 };

@@ -1,6 +1,9 @@
 #include "ChunkMeshSystem.h"
 
+#include "core/components/PositionComponent.h"
 #include "core/components/TransformComponent.h"
+#include "game/components/lightning/LightComponent.h"
+#include "game/components/lightning/PointLightComponent.h"
 #include "game/components/physics/BoundingVolume.h"
 #include "game/components/terrain/BlockComponent.h"
 #include "game/components/terrain/ChunkComponent.h"
@@ -69,6 +72,21 @@ void CChunkMeshSystem::RecreateChunkMesh(registry_t & Registry_, entity_t ChunkE
     std::vector<glm::vec2>       BlockUV       = CBlockFactory::GetUVForBlock(Block, Faces.Faces);
     EMeshType                    BlockMeshType = CBlockFactory::GetMeshTypeForBlock(Block);
     const glm::ivec3             BlockPosition = BlockIndexToPosition(Index);
+
+    if (const int Factor = CBlockFactory::GetBlockEmitLightFactor(Block); Factor > 0)
+    {
+      if (Registry_.try_get<TLightComponent>(Chunk.Blocks[Index]) == nullptr)
+      {
+        AddComponent<TPositionComponent>(Registry_, Chunk.Blocks[Index],   TPositionComponent{.Position = BlockPosition});
+        AddComponent<TLightComponent>(Registry_, Chunk.Blocks[Index],      TLightComponent{ .Ambient = glm::vec3(0.2f), .Diffuse = glm::vec3(0.5f) });
+        AddComponent<TPointLightComponent>(Registry_, Chunk.Blocks[Index], TPointLightComponent
+        {
+          .FadeConstant  = 0.1f    * static_cast<float>(Factor),
+          .FadeLinear    = 0.009f  * static_cast<float>(Factor),
+          .FadeQuadratic = 0.0032f * static_cast<float>(Factor)
+        });
+      }
+    }
 
     const auto AppendToMesh = [&]<EMeshType T>(TGLUnbakedMeshComponent<T> &ChunkMesh)
     {

@@ -250,7 +250,7 @@ TGLShaderComponent CBlockFactory::GetShaderForBlock(const TBlockComponent& Block
   };
 }
 
-EBlockFace CBlockFactory::GetDefaultBlockMeshFaces(const TBlockComponent& Block)
+EBlockFace CBlockFactory::GetDefaultBlockMeshFaces(const TBlockComponent & Block)
 {
   // TODO: move to config
   if (Block.Type == EBlockType::Leaves)
@@ -276,6 +276,11 @@ TGLUnbakedSolidMeshComponent CBlockFactory::CreateRawCubeMesh()
   }
 
   return Mesh;
+}
+
+int CBlockFactory::GetBlockEmitLightFactor(TBlockComponent Block)
+{
+  return Instance().m_BlockInfos[Block.Type].EmitLight;
 }
 
 void CBlockFactory::LoadConfigs()
