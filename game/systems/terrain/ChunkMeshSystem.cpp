@@ -77,13 +77,20 @@ void CChunkMeshSystem::RecreateChunkMesh(registry_t & Registry_, entity_t ChunkE
     {
       if (Registry_.try_get<TLightComponent>(Chunk.Blocks[Index]) == nullptr)
       {
-        AddComponent<TPositionComponent>(Registry_, Chunk.Blocks[Index],   TPositionComponent{.Position = BlockPosition});
-        AddComponent<TLightComponent>(Registry_, Chunk.Blocks[Index],      TLightComponent{ .Ambient = glm::vec3(0.2f), .Diffuse = glm::vec3(0.5f) });
+        AddComponent<TPositionComponent>(Registry_, Chunk.Blocks[Index], TPositionComponent{ .Position = glm::vec3(BlockPosition) + glm::vec3(0.5)});
+        AddComponent<TLightComponent>(Registry_, Chunk.Blocks[Index], TLightComponent{ .Color = glm::vec3(0.5f) });
+
+        const float Constant  = 1.0f  ;
+        const float Linear    = 0.09f ;
+        const float Quadratic = 0.032f;
+        const float Radius    = (-Linear + std::sqrt(Linear * Linear - 4 * Quadratic * (Constant - (256 / 5.0)))) / (4 * Quadratic);
+
         AddComponent<TPointLightComponent>(Registry_, Chunk.Blocks[Index], TPointLightComponent
         {
-          .FadeConstant  = 0.1f    * static_cast<float>(Factor),
-          .FadeLinear    = 0.009f  * static_cast<float>(Factor),
-          .FadeQuadratic = 0.0032f * static_cast<float>(Factor)
+          .FadeConstant  = Constant,
+          .FadeLinear    = Linear,
+          .FadeQuadratic = Quadratic,
+          .Radius        = Radius
         });
       }
     }

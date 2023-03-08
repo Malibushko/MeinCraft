@@ -10,4 +10,5 @@ struct TPointLightComponent
   float FadeConstant{};
   float FadeLinear{};
   float FadeQuadratic{};
+  float Radius{};
 };

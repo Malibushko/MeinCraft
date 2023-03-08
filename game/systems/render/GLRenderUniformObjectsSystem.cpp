@@ -9,9 +9,12 @@
 #include "game/components/events/CameraChangedEvent.h"
 #include "game/components/lightning/DirectedLightComponent.h"
 #include "game/components/lightning/LightComponent.h"
+#include "game/components/lightning/PointLightComponent.h"
 #include "game/components/render/GLRenderPassData.h"
 #include "game/components/render/GLShaderComponent.h"
 #include "game/utils/GLRenderUtils.h"
+
+static constexpr int MAX_LIGHTS = 64;
 
 //
 // ISystem
@@ -106,12 +109,25 @@ void GLRenderUniformObjectsSystem::UpdateLightUBO(registry_t & Registry_)
 {
 #pragma pack (push, 1)
 
+  struct TPointLight
+  {
+    alignas(sizeof(float) * 4) glm::vec3 Position;
+    alignas(sizeof(float) * 4) glm::vec3 Color;
+
+    float Constant{};
+    float Linear{};
+    float Quadratic{};
+    float Radius{};
+  };
+
   struct TLightUBO
   {
     float                                DirectedLightIntensity;
     alignas(sizeof(float) * 4) glm::vec3 DirectedLightDirection;
     alignas(sizeof(float) * 4) glm::vec3 DirectedLightColor;
     alignas(sizeof(float) * 4) glm::mat4 DirectedLightSpaceMatrix;
+
+    TPointLight                          PointLights[MAX_LIGHTS];
   } UBO;
 
 #pragma pack (pop, 1)
@@ -126,8 +142,24 @@ void GLRenderUniformObjectsSystem::UpdateLightUBO(registry_t & Registry_)
 
   UBO.DirectedLightDirection   = DirectedLight.Direction;
   UBO.DirectedLightIntensity   = DirectedLight.Intensity;
-  UBO.DirectedLightColor       = Light.Ambient + Light.Diffuse + Light.Specular;
+  UBO.DirectedLightColor       = Light.Color;
   UBO.DirectedLightSpaceMatrix = LightProjection * LightView;
+
+  int LightsCount = 0;
+
+  // TODO: somehow sort lights by distance to view frustrum to fit the limit of 64
+  for (auto [Entity, PointLight, Light, Position] : Registry_.view<TPointLightComponent, TLightComponent, TPositionComponent>().each())
+  {
+    UBO.PointLights[LightsCount].Position  = Position.Position;
+    UBO.PointLights[LightsCount].Color     = Light.Color;
+    UBO.PointLights[LightsCount].Constant  = PointLight.FadeConstant;
+    UBO.PointLights[LightsCount].Linear    = PointLight.FadeLinear;
+    UBO.PointLights[LightsCount].Quadratic = PointLight.FadeQuadratic;
+    UBO.PointLights[LightsCount].Radius    = PointLight.Radius;
+
+    if (++LightsCount >= MAX_LIGHTS)
+      break;
+  }
 
   if (RenderData.LightUBO == 0)
     glGenBuffers(1, &RenderData.LightUBO);

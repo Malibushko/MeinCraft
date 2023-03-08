@@ -3,7 +3,7 @@
 #include "core/entity/System.h"
 #include "game/components/render/GLShaderComponent.h"
 
-class GLRenderDepthPassSystem : public ISystem
+class GLRenderDirectedLightDepthPassSystem : public ISystem
 {
 public: // ISystem
 

@@ -14,7 +14,13 @@ struct TGLRenderPassData
   GLuint   LightUBO{ 0 };
   GLuint   CameraUBO{ 0 };
 
+  // Deferred shading data
+  GLuint PositionTexture{};
+  GLuint AlbedoTexture{};
+  GLuint NormalTexture{};
   GLuint DepthTexture{};
+
+  // Miscellaneous data
   GLuint SolidTexture{};
   GLuint TransparentTexture{};
 

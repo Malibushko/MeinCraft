@@ -405,7 +405,7 @@
     <ClInclude Include="game\systems\render\GLRenderTransparentPassSystem.h">
       <Filter>game\systems\render</Filter>
     </ClInclude>
-    <ClInclude Include="game\systems\render\GLRenderDepthPassSystem.h">
+    <ClInclude Include="game\systems\render\GLRenderDirectedLightDepthPassSystem.h">
       <Filter>game\systems\render</Filter>
     </ClInclude>
     <ClInclude Include="game\systems\render\GLRenderScreenPassSystem.h">
@@ -419,6 +419,9 @@
     </ClInclude>
     <ClInclude Include="game\components\tags\InvisibleMeshTag.h">
       <Filter>game\components\tags</Filter>
+    </ClInclude>
+    <ClInclude Include="game\systems\render\GLRenderDeferredPassSystem.h">
+      <Filter>game\systems\render</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -530,7 +533,7 @@
     <ClCompile Include="game\systems\render\GLRenderTransparentPassSystem.cpp">
       <Filter>game\systems\render</Filter>
     </ClCompile>
-    <ClCompile Include="game\systems\render\GLRenderDepthPassSystem.cpp">
+    <ClCompile Include="game\systems\render\GLRenderDirectedLightDepthPassSystem.cpp">
       <Filter>game\systems\render</Filter>
     </ClCompile>
     <ClCompile Include="game\systems\render\GLRenderScreenPassSystem.cpp">
@@ -538,6 +541,9 @@
     </ClCompile>
     <ClCompile Include="game\systems\lightning\DirectedLightMeshSystem.cpp">
       <Filter>game\systems\lightning</Filter>
+    </ClCompile>
+    <ClCompile Include="game\systems\render\GLRenderDeferredPassSystem.cpp">
+      <Filter>game\systems\render</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -592,6 +598,12 @@
     <None Include="res\shaders\directed_light_shader.frag">
       <Filter>res\shaders</Filter>
     </None>
+    <None Include="res\shaders\deferred_pass_shader.frag">
+      <Filter>res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\deferred_pass_shader.vert">
+      <Filter>res\shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\textures\blocks_atlas.png">
@@ -602,6 +614,8 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
+    <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.lib" />
     <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.dll" />
     <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.lib" />
     <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.dll" />

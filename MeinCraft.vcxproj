@@ -217,7 +217,8 @@
     <ClInclude Include="game\systems\lightning\DirectedLightMovementSystem.h" />
     <ClInclude Include="game\systems\physics\PhysicsSystem.h" />
     <ClInclude Include="game\systems\render\GLMeshSystem.h" />
-    <ClInclude Include="game\systems\render\GLRenderDepthPassSystem.h" />
+    <ClInclude Include="game\systems\render\GLRenderDeferredPassSystem.h" />
+    <ClInclude Include="game\systems\render\GLRenderDirectedLightDepthPassSystem.h" />
     <ClInclude Include="game\systems\render\GLRenderScreenPassSystem.h" />
     <ClInclude Include="game\systems\render\GLRenderSolidPassSystem.h" />
     <ClInclude Include="game\systems\render\GLRenderTransparentPassSystem.h" />
@@ -260,7 +261,8 @@
     <ClCompile Include="game\systems\lightning\DirectedLightMovementSystem.cpp" />
     <ClCompile Include="game\systems\physics\PhysicsSystem.cpp" />
     <ClCompile Include="game\systems\render\GLMeshSystem.cpp" />
-    <ClCompile Include="game\systems\render\GLRenderDepthPassSystem.cpp" />
+    <ClCompile Include="game\systems\render\GLRenderDeferredPassSystem.cpp" />
+    <ClCompile Include="game\systems\render\GLRenderDirectedLightDepthPassSystem.cpp" />
     <ClCompile Include="game\systems\render\GLRenderScreenPassSystem.cpp" />
     <ClCompile Include="game\systems\render\GLRenderSolidPassSystem.cpp" />
     <ClCompile Include="game\systems\render\GLRenderTransparentPassSystem.cpp" />
@@ -309,6 +311,8 @@
     <None Include="res\shaders\composite_shader.vert" />
     <None Include="res\shaders\debug_depth_shader.frag" />
     <None Include="res\shaders\debug_depth_shader.vert" />
+    <None Include="res\shaders\deferred_pass_shader.frag" />
+    <None Include="res\shaders\deferred_pass_shader.vert" />
     <None Include="res\shaders\depth_shader.frag" />
     <None Include="res\shaders\depth_shader.vert" />
     <None Include="res\shaders\directed_light_shader.frag" />

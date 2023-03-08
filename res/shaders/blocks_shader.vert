@@ -1,4 +1,5 @@
 #version 460 core
+#define MAX_LIGHTS 64
 layout (location = 0) in vec3 aPosition;
 layout (location = 1) in vec2 aTextureCoord;
 layout (location = 2) in vec3 aNormal;
@@ -7,6 +8,17 @@ out vec2 TextureCoords;
 out vec3 Position;
 out vec3 Normal;
 out vec4 LightFragmentPosition;
+
+struct TPointLight
+{
+  vec3  Position;
+  vec3  Color;
+
+  float Constant;
+  float Linear;
+  float Quadratic;
+  float Radius;
+};
 
 layout(std140, binding=0) uniform MatricesBlock
 {
@@ -28,6 +40,8 @@ layout(std140, binding=2) uniform LightBlock
 	vec3  DirectedLightDirection;
 	vec3  DirectedLightColor;
 	mat4  DirectedLightSpaceMatrix;
+
+	TPointLight PointLights[MAX_LIGHTS];
 };
 
 uniform mat4 u_Transform;

@@ -1,4 +1,4 @@
-#include "GLRenderDepthPassSystem.h"
+#include "GLRenderDirectedLightDepthPassSystem.h"
 
 #include <spdlog/spdlog.h>
 
@@ -19,7 +19,7 @@ static constexpr size_t SHADOW_MAP_HEIGHT = 4096;
 // ISystem
 //
 
-void GLRenderDepthPassSystem::OnCreate(registry_t & Registry_)
+void GLRenderDirectedLightDepthPassSystem::OnCreate(registry_t & Registry_)
 {
   auto & RenderData = QueryOrCreate<TGLRenderPassData>(Registry_);
   auto & Display    = QuerySingle<TDisplayComponent>(Registry_);
@@ -58,7 +58,7 @@ void GLRenderDepthPassSystem::OnCreate(registry_t & Registry_)
   BindShaderUniformBlocks(m_Shader);
 }
 
-void GLRenderDepthPassSystem::OnUpdate(registry_t & Registry_, float Delta_)
+void GLRenderDirectedLightDepthPassSystem::OnUpdate(registry_t & Registry_, float Delta_)
 {
   glEnable(GL_DEPTH_TEST);
   glDepthFunc(GL_LESS);
@@ -86,7 +86,7 @@ void GLRenderDepthPassSystem::OnUpdate(registry_t & Registry_, float Delta_)
   glViewport(0, 0, Display.Width, Display.Height);
 }
 
-void GLRenderDepthPassSystem::OnDestroy(registry_t & Registry_)
+void GLRenderDirectedLightDepthPassSystem::OnDestroy(registry_t & Registry_)
 {
   // Empty
 }

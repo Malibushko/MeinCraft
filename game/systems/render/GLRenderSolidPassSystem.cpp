@@ -49,8 +49,6 @@ void GLRenderSolidPassSystem::OnCreate(registry_t & Registry_)
 
 void GLRenderSolidPassSystem::OnUpdate(registry_t & Registry_, float Delta_)
 {
-  const auto & RenderData = QuerySingle<TGLRenderPassData>(Registry_);
-
   glBindFramebuffer(GL_FRAMEBUFFER, m_FBO);
   // TODO: move color to TBackgroundColorComponent
   glClearColor(0.52f, 0.807f, 0.92f, 1.f);

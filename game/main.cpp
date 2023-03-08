@@ -27,7 +27,8 @@
 #include "systems/lightning/DirectedLightMovementSystem.h"
 #include "systems/physics/PhysicsSystem.h"
 #include "systems/render/GLMeshSystem.h"
-#include "systems/render/GLRenderDepthPassSystem.h"
+#include "systems/render/GLRenderDeferredPassSystem.h"
+#include "systems/render/GLRenderDirectedLightDepthPassSystem.h"
 #include "systems/render/GLRenderScreenPassSystem.h"
 #include "systems/render/GLRenderSolidPassSystem.h"
 #include "systems/render/GLRenderSystem.h"
@@ -118,7 +119,8 @@ void InitCoreSystems(World & World_)
 
         .AddSystem<GLRenderSystem>()
         .AddSystem<GLRenderUniformObjectsSystem>()
-        .AddSystem<GLRenderDepthPassSystem>()
+        .AddSystem<GLRenderDirectedLightDepthPassSystem>()
+        .AddSystem<GLRenderDeferredPassSystem>()
         .AddSystem<GLRenderSolidPassSystem>()
         .AddSystem<GLRenderTransparentPassSystem>()
         .AddSystem<GLRenderScreenPassSystem>()
@@ -133,7 +135,7 @@ void InitTerrain(World & World_)
   {
     .TerrainGenerationStrategy = [](const glm::vec3 & _Position) -> TBlockComponent
     {
-      static CNoiseTerrainGenerator Generator(time(nullptr));
+      static CFlatTerrainGenerator Generator(time(nullptr));
 
       return Generator.Generate(_Position);
     }
@@ -152,7 +154,7 @@ void InitLight(World & World_)
   {
     .Light = TLightComponent
     {
-      .Ambient = glm::vec3(0.92f, 0.95f, 0.13f),
+      .Color = glm::vec3(0.92f, 0.95f, 0.13f),
     },
     .DirectedLight = TDirectedLightComponent
     {
@@ -173,18 +175,20 @@ void InitUI(World & World_)
 
 void InitInventory(World & World_)
 {
-  std::array<entity_t, 3> InitialItems
+  std::array InitialItems
   {
+    World_.Registry().create(),
     World_.Registry().create(),
     World_.Registry().create(),
     World_.Registry().create()
   };
 
-  std::array<EBlockType, 3> BlockTypes =
+  std::array BlockTypes =
   {
     EBlockType::Grass,
     EBlockType::CobbleStone,
-    EBlockType::Sand
+    EBlockType::Sand,
+    EBlockType::GlowStone
   };
 
   for (int i = 0; i < InitialItems.size(); i++)

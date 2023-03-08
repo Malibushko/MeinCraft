@@ -1,4 +1,6 @@
 #version 460 core
+#define MAX_LIGHTS 64
+
 out vec4 FragColor;
 
 in vec2 TextureCoords;
@@ -8,6 +10,17 @@ in vec4 LightFragmentPosition;
 
 layout(binding = 0) uniform sampler2D       u_Texture_0;
 layout(binding = 1) uniform sampler2DShadow u_DepthMap;
+
+struct TPointLight
+{
+  vec3  Position;
+  vec3  Color;
+
+  float Constant;
+  float Linear;
+  float Quadratic;
+  float Radius;
+};
 
 layout(std140, binding=0) uniform MatricesBlock
 {
@@ -29,6 +42,8 @@ layout(std140, binding=2) uniform LightBlock
 	vec3  DirectedLightDirection;
 	vec3  DirectedLightColor;
 	mat4  DirectedLightSpaceMatrix;
+
+	TPointLight PointLights[MAX_LIGHTS];
 };
 
 const float FOG_FACTOR = 0.0001;
@@ -77,7 +92,25 @@ void main()
 	if (Color.a < 0.1)
 		discard;
 
-	Color = ApplyLights(Color);
+	vec3 Lightning     = Color.xyz;
+	vec3 ViewDirection = normalize(CameraDirection - Position);
+
+	for (int i = 0; i < MAX_LIGHTS; i++)
+	{
+	  float Distance = length(PointLights[i].Position - Position);
+
+	  if (Distance < PointLights[i].Radius)
+	  {
+		vec3 LightDirection = normalize(PointLights[i].Position - Position);
+	    float Diffuse       = max(dot(Normal, LightDirection), 0.0);
+	    float Attenuation   = 1.0 / (PointLights[i].Constant + PointLights[i].Linear * Distance + PointLights[i].Quadratic * (Distance * Distance));
+	    float Intensity     = PointLights[i].Radius / Distance;
+
+	    Lightning += Diffuse * PointLights[i].Color * Attenuation * Intensity;
+	  }
+	}
+
+	Color = ApplyLights(vec4(Lightning, 1.0));
 	Color = ApplyFog(Color);
 
 	FragColor = Color;

@@ -53,6 +53,15 @@ void RenderMeshes(registry_t & Registry, auto && Meshes)
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, RenderData.DepthTexture);
 
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_2D, RenderData.PositionTexture);
+
+        glActiveTexture(GL_TEXTURE3);
+        glBindTexture(GL_TEXTURE_2D, RenderData.NormalTexture);
+
+        glActiveTexture(GL_TEXTURE4);
+        glBindTexture(GL_TEXTURE_2D, RenderData.AlbedoTexture);
+
         PreviousTexture = Texture->TextureID;
       }
     }
@@ -100,6 +109,15 @@ void RenderMeshesWithShader(registry_t & Registry, auto && Meshes, TGLShaderComp
 
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, RenderData.DepthTexture);
+
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_2D, RenderData.PositionTexture);
+
+        glActiveTexture(GL_TEXTURE3);
+        glBindTexture(GL_TEXTURE_2D, RenderData.NormalTexture);
+
+        glActiveTexture(GL_TEXTURE4);
+        glBindTexture(GL_TEXTURE_2D, RenderData.AlbedoTexture);
 
         PreviousTexture = Texture->TextureID;
       }
