@@ -12,6 +12,15 @@ public: // Public structs
   {
     using result_type = TGLShaderComponent;
 
+    enum class EShaderType
+    {
+      Vertex,
+      Fragment,
+      Compute
+    };
+
+    result_type operator()(EShaderType ShaderType, std::string_view ShaderPath) const;
+
     result_type operator()(std::string_view ShaderPath) const;
   };
 

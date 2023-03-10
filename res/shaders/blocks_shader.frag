@@ -1,6 +1,4 @@
 #version 460 core
-#define MAX_LIGHTS 64
-
 out vec4 FragColor;
 
 in vec2 TextureCoords;
@@ -22,29 +20,37 @@ struct TPointLight
   float Radius;
 };
 
-layout(std140, binding=0) uniform MatricesBlock
+layout(std430, binding = 0) readonly buffer MatricesBuffer
 {
   mat4 Projection;
   mat4 View;
   mat4 MVP;
 };
 
-layout(std140, binding=1) uniform CameraBlock
+layout(std430, binding = 1) readonly buffer CameraBuffer
 {
   float ViewDistance;
   vec3  CameraDirection;
   vec3  CameraPosition;
 };
 
-layout(std140, binding=2) uniform LightBlock
+layout(std430, binding = 2) readonly buffer DirectedLightBuffer
 {
 	float DirectedLightIntensity;
 	vec3  DirectedLightDirection;
 	vec3  DirectedLightColor;
 	mat4  DirectedLightSpaceMatrix;
-
-	TPointLight PointLights[MAX_LIGHTS];
 };
+
+layout(std430, binding = 3) readonly buffer PointLightsBuffer
+{
+	TPointLight Lights[];
+} LightBuffer;
+
+layout(std430, binding = 4) readonly buffer VisiblePointLightsIndicesBuffer
+{
+	int Indices[];
+} IndicesBuffer;
 
 const float FOG_FACTOR = 0.0001;
 const vec3  FOG_COLOR  = vec3(0.5, 0.6, 0.7);
@@ -92,25 +98,14 @@ void main()
 	if (Color.a < 0.1)
 		discard;
 
-	vec3 Lightning     = Color.xyz;
-	vec3 ViewDirection = normalize(CameraDirection - Position);
+	ivec2 Location = ivec2(gl_FragCoord.xy);
+	ivec2 TileID   = Location / ivec2(16, 16);
+	int   Index    = TileID.y * 80 + TileID.x;
 
-	for (int i = 0; i < MAX_LIGHTS; i++)
-	{
-	  float Distance = length(PointLights[i].Position - Position);
+	vec3 ViewDirection = normalize(CameraPosition - Position);
+	int  Offset        = Index * 1024;
 
-	  if (Distance < PointLights[i].Radius)
-	  {
-		vec3 LightDirection = normalize(PointLights[i].Position - Position);
-	    float Diffuse       = max(dot(Normal, LightDirection), 0.0);
-	    float Attenuation   = 1.0 / (PointLights[i].Constant + PointLights[i].Linear * Distance + PointLights[i].Quadratic * (Distance * Distance));
-	    float Intensity     = PointLights[i].Radius / Distance;
-
-	    Lightning += Diffuse * PointLights[i].Color * Attenuation * Intensity;
-	  }
-	}
-
-	Color = ApplyLights(vec4(Lightning, 1.0));
+	Color = ApplyLights(Color);
 	Color = ApplyFog(Color);
 
 	FragColor = Color;

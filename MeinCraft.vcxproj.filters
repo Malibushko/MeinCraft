@@ -393,7 +393,7 @@
     <ClInclude Include="game\systems\requests\RequestsSystem.h">
       <Filter>game\systems\requests</Filter>
     </ClInclude>
-    <ClInclude Include="game\systems\render\GLRenderUniformObjectsSystem.h">
+    <ClInclude Include="game\systems\render\GLRenderBufferObjectsSystem.h">
       <Filter>game\systems\render</Filter>
     </ClInclude>
     <ClInclude Include="game\components\render\GLRenderPassData.h">
@@ -420,7 +420,7 @@
     <ClInclude Include="game\components\tags\InvisibleMeshTag.h">
       <Filter>game\components\tags</Filter>
     </ClInclude>
-    <ClInclude Include="game\systems\render\GLRenderDeferredPassSystem.h">
+    <ClInclude Include="game\systems\render\GLRenderLightAccumulationPassSystem.h">
       <Filter>game\systems\render</Filter>
     </ClInclude>
   </ItemGroup>
@@ -524,7 +524,7 @@
     <ClCompile Include="game\systems\requests\RequestsSystem.cpp">
       <Filter>game\systems\requests</Filter>
     </ClCompile>
-    <ClCompile Include="game\systems\render\GLRenderUniformObjectsSystem.cpp">
+    <ClCompile Include="game\systems\render\GLRenderBufferObjectsSystem.cpp">
       <Filter>game\systems\render</Filter>
     </ClCompile>
     <ClCompile Include="game\systems\render\GLRenderSolidPassSystem.cpp">
@@ -542,7 +542,7 @@
     <ClCompile Include="game\systems\lightning\DirectedLightMeshSystem.cpp">
       <Filter>game\systems\lightning</Filter>
     </ClCompile>
-    <ClCompile Include="game\systems\render\GLRenderDeferredPassSystem.cpp">
+    <ClCompile Include="game\systems\render\GLRenderLightAccumulationPassSystem.cpp">
       <Filter>game\systems\render</Filter>
     </ClCompile>
   </ItemGroup>
@@ -574,10 +574,10 @@
     <None Include="res\shaders\screen_shader.vert">
       <Filter>res\shaders</Filter>
     </None>
-    <None Include="res\shaders\depth_shader.frag">
+    <None Include="res\shaders\directed_light_depth_shader.frag">
       <Filter>res\shaders</Filter>
     </None>
-    <None Include="res\shaders\depth_shader.vert">
+    <None Include="res\shaders\directed_light_depth_shader.vert">
       <Filter>res\shaders</Filter>
     </None>
     <None Include="res\shaders\debug_depth_shader.frag">
@@ -598,10 +598,13 @@
     <None Include="res\shaders\directed_light_shader.frag">
       <Filter>res\shaders</Filter>
     </None>
-    <None Include="res\shaders\deferred_pass_shader.frag">
+    <None Include="res\shaders\depth_shader.frag">
       <Filter>res\shaders</Filter>
     </None>
-    <None Include="res\shaders\deferred_pass_shader.vert">
+    <None Include="res\shaders\depth_shader.vert">
+      <Filter>res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\forward_light_culling.comp">
       <Filter>res\shaders</Filter>
     </None>
   </ItemGroup>
@@ -614,6 +617,8 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
+    <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.lib" />
     <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.dll" />
     <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.lib" />
     <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.dll" />

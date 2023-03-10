@@ -7,7 +7,7 @@ out vec2 TextureCoords;
 out vec3 Position;
 out vec3 Normal;
 
-layout(std140) uniform MatricesBlock
+layout(std430, binding = 0) readonly buffer MatricesBuffer
 {
   mat4 Projection;
   mat4 View;

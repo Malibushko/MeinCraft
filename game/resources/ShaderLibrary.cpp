@@ -10,6 +10,7 @@
 
 static constexpr std::string_view VertexShaderExtention   = ".vert";
 static constexpr std::string_view FragmentShaderExtention = ".frag";
+static constexpr std::string_view ComputeShaderExtention  = ".comp";
 
 bool CheckShaderCompilationErrors(int ShaderID)
 {
@@ -52,9 +53,45 @@ bool CheckProgramLinkErrors(int ProgramID)
 //
 
 CShaderLibrary::CShaderLoader::result_type CShaderLibrary::CShaderLoader::operator()(
+    EShaderType      ShaderType,
+    std::string_view ShaderPath
+    ) const
+{
+  if (ShaderType != EShaderType::Compute)
+  {
+    return operator()(ShaderPath);
+  }
+  else
+  {
+    const std::string ComputeShaderData = Utils::ReadFile(ShaderPath);
+
+    GLuint ShaderID = glCreateShader(GL_COMPUTE_SHADER);
+
+    const GLchar * SourcePtr = ComputeShaderData.c_str();
+
+    glShaderSource(ShaderID, 1, &SourcePtr, nullptr);
+    glCompileShader(ShaderID);
+    CheckShaderCompilationErrors(ShaderID);
+
+    const GLuint ProgramID = glCreateProgram();
+    glAttachShader(ProgramID, ShaderID);
+    glLinkProgram(ProgramID);
+
+    CheckProgramLinkErrors(ProgramID);
+
+    glDeleteShader(ShaderID);
+
+    return TGLShaderComponent{.ShaderID = ProgramID};
+  }
+}
+
+CShaderLibrary::CShaderLoader::result_type CShaderLibrary::CShaderLoader::operator()(
     std::string_view ShaderPath
   ) const
 {
+  if (ShaderPath.ends_with(ComputeShaderExtention))
+    return operator()(EShaderType::Compute, ShaderPath);
+
   spdlog::info("Compiling shader: {}", ShaderPath);
 
   const std::string VertexShaderData = Utils::ReadFile(std::string(ShaderPath) + std::string(VertexShaderExtention));

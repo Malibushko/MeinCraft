@@ -28,8 +28,8 @@ void GLRenderDirectedLightDepthPassSystem::OnCreate(registry_t & Registry_)
 
   glGenFramebuffers(1, &m_FBO);
 
-  glGenTextures(1, &RenderData.DepthTexture);
-  glBindTexture(GL_TEXTURE_2D, RenderData.DepthTexture);
+  glGenTextures(1, &RenderData.DirectedLightDepthTexture);
+  glBindTexture(GL_TEXTURE_2D, RenderData.DirectedLightDepthTexture);
   glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32, SHADOW_MAP_WIDTH, SHADOW_MAP_HEIGHT,
                                                        0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -40,7 +40,7 @@ void GLRenderDirectedLightDepthPassSystem::OnCreate(registry_t & Registry_)
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
 
   glBindFramebuffer(GL_FRAMEBUFFER, m_FBO);
-  glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, RenderData.DepthTexture, 0);
+  glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, RenderData.DirectedLightDepthTexture, 0);
   glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, BorderColor);
   glDrawBuffer(GL_NONE);
   glReadBuffer(GL_NONE);
@@ -50,12 +50,10 @@ void GLRenderDirectedLightDepthPassSystem::OnCreate(registry_t & Registry_)
 
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-  m_Shader = CShaderLibrary::Load("res/shaders/depth_shader");
+  m_Shader = CShaderLibrary::Load("res/shaders/directed_light_depth_shader");
 
   if (!m_Shader.IsValid())
     spdlog::error("!!! ERROR: Failed to load directional shadow shader !!!");
-
-  BindShaderUniformBlocks(m_Shader);
 }
 
 void GLRenderDirectedLightDepthPassSystem::OnUpdate(registry_t & Registry_, float Delta_)

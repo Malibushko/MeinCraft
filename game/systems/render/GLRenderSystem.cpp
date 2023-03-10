@@ -30,6 +30,18 @@ void GLRenderSystem::OnCreate(registry_t & Registry_)
   glViewport(0, 0, static_cast<int>(Display.Width), static_cast<int>(Display.Height));
   glEnable(GL_FRAMEBUFFER_SRGB);
 
+#ifndef NDEBUG
+
+  glEnable(GL_DEBUG_OUTPUT);
+
+  glDebugMessageCallback([](GLenum, GLenum Type, GLuint, GLenum, GLsizei, const GLchar * Message, const void *)
+  {
+    if (Type == GL_DEBUG_TYPE_ERROR)
+      spdlog::error("OpenGL error message: {})", Message);
+  }, nullptr);
+
+#endif
+
   Create<TGLRenderPassData>(Registry_);
 }
 

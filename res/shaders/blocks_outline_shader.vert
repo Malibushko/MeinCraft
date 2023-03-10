@@ -4,7 +4,7 @@ layout (location = 1) in vec2 aTextureCoord;
 
 out vec2 TextureCoord;
 
-layout(std140, binding=0) uniform MatricesBlock
+layout(std430, binding = 0) readonly buffer MatricesBuffer
 {
   mat4 Projection;
   mat4 View;

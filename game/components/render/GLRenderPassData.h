@@ -10,15 +10,17 @@ struct TGLRenderPassData
 
   CFrustum RenderFrustum;
 
-  GLuint   MatricesUBO{ 0 };
-  GLuint   LightUBO{ 0 };
-  GLuint   CameraUBO{ 0 };
+  GLuint MatricesBuffer{ 0 };
+  GLuint CameraBuffer{ 0 };
+  GLuint DirectedLightBuffer{ 0 };
+  GLuint PointLightsBuffer{ 0 };
+  GLuint PointLightIndicesBuffer{ 0 };
 
-  // Deferred shading data
-  GLuint PositionTexture{};
-  GLuint AlbedoTexture{};
-  GLuint NormalTexture{};
+  GLuint LightCullingWorkGroupsX = 0;
+  GLuint LightCullingWorkGroupsY = 0;
+
   GLuint DepthTexture{};
+  GLuint DirectedLightDepthTexture{};
 
   // Miscellaneous data
   GLuint SolidTexture{};

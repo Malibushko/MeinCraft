@@ -8,21 +8,21 @@ in vec3 Normal;
 
 layout(binding = 0) uniform sampler2D Texture_0;
 
-layout(std140, binding=0) uniform MatricesBlock
+layout(std430, binding = 0) readonly buffer MatricesBuffer
 {
   mat4 Projection;
   mat4 View;
   mat4 MVP;
 };
 
-layout(std140,binding=1) uniform CameraBlock
+layout(std430, binding = 1) readonly buffer CameraBuffer
 {
   float ViewDistance;
   vec3  CameraDirection;
   vec3  CameraPosition;
 };
 
-layout(std140, binding=2) uniform LightBlock
+layout(std430, binding = 2) readonly buffer DirectedLightBuffer
 {
 	float DirectedLightIntensity;
 	vec3  DirectedLightDirection;

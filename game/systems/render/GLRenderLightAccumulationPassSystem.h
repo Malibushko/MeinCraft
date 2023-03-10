@@ -3,7 +3,7 @@
 #include "core/entity/System.h"
 #include "game/components/render/GLShaderComponent.h"
 
-class GLRenderDeferredPassSystem : public ISystem
+class GLRenderLightAccumulationPassSystem : public ISystem
 {
 public: // ISystem
 
@@ -16,5 +16,6 @@ public: // ISystem
 protected: // Members
 
   GLuint             m_FBO{};
-  TGLShaderComponent m_Shader;
+  TGLShaderComponent m_DepthShader;
+  TGLShaderComponent m_LightCullingShader;
 };

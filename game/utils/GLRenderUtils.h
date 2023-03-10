@@ -1,5 +1,6 @@
 #pragma once
 #include <magic_enum.hpp>
+#include <map>
 #include <glad/glad.h>
 
 #include "core/entity/Registry.h"
@@ -7,13 +8,13 @@
 #include "game/components/render/GLRenderPassData.h"
 #include "game/components/render/GLShaderComponent.h"
 #include "game/components/render/GLTextureComponent.h"
-#include "game/systems/render/GLRenderUniformObjectsSystem.h"
+#include "game/systems/render/GLRenderBufferObjectsSystem.h"
 
 void RenderMeshes(registry_t & Registry, auto && Meshes)
 {
   auto & RenderData = QuerySingle<TGLRenderPassData>(Registry);
 
-  GLuint PreviousShader = 0;
+  GLuint PreviousShader  = 0;
   GLuint PreviousTexture = 0;
 
   for (auto && [Entity, Mesh, Shader, Transform] : Meshes)
@@ -30,7 +31,6 @@ void RenderMeshes(registry_t & Registry, auto && Meshes)
     {
       assert(Shader.IsValid());
       glUseProgram(Shader.ShaderID);
-
       PreviousShader = Shader.ShaderID;
     }
 
@@ -51,16 +51,7 @@ void RenderMeshes(registry_t & Registry, auto && Meshes)
         glBindTexture(GL_TEXTURE_2D, Texture->TextureID);
 
         glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, RenderData.DepthTexture);
-
-        glActiveTexture(GL_TEXTURE2);
-        glBindTexture(GL_TEXTURE_2D, RenderData.PositionTexture);
-
-        glActiveTexture(GL_TEXTURE3);
-        glBindTexture(GL_TEXTURE_2D, RenderData.NormalTexture);
-
-        glActiveTexture(GL_TEXTURE4);
-        glBindTexture(GL_TEXTURE_2D, RenderData.AlbedoTexture);
+        glBindTexture(GL_TEXTURE_2D, RenderData.DirectedLightDepthTexture);
 
         PreviousTexture = Texture->TextureID;
       }
@@ -108,16 +99,7 @@ void RenderMeshesWithShader(registry_t & Registry, auto && Meshes, TGLShaderComp
         glBindTexture(GL_TEXTURE_2D, Texture->TextureID);
 
         glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, RenderData.DepthTexture);
-
-        glActiveTexture(GL_TEXTURE2);
-        glBindTexture(GL_TEXTURE_2D, RenderData.PositionTexture);
-
-        glActiveTexture(GL_TEXTURE3);
-        glBindTexture(GL_TEXTURE_2D, RenderData.NormalTexture);
-
-        glActiveTexture(GL_TEXTURE4);
-        glBindTexture(GL_TEXTURE_2D, RenderData.AlbedoTexture);
+        glBindTexture(GL_TEXTURE_2D, RenderData.DirectedLightDepthTexture);
 
         PreviousTexture = Texture->TextureID;
       }
@@ -127,16 +109,4 @@ void RenderMeshesWithShader(registry_t & Registry, auto && Meshes, TGLShaderComp
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, Mesh.EBO);
     glDrawElements(GL_TRIANGLES, Mesh.IndicesCount, GL_UNSIGNED_SHORT, nullptr);
   }
-}
-
-inline void BindShaderUniformBlocks(TGLShaderComponent & Shader)
-{
-  magic_enum::enum_for_each<EUniformBlock>([&](EUniformBlock UniformBlock)
-  {
-    const auto & BlockName = magic_enum::enum_name(UniformBlock);
-    const auto   BlockID = glGetUniformBlockIndex(Shader.ShaderID, BlockName.data());
-
-    if (BlockID != GL_INVALID_INDEX)
-      glUniformBlockBinding(Shader.ShaderID, BlockID, static_cast<GLuint>(UniformBlock));
-  });
 }
