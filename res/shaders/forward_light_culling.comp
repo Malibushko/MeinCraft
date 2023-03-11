@@ -145,17 +145,17 @@ void main() {
 
 		// We check if the light exists in our frustum
 		float Distance = 0.0;
-		for (uint j = 0; j < 6; j++)
+
+		for (uint j = 0; j < 4; j++)
 		{
-			Distance = dot(Position, FrustumPlanes[j]) + Radius;
+			Distance = dot(FrustumPlanes[j], Position) + Radius;
 
 			// If one of the tests fails, then there is no intersection
-			if (Distance <= 0.0)
+			if (Distance < 0.0)
 				break;
 		}
 
-		// If greater than zero, then it is a visible light
-		if (Radius > 0.0)
+		if (Distance > 0.0)
 		{
 			// Add Index to the shared array of visible indices
 			uint Offset = atomicAdd(VisibleLightCount, 1);

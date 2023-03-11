@@ -206,7 +206,7 @@ void GLRenderBufferObjectsSystem::UpdatePointLightsBuffer(registry_t & Registry)
   // TODO: somehow sort lights by distance to view frustum to fit the limit of MAX_LIGHTS_COUNT
   for (auto [Entity, PointLight, Light, Position] : Registry.view<TPointLightComponent, TLightComponent, TPositionComponent>().each())
   {
-    Lights[LightsCount].Position  = glm::vec4(Position.Position, 1.0);
+    Lights[LightsCount].Position  = glm::vec4(Position.Position, 1.0f);
     Lights[LightsCount].Color     = Light.Color;
     Lights[LightsCount].Constant  = PointLight.FadeConstant;
     Lights[LightsCount].Linear    = PointLight.FadeLinear;

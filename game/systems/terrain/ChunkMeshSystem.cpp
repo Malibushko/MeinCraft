@@ -85,7 +85,7 @@ void CChunkMeshSystem::RecreateChunkMesh(registry_t & Registry_, entity_t ChunkE
         const float Constant  = 1.0f  ;
         const float Linear    = 0.09f ;
         const float Quadratic = 0.032f;
-        const float Radius    = (-Linear + std::sqrt(Linear * Linear - 4 * Quadratic * (Constant - (256 / 5.0)))) / (4 * Quadratic);
+        const float Radius    = Factor;
 
         AddComponent<TPointLightComponent>(Registry_, Chunk.Blocks[Index], TPointLightComponent
         {

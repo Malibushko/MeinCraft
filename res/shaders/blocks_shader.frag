@@ -113,30 +113,24 @@ void main()
 	if (Color.a < 0.1)
 		discard;
 
-	Color = ApplyLights(Color);
-	Color = ApplyFog(Color);
-
 	ivec2 Location = ivec2(gl_FragCoord.xy);
 	ivec2 TileID   = Location / ivec2(TILE_SIZE, TILE_SIZE);
 	int   Index    = TileID.y * 80 + TileID.x;
 
-	vec3 ViewDirection = normalize(CameraPosition - Position);
-	int  Offset        = Index * MAX_LIGHTS;
-	vec4 Lightning     = Color;
+	int  Offset    = Index * MAX_LIGHTS;
+	vec4 Lightning = Color;
 
-	for (int i = 0; i < MAX_LIGHTS && IndicesBuffer.Indices[i] != -1; i++)
+	for (int i = 0; i < MAX_LIGHTS && IndicesBuffer.Indices[i + Offset] != -1; i++)
 	{
 	  int         LightIndex = IndicesBuffer.Indices[i + Offset];
 	  TPointLight Light      = LightBuffer.Lights[LightIndex];
 
-	  vec3 LightDirection = normalize(Light.Position.xyz - Position);
+	  vec3 LightDirection = Light.Position.xyz - Position;
 	  float Attenuation   = Attenuate(LightDirection, Light.Radius);
 
 	  LightDirection = normalize(LightDirection);
 
-	  vec3 Halfway = normalize(LightDirection + ViewDirection);
-
-	  float Diffuse = max(dot(LightDirection, Normal), 0.0);
+	  float Diffuse = max(dot(LightDirection, normalize(Normal)), 0.0);
 
 	  // TODO: add specular component
 
@@ -144,6 +138,9 @@ void main()
 
 	  Color.rgb += Irradiance;
 	}
+
+	Color = ApplyLights(Color);
+	Color = ApplyFog(Color);
 
 	FragColor = Color;
 }

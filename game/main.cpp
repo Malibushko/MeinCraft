@@ -135,7 +135,7 @@ void InitTerrain(World & World_)
   {
     .TerrainGenerationStrategy = [](const glm::vec3 & _Position) -> TBlockComponent
     {
-      static CFlatTerrainGenerator Generator(time(nullptr));
+      static CNoiseTerrainGenerator Generator(time(nullptr));
 
       return Generator.Generate(_Position);
     }
