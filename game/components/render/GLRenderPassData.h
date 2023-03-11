@@ -16,9 +16,14 @@ struct TGLRenderPassData
   GLuint PointLightsBuffer{ 0 };
   GLuint PointLightIndicesBuffer{ 0 };
 
+  // Forward+ data
   GLuint LightCullingWorkGroupsX = 0;
   GLuint LightCullingWorkGroupsY = 0;
 
+  // Texture that will be rendered in the final pass
+  GLuint ScreenTexture{};
+
+  // Depth textures
   GLuint DepthTexture{};
   GLuint DirectedLightDepthTexture{};
 

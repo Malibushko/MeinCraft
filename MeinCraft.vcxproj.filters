@@ -423,6 +423,9 @@
     <ClInclude Include="game\systems\render\GLRenderLightAccumulationPassSystem.h">
       <Filter>game\systems\render</Filter>
     </ClInclude>
+    <ClInclude Include="game\systems\render\GLRenderCompositePassSystem.h">
+      <Filter>game\systems\render</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="game\Main.cpp">
@@ -545,6 +548,9 @@
     <ClCompile Include="game\systems\render\GLRenderLightAccumulationPassSystem.cpp">
       <Filter>game\systems\render</Filter>
     </ClCompile>
+    <ClCompile Include="game\systems\render\GLRenderCompositePassSystem.cpp">
+      <Filter>game\systems\render</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\blocks_shader.frag">
@@ -617,6 +623,8 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
+    <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.lib" />
     <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.dll" />
     <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.lib" />
     <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.dll" />

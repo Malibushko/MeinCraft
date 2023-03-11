@@ -3,7 +3,7 @@
 #include "core/entity/System.h"
 #include "game/components/render/GLShaderComponent.h"
 
-class GLRenderScreenPassSystem : public ISystem
+class GLRenderCompositePassSystem : public ISystem
 {
 public: // ISystem
 
@@ -15,12 +15,6 @@ public: // ISystem
 
 protected: // Members
 
-  TGLShaderComponent m_ScreenShader;
-  GLuint             m_ScreenQuadVAO{};
-
-#ifdef DEBUG_DEPTH
-
-  TGLShaderComponent m_DebugDepthShader;
-
-#endif
+  TGLShaderComponent m_CompositeShader;
+  GLuint             m_VAO{};
 };

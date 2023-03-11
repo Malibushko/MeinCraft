@@ -24,7 +24,7 @@ layout(std430, binding = 2) readonly buffer DirectedLightBuffer
 	mat4  DirectedLightSpaceMatrix;
 };
 
-uniform mat4 u_Transform;
+layout(location=0) uniform mat4 u_Transform;
 
 out vec2 TextureCoords;
 void main()

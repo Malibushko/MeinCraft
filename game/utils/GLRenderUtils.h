@@ -10,6 +10,11 @@
 #include "game/components/render/GLTextureComponent.h"
 #include "game/systems/render/GLRenderBufferObjectsSystem.h"
 
+enum class EUniformLocation
+{
+  Transform = 0
+};
+
 void RenderMeshes(registry_t & Registry, auto && Meshes)
 {
   auto & RenderData = QuerySingle<TGLRenderPassData>(Registry);
@@ -35,7 +40,7 @@ void RenderMeshes(registry_t & Registry, auto && Meshes)
     }
 
     glUniformMatrix4fv(
-      glGetUniformLocation(Shader.ShaderID, "u_Transform"),
+      static_cast<GLint>(EUniformLocation::Transform),
       1,
       GL_FALSE,
       &Transform.Transform[0][0]
@@ -51,6 +56,9 @@ void RenderMeshes(registry_t & Registry, auto && Meshes)
         glBindTexture(GL_TEXTURE_2D, Texture->TextureID);
 
         glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, RenderData.DepthTexture);
+
+        glActiveTexture(GL_TEXTURE2);
         glBindTexture(GL_TEXTURE_2D, RenderData.DirectedLightDepthTexture);
 
         PreviousTexture = Texture->TextureID;
@@ -99,6 +107,9 @@ void RenderMeshesWithShader(registry_t & Registry, auto && Meshes, TGLShaderComp
         glBindTexture(GL_TEXTURE_2D, Texture->TextureID);
 
         glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, RenderData.DepthTexture);
+
+        glActiveTexture(GL_TEXTURE2);
         glBindTexture(GL_TEXTURE_2D, RenderData.DirectedLightDepthTexture);
 
         PreviousTexture = Texture->TextureID;

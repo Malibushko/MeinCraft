@@ -34,6 +34,7 @@
 #include "systems/render/GLRenderSystem.h"
 #include "systems/render/GLRenderTransparentPassSystem.h"
 #include "systems/render/GLRenderBufferObjectsSystem.h"
+#include "systems/render/GLRenderCompositePassSystem.h"
 #include "systems/requests/RequestsSystem.h"
 #include "systems/terrain/ChunkBlocksControllerSystem.h"
 #include "systems/terrain/ChunkDespawnerSystem.h"
@@ -123,6 +124,8 @@ void InitCoreSystems(World & World_)
         .AddSystem<GLRenderLightAccumulationPassSystem>()
         .AddSystem<GLRenderSolidPassSystem>()
         .AddSystem<GLRenderTransparentPassSystem>()
+        .AddSystem<GLRenderSSAOPassSystem>()
+        .AddSystem<GLRenderCompositePassSystem>()
         .AddSystem<GLRenderScreenPassSystem>()
 
         .AddSystem<CPhysicsSystem>()

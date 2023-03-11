@@ -11,6 +11,7 @@ in vec4 LightFragmentPosition;
 
 layout(binding = 0) uniform sampler2D       u_Texture_0;
 layout(binding = 1) uniform sampler2DShadow u_DepthMap;
+layout(binding = 2) uniform sampler2DShadow u_DirectedLightShadowMap;
 
 struct TPointLight
 {
@@ -55,11 +56,11 @@ layout(std430, binding = 4) readonly buffer VisiblePointLightsIndicesBuffer
 	int Indices[];
 } IndicesBuffer;
 
-const float FOG_FACTOR = 0.0001;
-const vec3  FOG_COLOR  = vec3(0.5, 0.6, 0.7);
-
 vec4 ApplyFog(in vec4 Color)
 {
+  const float FOG_FACTOR = 0.0001;
+  const vec3  FOG_COLOR  = vec3(0.5, 0.6, 0.7);
+
   vec3  RayDirection = CameraPosition - Position;
   float RayLength    = length(RayDirection);
 
@@ -79,14 +80,14 @@ float ShadowCalculation(vec4 LightSpaceFragmentPosition)
   if (LightSpaceFragmentPosition3D.z > 1.0)
   	return 1.0;
 
-  return texture(u_DepthMap, LightSpaceFragmentPosition3D);
+  return texture(u_DirectedLightShadowMap, LightSpaceFragmentPosition3D);
 }
 
 vec4 ApplyLights(in vec4 Color)
 {
   float Diffuse = max(dot(normalize(DirectedLightDirection), normalize(Normal)), 0.0);
 
-  vec3 AmbientComponent = Color.xyz * vec3(0.25);
+  vec3 AmbientComponent = Color.xyz * vec3(0.1);
   vec3 DiffuseComponent = Color.xyz * Diffuse * DirectedLightColor;
 
   float Shadow = ShadowCalculation(LightFragmentPosition);
@@ -132,9 +133,12 @@ void main()
 
 	  float Diffuse = max(dot(LightDirection, normalize(Normal)), 0.0);
 
+	  if (length(LightDirection) < 0.5)
+		Diffuse = 1.0;
+
 	  // TODO: add specular component
 
-	  vec3 Irradiance = Light.Color.xyz * Diffuse * Attenuation;
+	  vec3 Irradiance = Color.rgb * Diffuse * Attenuation;
 
 	  Color.rgb += Irradiance;
 	}

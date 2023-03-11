@@ -9,7 +9,7 @@ layout(std430, binding=0) readonly buffer MatricesBuffer
   mat4 MVP;
 };
 
-uniform mat4 u_Transform;
+layout(location=0) uniform mat4 u_Transform;
 
 out vec2 TextureCoords;
 

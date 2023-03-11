@@ -11,7 +11,6 @@
 
 void GLRenderScreenPassSystem::OnCreate(registry_t & Registry_)
 {
-  m_CompositeShader = CShaderLibrary::Load("res/shaders/composite_shader");
   m_ScreenShader    = CShaderLibrary::Load("res/shaders/screen_shader");
 
 #ifdef DEBUG_DEPTH
@@ -20,7 +19,7 @@ void GLRenderScreenPassSystem::OnCreate(registry_t & Registry_)
 
 #endif
 
-  if (!m_CompositeShader.IsValid() || !m_ScreenShader.IsValid())
+  if (!m_ScreenShader.IsValid())
     spdlog::critical("!!! ERROR: Failed to load composite or screen shader !!!");
 
   const float ScreenQuadVertices[] = {
@@ -54,20 +53,6 @@ void GLRenderScreenPassSystem::OnUpdate(registry_t & Registry_, float Delta_)
 {
   auto & RenderData = QuerySingle<TGLRenderPassData>(Registry_);
 
-  // Draw composite image
-  glDepthFunc(GL_ALWAYS);
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-  glBindFramebuffer(GL_FRAMEBUFFER, RenderData.SolidFBO);
-
-  glUseProgram(m_CompositeShader.ShaderID);
-
-  glActiveTexture(GL_TEXTURE0);
-  glBindTexture(GL_TEXTURE_2D, RenderData.AccumulatorTexture);
-  glActiveTexture(GL_TEXTURE1);
-  glBindTexture(GL_TEXTURE_2D, RenderData.RevealTexture);
-  glBindVertexArray(m_ScreenQuadVAO);
-  glDrawArrays(GL_TRIANGLES, 0, 6);
-
   // Finally draw to backbuffer
   glDisable(GL_DEPTH_TEST);
   glDepthMask(GL_TRUE);
@@ -88,7 +73,7 @@ void GLRenderScreenPassSystem::OnUpdate(registry_t & Registry_, float Delta_)
 
   glUseProgram(m_ScreenShader.ShaderID);
   glActiveTexture(GL_TEXTURE0);
-  glBindTexture(GL_TEXTURE_2D, RenderData.SolidTexture);
+  glBindTexture(GL_TEXTURE_2D, RenderData.ScreenTexture);
 
 #endif
 
