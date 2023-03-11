@@ -58,6 +58,8 @@ void CChunkMeshSystem::RecreateChunkMesh(registry_t & Registry_, entity_t ChunkE
 
   TTransformComponent ChunkTransform = Registry_.get<TTransformComponent>(ChunkEntity);
 
+  const glm::vec3 ChunkPosition = ChunkTransform.Transform[3];
+
   for (size_t Index = 0; Index < TChunkComponent::BLOCKS_COUNT; Index++)
   {
     if (Chunk.Blocks[Index] == entt::null)
@@ -77,8 +79,8 @@ void CChunkMeshSystem::RecreateChunkMesh(registry_t & Registry_, entity_t ChunkE
     {
       if (Registry_.try_get<TLightComponent>(Chunk.Blocks[Index]) == nullptr)
       {
-        AddComponent<TPositionComponent>(Registry_, Chunk.Blocks[Index], TPositionComponent{ .Position = glm::vec3(BlockPosition) + glm::vec3(0.5)});
-        AddComponent<TLightComponent>(Registry_, Chunk.Blocks[Index], TLightComponent{ .Color = glm::vec3(0.5f) });
+        AddComponent<TPositionComponent>(Registry_, Chunk.Blocks[Index], TPositionComponent{ .Position = ChunkPosition + glm::vec3(BlockPosition)});
+        AddComponent<TLightComponent>(Registry_, Chunk.Blocks[Index], TLightComponent{ .Color = glm::vec4(0.5f) });
 
         const float Constant  = 1.0f  ;
         const float Linear    = 0.09f ;

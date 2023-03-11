@@ -7,5 +7,5 @@ struct TLightComponent
 {
   static constexpr ComponentTag ComponentTag{};
 
-  glm::vec3 Color;
+  glm::vec4 Color;
 };

@@ -167,8 +167,8 @@ void GLRenderBufferObjectsSystem::UpdatePointLightsBuffer(registry_t & Registry)
 
   struct TPointLight
   {
-    alignas(sizeof(float) * 4) glm::vec3 Position;
-    alignas(sizeof(float) * 4) glm::vec3 Color;
+    glm::vec4 Position;
+    glm::vec4 Color;
 
     float Constant{};
     float Linear{};
@@ -206,7 +206,7 @@ void GLRenderBufferObjectsSystem::UpdatePointLightsBuffer(registry_t & Registry)
   // TODO: somehow sort lights by distance to view frustum to fit the limit of MAX_LIGHTS_COUNT
   for (auto [Entity, PointLight, Light, Position] : Registry.view<TPointLightComponent, TLightComponent, TPositionComponent>().each())
   {
-    Lights[LightsCount].Position  = Position.Position;
+    Lights[LightsCount].Position  = glm::vec4(Position.Position, 0.0);
     Lights[LightsCount].Color     = Light.Color;
     Lights[LightsCount].Constant  = PointLight.FadeConstant;
     Lights[LightsCount].Linear    = PointLight.FadeLinear;

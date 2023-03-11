@@ -1,4 +1,5 @@
 #version 460 core
+#define MAX_LIGHTS 1024
 out vec4 FragColor;
 
 in vec2 TextureCoords;
@@ -11,8 +12,8 @@ layout(binding = 1) uniform sampler2DShadow u_DepthMap;
 
 struct TPointLight
 {
-  vec3  Position;
-  vec3  Color;
+  vec4  Position;
+  vec4  Color;
 
   float Constant;
   float Linear;
@@ -104,8 +105,24 @@ void main()
 
 	vec3 ViewDirection = normalize(CameraPosition - Position);
 	int  Offset        = Index * 1024;
+	vec4 Lightning     = Color;
 
-	Color = ApplyLights(Color);
+	for (int i = 0; i < MAX_LIGHTS && IndicesBuffer.Indices[i] != -1; i++)
+	{
+	  int         LightIndex = IndicesBuffer.Indices[i + Offset];
+	  TPointLight Light      = LightBuffer.Lights[LightIndex];
+
+	  float Distance = length(Light.Position.xyz - Position);
+
+	  vec3 LightDirection = normalize(Light.Position.xyz - Position);
+	  float Diffuse       = max(dot(Normal, LightDirection), 0.0);
+	  float Attenuation   = 1.0 / (Light.Constant + Light.Linear * Distance + Light.Quadratic * (Distance * Distance));
+	  float Intensity     = Light.Radius / Distance;
+
+	  Lightning += Diffuse * Light.Color * Attenuation * Intensity;
+	}
+
+	Color = ApplyLights(Lightning);
 	Color = ApplyFog(Color);
 
 	FragColor = Color;

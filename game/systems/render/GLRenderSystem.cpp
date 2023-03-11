@@ -42,6 +42,12 @@ void GLRenderSystem::OnCreate(registry_t & Registry_)
 
 #endif
 
+  const GLubyte * Version  = glGetString(GL_VERSION);
+  const GLubyte * Renderer = glGetString(GL_RENDERER);
+
+  spdlog::info("OpenGL version: {}",  (Version ? reinterpret_cast<const char*>(Version) : "unknown"));
+  spdlog::info("OpenGL renderer: {}", (Renderer ? reinterpret_cast<const char *>(Renderer) : "unknown"));
+
   Create<TGLRenderPassData>(Registry_);
 }
 

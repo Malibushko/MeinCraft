@@ -154,7 +154,7 @@ void InitLight(World & World_)
   {
     .Light = TLightComponent
     {
-      .Color = glm::vec3(0.92f, 0.95f, 0.13f),
+      .Color = glm::vec4(0.92f, 0.95f, 0.13f, 0.5f),
     },
     .DirectedLight = TDirectedLightComponent
     {

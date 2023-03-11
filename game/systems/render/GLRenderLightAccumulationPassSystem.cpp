@@ -33,6 +33,8 @@ void GLRenderLightAccumulationPassSystem::OnCreate(registry_t & Registry_)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
 
 	GLfloat BorderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, BorderColor);
@@ -77,12 +79,15 @@ void GLRenderLightAccumulationPassSystem::OnUpdate(registry_t & Registry_, float
 		  m_DepthShader
 	  );
 
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
 	glUseProgram(m_LightCullingShader.ShaderID);
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, RenderData.DepthTexture);
 
 	glDispatchCompute(RenderData.LightCullingWorkGroupsX, RenderData.LightCullingWorkGroupsY, 1);
+	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 
 	glUseProgram(0);
   glBindTexture(GL_TEXTURE_2D, 0);
