@@ -1,5 +1,7 @@
 #version 460 core
 #define MAX_LIGHTS 1024
+#define TILE_SIZE 16
+
 out vec4 FragColor;
 
 in vec2 TextureCoords;
@@ -92,6 +94,18 @@ vec4 ApplyLights(in vec4 Color)
   return vec4(AmbientComponent + (Shadow * DiffuseComponent), 1.0);
 }
 
+// Attenuate the point light intensity
+float Attenuate(vec3 LightDirection, float Radius)
+{
+	const float Cutoff = 0.5;
+
+	float Attenuation = dot(LightDirection, LightDirection) / (100.0 * Radius);
+	Attenuation = 1.0 / (Attenuation * 15.0 + 1.0);
+	Attenuation = (Attenuation - Cutoff) / (1.0 - Cutoff);
+
+	return clamp(Attenuation, 0.0, 1.0);
+}
+
 void main()
 {
 	vec4 Color = texture(u_Texture_0, TextureCoords);
@@ -99,12 +113,15 @@ void main()
 	if (Color.a < 0.1)
 		discard;
 
+	Color = ApplyLights(Color);
+	Color = ApplyFog(Color);
+
 	ivec2 Location = ivec2(gl_FragCoord.xy);
-	ivec2 TileID   = Location / ivec2(16, 16);
+	ivec2 TileID   = Location / ivec2(TILE_SIZE, TILE_SIZE);
 	int   Index    = TileID.y * 80 + TileID.x;
 
 	vec3 ViewDirection = normalize(CameraPosition - Position);
-	int  Offset        = Index * 1024;
+	int  Offset        = Index * MAX_LIGHTS;
 	vec4 Lightning     = Color;
 
 	for (int i = 0; i < MAX_LIGHTS && IndicesBuffer.Indices[i] != -1; i++)
@@ -112,18 +129,21 @@ void main()
 	  int         LightIndex = IndicesBuffer.Indices[i + Offset];
 	  TPointLight Light      = LightBuffer.Lights[LightIndex];
 
-	  float Distance = length(Light.Position.xyz - Position);
-
 	  vec3 LightDirection = normalize(Light.Position.xyz - Position);
-	  float Diffuse       = max(dot(Normal, LightDirection), 0.0);
-	  float Attenuation   = 1.0 / (Light.Constant + Light.Linear * Distance + Light.Quadratic * (Distance * Distance));
-	  float Intensity     = Light.Radius / Distance;
+	  float Attenuation   = Attenuate(LightDirection, Light.Radius);
 
-	  Lightning += Diffuse * Light.Color * Attenuation * Intensity;
+	  LightDirection = normalize(LightDirection);
+
+	  vec3 Halfway = normalize(LightDirection + ViewDirection);
+
+	  float Diffuse = max(dot(LightDirection, Normal), 0.0);
+
+	  // TODO: add specular component
+
+	  vec3 Irradiance = Light.Color.xyz * Diffuse * Attenuation;
+
+	  Color.rgb += Irradiance;
 	}
-
-	Color = ApplyLights(Lightning);
-	Color = ApplyFog(Color);
 
 	FragColor = Color;
 }

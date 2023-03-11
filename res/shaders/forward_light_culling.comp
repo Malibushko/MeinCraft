@@ -70,7 +70,7 @@ void main() {
 	// Initialize shared global values for Depth and light count
 	if (gl_LocalInvocationIndex == 0)
 	{
-		MinDepthInt       = 0xFFFFFF;
+		MinDepthInt       = 0xFFFFFFFF;
 		MaxDepthInt       = 0;
 		VisibleLightCount = 0;
 	}
@@ -137,9 +137,8 @@ void main() {
 	{
 		// Get the LightIndex to test for this thread / pass. If the Index is >= light count, then this thread can stop testing lights
 		uint LightIndex = i * ThreadCount + gl_LocalInvocationIndex;
-		if (LightIndex >= MAX_LIGHT_COUNT) {
+		if (LightIndex >= MAX_LIGHT_COUNT)
 			break;
-		}
 
 		vec4  Position = Lights[LightIndex].Position;
 		float Radius   = Lights[LightIndex].Radius;
@@ -156,7 +155,7 @@ void main() {
 		}
 
 		// If greater than zero, then it is a visible light
-		if (Distance > 0.0)
+		if (Radius > 0.0)
 		{
 			// Add Index to the shared array of visible indices
 			uint Offset = atomicAdd(VisibleLightCount, 1);
@@ -176,7 +175,7 @@ void main() {
 
 		// Unless we have totally filled the entire array, mark it's end with -1
 		// Final shader step will use this to determine where to stop (without having to pass the light count)
-		if (VisibleLightCount != 1024)
+		if (VisibleLightCount != MAX_LIGHT_COUNT)
 			Indices[Offset + VisibleLightCount] = -1;
 	}
 }
