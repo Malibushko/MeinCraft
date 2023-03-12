@@ -17,15 +17,20 @@
 #include "resources/TextureLibrary.h"
 
 #include "systems/camera/CameraSystem.h"
+
 #include "systems/content/BlockItemUseSystem.h"
 #include "systems/content/InventorySystem.h"
 #include "systems/content/PlayerTargetActionSystem.h"
 #include "systems/content/TargetControllerSystem.h"
 #include "systems/content/TargetBlockHighlightSystem.h"
+
 #include "systems/display/GLFWWindowSystem.h"
+
 #include "systems/lightning/DirectedLightMeshSystem.h"
 #include "systems/lightning/DirectedLightMovementSystem.h"
+
 #include "systems/physics/PhysicsSystem.h"
+
 #include "systems/render/GLMeshSystem.h"
 #include "systems/render/GLRenderDirectedLightDepthPassSystem.h"
 #include "systems/render/GLRenderLightAccumulationPassSystem.h"
@@ -35,16 +40,23 @@
 #include "systems/render/GLRenderTransparentPassSystem.h"
 #include "systems/render/GLRenderBufferObjectsSystem.h"
 #include "systems/render/GLRenderCompositePassSystem.h"
+#include "systems/render/GLRenderPostEffectsPassSystem.h"
+#include "systems/render/GLRenderSSAOPassSystem.h"
+
 #include "systems/requests/RequestsSystem.h"
+
 #include "systems/terrain/ChunkBlocksControllerSystem.h"
 #include "systems/terrain/ChunkDespawnerSystem.h"
 #include "systems/terrain/ChunkMeshCullSystem.h"
 #include "systems/terrain/ChunkMeshSystem.h"
 #include "systems/terrain/ChunkSpawnerSystem.h"
+
 #include "systems/terrain/NoiseTerrainGenerator.h"
 #include "systems/terrain/FlatTerrainGenerator.h"
+
 #include "systems/ui/NoesisUISystem.h"
 #include "systems/ui/gui/NoesisUIHUDSystem.h"
+
 #include "systems/utils/FPSCounterSystem.h"
 
 #include "utils/NumericUtils.h"
@@ -126,6 +138,7 @@ void InitCoreSystems(World & World_)
         .AddSystem<GLRenderTransparentPassSystem>()
         .AddSystem<GLRenderSSAOPassSystem>()
         .AddSystem<GLRenderCompositePassSystem>()
+        .AddSystem<GLRenderPostEffectsPassSystem>()
         .AddSystem<GLRenderScreenPassSystem>()
 
         .AddSystem<CPhysicsSystem>()

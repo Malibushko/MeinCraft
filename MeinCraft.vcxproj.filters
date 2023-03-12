@@ -426,6 +426,12 @@
     <ClInclude Include="game\systems\render\GLRenderCompositePassSystem.h">
       <Filter>game\systems\render</Filter>
     </ClInclude>
+    <ClInclude Include="game\systems\render\GLRenderPostEffectsPassSystem.h">
+      <Filter>game\systems\render</Filter>
+    </ClInclude>
+    <ClInclude Include="game\systems\render\GLRenderSSAOPassSystem.h">
+      <Filter>game\systems\render</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="game\Main.cpp">
@@ -551,6 +557,12 @@
     <ClCompile Include="game\systems\render\GLRenderCompositePassSystem.cpp">
       <Filter>game\systems\render</Filter>
     </ClCompile>
+    <ClCompile Include="game\systems\render\GLRenderPostEffectsPassSystem.cpp">
+      <Filter>game\systems\render</Filter>
+    </ClCompile>
+    <ClCompile Include="game\systems\render\GLRenderSSAOPassSystem.cpp">
+      <Filter>game\systems\render</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\blocks_shader.frag">
@@ -611,6 +623,24 @@
       <Filter>res\shaders</Filter>
     </None>
     <None Include="res\shaders\forward_light_culling.comp">
+      <Filter>res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\ssao_shader.frag">
+      <Filter>res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\ssao_shader.vert">
+      <Filter>res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\ssao_blur_shader.frag">
+      <Filter>res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\ssao_blur_shader.vert">
+      <Filter>res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\posteffects_shader.frag">
+      <Filter>res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\posteffects_shader.vert">
       <Filter>res\shaders</Filter>
     </None>
   </ItemGroup>

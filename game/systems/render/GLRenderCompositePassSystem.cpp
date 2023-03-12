@@ -13,7 +13,6 @@ void GLRenderCompositePassSystem::OnCreate(registry_t & Registry_)
 {
   m_CompositeShader = CShaderLibrary::Load("res/shaders/composite_shader");
 
-
   if (!m_CompositeShader.IsValid())
     spdlog::critical("!!! ERROR: Failed to load composite shader !!!");
 

@@ -25,6 +25,7 @@ void GLRenderLightAccumulationPassSystem::OnCreate(registry_t & Registry_)
   auto & Display    = QuerySingle<TDisplayComponent>(Registry_);
 
   glGenFramebuffers(1, &m_FBO);
+	glBindFramebuffer(GL_FRAMEBUFFER, m_FBO);
 
   glGenTextures(1, &RenderData.DepthTexture);
   glBindTexture(GL_TEXTURE_2D, RenderData.DepthTexture);
@@ -38,10 +39,26 @@ void GLRenderLightAccumulationPassSystem::OnCreate(registry_t & Registry_)
 
 	GLfloat BorderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, BorderColor);
-
-	glBindFramebuffer(GL_FRAMEBUFFER, m_FBO);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, RenderData.DepthTexture, 0);
-	glDrawBuffer(GL_NONE);
+
+	glGenTextures(1, &RenderData.PositionsTexture);
+	glBindTexture(GL_TEXTURE_2D, RenderData.PositionsTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, static_cast<GLsizei>(Display.Width), static_cast<GLsizei>(Display.Height), 0, GL_RGBA, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, RenderData.PositionsTexture, 0);
+
+	glGenTextures(1, &RenderData.NormalTexture);
+	glBindTexture(GL_TEXTURE_2D, RenderData.NormalTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, static_cast<GLsizei>(Display.Width), static_cast<GLsizei>(Display.Height), 0, GL_RGBA, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, RenderData.NormalTexture, 0);
+
+	unsigned int Attachments[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+	glDrawBuffers(std::size(Attachments), Attachments);
 	glReadBuffer(GL_NONE);
 
 	if (GLenum Status = glCheckFramebufferStatus(GL_FRAMEBUFFER); Status != GL_FRAMEBUFFER_COMPLETE)
@@ -64,8 +81,8 @@ void GLRenderLightAccumulationPassSystem::OnUpdate(registry_t & Registry_, float
 	glBindFramebuffer(GL_FRAMEBUFFER, m_FBO);
 
 	const auto & RenderData = QuerySingle<TGLRenderPassData>(Registry_);
-
-  glClear(GL_DEPTH_BUFFER_BIT);
+  glClearColor(0.f, 0.f, 0.f, 1.f);
+  glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
 	RenderMeshesWithShader(
 			Registry_,

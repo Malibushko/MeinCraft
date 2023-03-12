@@ -23,8 +23,15 @@ struct TGLRenderPassData
   // Texture that will be rendered in the final pass
   GLuint ScreenTexture{};
 
-  // Depth textures
+  // Posteffects
+  GLuint SSAOTexture{};
+
+  // General purpose textures
   GLuint DepthTexture{};
+  GLuint NormalTexture{};
+  GLuint PositionsTexture{};
+
+  // Shadowing data
   GLuint DirectedLightDepthTexture{};
 
   // Miscellaneous data
