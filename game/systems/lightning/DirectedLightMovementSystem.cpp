@@ -5,10 +5,13 @@
 #include "game/components/lightning/DirectedLightComponent.h"
 #include <glm/detail/func_trigonometric.inl>
 
+#include "core/components/PositionComponent.h"
+#include "game/components/camera/CameraBasisComponent.h"
+#include "game/components/camera/GlobalTransformComponent.h"
 #include "game/utils/NumericUtils.h"
 
-static constexpr float FULL_CYCLE_INTERVAL = 20 * 1000;
-static constexpr float AFTER_CYCLE_PAUSE   = 10 * 1000;
+static constexpr float FULL_CYCLE_INTERVAL = 600 * 1000;
+static constexpr float AFTER_CYCLE_PAUSE   = 60 * 1000;
 
 static constexpr float MIN_INTENSITY       = 0.1f;
 static constexpr float MAX_INTENSITY       = 0.3f;

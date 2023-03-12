@@ -27,6 +27,10 @@ protected: // Service
 
   void SpawnTreeAt(glm::vec3 _Position);
 
+  void SpawnGrassAt(glm::vec3 _Position);
+
+  void SpawnFlowerAt(EBlockType FlowerBlock, glm::vec3 _Position);
+
 private: // Members
 
   FastNoiseLite                                  m_Noise;

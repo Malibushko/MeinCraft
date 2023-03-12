@@ -17,6 +17,9 @@ enum class EBlockType
   // TODO: support variations
   Wood            = 17,
   Leaves          = 18,
+  GrassDecoration = 31,
+  YellowFlower    = 37,
+  RedFlower       = 38,
   GlowStone       = 89
 };
 

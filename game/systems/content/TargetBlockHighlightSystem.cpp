@@ -98,7 +98,7 @@ void CTargetBlockHighlightSystem::UpdateTarget(registry_t & Registry, TCameraTar
   {
     m_MeshEntity = Registry.create();
 
-    TGLUnbakedSolidMeshComponent Mesh = CBlockFactory::GetMeshForBlock(GetComponent<TBlockComponent>(Registry, Target.Target), EBlockFace::All);
+    TGLUnbakedSolidMeshComponent Mesh = CBlockFactory::GetCubeMeshForBlock(GetComponent<TBlockComponent>(Registry, Target.Target), EBlockFace::All);
 
     Mesh.UV = BLOCK_HIGHLIGH_UV;
 

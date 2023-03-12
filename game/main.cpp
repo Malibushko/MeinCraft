@@ -196,7 +196,7 @@ void InitInventory(World & World_)
     World_.Registry().create(),
     World_.Registry().create(),
     World_.Registry().create(),
-    World_.Registry().create()
+    World_.Registry().create(),
   };
 
   std::array BlockTypes =

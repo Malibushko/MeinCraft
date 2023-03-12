@@ -153,6 +153,20 @@ CBlockFactory & CBlockFactory::Instance()
 
 TGLUnbakedSolidMeshComponent CBlockFactory::GetMeshForBlock(const TBlockComponent & Block, EBlockFace Faces)
 {
+  switch (Instance().m_BlockUVs[Block.Type].MeshType)
+  {
+    case EBlockMeshType::Cube:
+      return GetCubeMeshForBlock(Block, Faces);
+    case EBlockMeshType::Cross:
+      return GetCrossMeshForBlock(Block, Faces);
+  }
+
+  assert(false);
+  return TGLUnbakedSolidMeshComponent{};
+}
+
+TGLUnbakedSolidMeshComponent CBlockFactory::GetCubeMeshForBlock(const TBlockComponent & Block, EBlockFace Faces)
+{
   TGLUnbakedSolidMeshComponent Mesh;
 
   int ActiveFaceIndex = 0;
@@ -166,7 +180,7 @@ TGLUnbakedSolidMeshComponent CBlockFactory::GetMeshForBlock(const TBlockComponen
 
       ActiveFaceIndex++;
 
-      Mesh.UV = GetUVForBlock(Block, Faces);
+      Mesh.UV = GetCubeUVForBlock(Block, Faces);
 
       Mesh.Normals.insert(Mesh.Normals.end(), CUBE_NORMALS[FaceIndex].begin(), CUBE_NORMALS[FaceIndex].end());
     }
@@ -175,7 +189,96 @@ TGLUnbakedSolidMeshComponent CBlockFactory::GetMeshForBlock(const TBlockComponen
   return Mesh;
 }
 
-std::vector<glm::vec2> CBlockFactory::GetUVForBlock(const TBlockComponent & Block, EBlockFace Faces)
+TGLUnbakedSolidMeshComponent CBlockFactory::GetCrossMeshForBlock(const TBlockComponent & Block, EBlockFace Faces)
+{
+  TGLUnbakedSolidMeshComponent Mesh;
+
+  static constexpr glm::vec3 FirstQuadVertices[] =
+  {
+    // Front face
+    glm::vec3(-0.5f, -0.5f, 0.5f),
+    glm::vec3(0.5f, -0.5f, -0.5f),
+    glm::vec3(0.5f, 0.5f, -0.5f),
+    glm::vec3(-0.5f, 0.5f, 0.5f)
+  };
+
+  static constexpr glm::vec3 SecondQuadVertices[] =
+  {
+    glm::vec3(-0.5f, -0.5f, -0.5f),
+    glm::vec3(0.5f, -0.5f,  0.5f),
+    glm::vec3(0.5f, 0.5f,   0.5f),
+    glm::vec3(-0.5f, 0.5f, -0.5f)
+  };
+
+  static constexpr glm::vec3 FirstQuadNormals[] =
+  {
+    // Front face
+    glm::vec3(1.0f, 0.5f, 1.0f),
+    glm::vec3(1.0f, 0.5f, 1.0f),
+    glm::vec3(1.0f, 0.5f, 1.0f),
+    glm::vec3(1.0f, 0.5f, 1.0f),
+  };
+
+  static constexpr glm::vec3 FirstQuadInversedNormals[] =
+  {
+    // Front face
+    glm::vec3(-1.0f, -0.5f, -1.0f),
+    glm::vec3(-1.0f, -0.5f, -1.0f),
+    glm::vec3(-1.0f, -0.5f, -1.0f),
+    glm::vec3(-1.0f, -0.5f, -1.0f),
+  };
+
+  static constexpr glm::vec3 SecondQuadNormals[] =
+  {
+    glm::vec3(-1.0f, 0.5f, 1.0f),
+    glm::vec3(-1.0f, 0.5f, 1.0f),
+    glm::vec3(-1.0f, 0.5f, 1.0f),
+    glm::vec3(-1.0f, 0.5f, 1.0f),
+  };
+
+  static constexpr glm::vec3 SecondQuadInversedNormals[] =
+  {
+    glm::vec3(1.0f, -0.5f, -1.0f),
+    glm::vec3(1.0f, -0.5f, -1.0f),
+    glm::vec3(1.0f, -0.5f, -1.0f),
+    glm::vec3(1.0f, -0.5f, -1.0f),
+  };
+
+  static constexpr int QuadIndices[] =
+  {
+    0, 1, 2, 2, 3, 0,
+    4, 6, 5, 7, 6, 4,
+    8, 9, 10, 10, 11, 8,
+    13, 12, 14, 15, 14, 12,
+  };
+
+  Mesh.Vertices.reserve(std::size(FirstQuadVertices) * 2  + std::size(SecondQuadVertices) * 2);
+  Mesh.Vertices.insert(Mesh.Vertices.end(), std::begin(FirstQuadVertices), std::end(FirstQuadVertices));
+  Mesh.Vertices.insert(Mesh.Vertices.end(), std::begin(FirstQuadVertices), std::end(FirstQuadVertices));
+  Mesh.Vertices.insert(Mesh.Vertices.end(), std::begin(SecondQuadVertices), std::end(SecondQuadVertices));
+  Mesh.Vertices.insert(Mesh.Vertices.end(), std::begin(SecondQuadVertices), std::end(SecondQuadVertices));
+
+  Mesh.Indices.reserve(std::size(QuadIndices));
+  Mesh.Indices.insert(Mesh.Indices.end(), std::begin(QuadIndices), std::end(QuadIndices));
+
+  Mesh.Normals.reserve(std::size(FirstQuadNormals) + std::size(SecondQuadNormals));
+  Mesh.Normals.insert(Mesh.Normals.end(), std::begin(FirstQuadNormals), std::end(FirstQuadNormals));
+  Mesh.Normals.insert(Mesh.Normals.end(), std::begin(FirstQuadInversedNormals), std::end(FirstQuadInversedNormals));
+  Mesh.Normals.insert(Mesh.Normals.end(), std::begin(SecondQuadNormals), std::end(SecondQuadNormals));
+  Mesh.Normals.insert(Mesh.Normals.end(), std::begin(SecondQuadInversedNormals), std::end(SecondQuadInversedNormals));
+
+  const auto UV = GetCubeUVForBlock(Block, EBlockFace::Front);
+
+  Mesh.UV.reserve(UV.size() * 2);
+  Mesh.UV.insert(Mesh.UV.end(), UV.begin(), UV.end());
+  Mesh.UV.insert(Mesh.UV.end(), UV.begin(), UV.end());
+  Mesh.UV.insert(Mesh.UV.end(), UV.begin(), UV.end());
+  Mesh.UV.insert(Mesh.UV.end(), UV.begin(), UV.end());
+
+  return Mesh;
+}
+
+std::vector<glm::vec2> CBlockFactory::GetCubeUVForBlock(const TBlockComponent & Block, EBlockFace Faces)
 {
   std::vector<glm::vec2> UV;
 
@@ -382,6 +485,8 @@ void CBlockFactory::LoadBlockUVs()
 
       UV.Faces[Index++] = { FaceUV.first / m_BlockAtlasSize.x, FaceUV.second / m_BlockAtlasSize.y };
     }
+
+    UV.MeshType = static_cast<EBlockMeshType>(BlockUV["mesh"].get<int>());
 
     m_BlockUVs[static_cast<EBlockType>(BlockUV["id"].get<int>())] = UV;
   }

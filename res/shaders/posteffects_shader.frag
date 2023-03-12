@@ -6,7 +6,7 @@ in vec2 TexCoords;
 layout(binding = 0) uniform sampler2D u_ScreenTexture;
 layout(binding = 1) uniform sampler2D u_SSAOTexture;
 
-const float SSAO_STRENGTH = 0.65;
+const float SSAO_STRENGTH = 0.5;
 
 void main()
 {

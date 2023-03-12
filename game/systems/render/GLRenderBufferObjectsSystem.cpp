@@ -133,8 +133,9 @@ void GLRenderBufferObjectsSystem::UpdateDirectedLightBuffer(registry_t & Registr
   static_assert(std::is_standard_layout_v<TLightUBO>);
   static_assert(sizeof(TLightUBO) % 16 == 0);
 
-  auto && [DirectedLight, Light] = QuerySingle<TDirectedLightComponent, TLightComponent>(Registry_);
-  auto & RenderData              = QuerySingle<TGLRenderPassData>(Registry_);
+  auto &&      [DirectedLight, Light]             = QuerySingle<TDirectedLightComponent, TLightComponent>(Registry_);
+  const auto & [CameraBasis, Position, Transform] = QuerySingle<TCameraBasisComponent, TPositionComponent, TGlobalTransformComponent>(Registry_);
+  auto &       RenderData                         = QuerySingle<TGLRenderPassData>(Registry_);
 
   const glm::mat4 LightProjection = glm::ortho(-100.f, 100.f, -100.f, 100.f, 0.1f, 250.f);
   const glm::mat4 LightView       = glm::lookAt(DirectedLight.Direction, glm::vec3(0.f), glm::vec3(0.f, 1.f, 0.f));

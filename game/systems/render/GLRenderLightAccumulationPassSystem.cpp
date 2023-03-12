@@ -86,13 +86,13 @@ void GLRenderLightAccumulationPassSystem::OnUpdate(registry_t & Registry_, float
 
 	RenderMeshesWithShader(
 			Registry_,
-			Registry_.view<TGLSolidMeshComponent, TGLShaderComponent, TTransformComponent>().each(),
+			Registry_.view<TGLSolidMeshComponent, TGLShaderComponent, TTransformComponent>(entt::exclude<TInvisibleMeshTag>).each(),
 			m_DepthShader
 		);
 
 	RenderMeshesWithShader(
 		  Registry_,
-		  Registry_.view<TGLTranslucentMeshComponent, TGLShaderComponent, TTransformComponent>().each(),
+		  Registry_.view<TGLTranslucentMeshComponent, TGLShaderComponent, TTransformComponent>(entt::exclude<TInvisibleMeshTag>).each(),
 		  m_DepthShader
 	  );
 

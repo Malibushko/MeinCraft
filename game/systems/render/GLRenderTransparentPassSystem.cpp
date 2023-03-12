@@ -6,6 +6,7 @@
 #include "game/components/display/DisplayComponent.h"
 #include "game/components/render/GLMeshComponent.h"
 #include "game/components/render/GLRenderPassData.h"
+#include "game/components/tags/InvisibleMeshTag.h"
 #include "game/utils/GLRenderUtils.h"
 
 //

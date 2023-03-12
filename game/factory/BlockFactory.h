@@ -27,7 +27,11 @@ public: // Interface
 
   static TGLUnbakedSolidMeshComponent GetMeshForBlock(const TBlockComponent & Block, EBlockFace Faces);
 
-  static std::vector<glm::vec2> GetUVForBlock(const TBlockComponent & Block, EBlockFace Faces);
+  static TGLUnbakedSolidMeshComponent GetCubeMeshForBlock(const TBlockComponent & Block, EBlockFace Faces);
+
+  static TGLUnbakedSolidMeshComponent GetCrossMeshForBlock(const TBlockComponent & Block, EBlockFace Faces);
+
+  static std::vector<glm::vec2> GetCubeUVForBlock(const TBlockComponent & Block, EBlockFace Faces);
 
   static bool IsBlockTranslucent(const TBlockComponent & Block);
 
@@ -72,9 +76,16 @@ protected: // Service Structs
     float            Resistance{};
   };
 
+  enum class EBlockMeshType
+  {
+    Cube  = 0,
+    Cross = 1
+  };
+
   struct TBlockUV
   {
     std::array<glm::vec2, 6> Faces;
+    EBlockMeshType           MeshType;
   };
 
 protected: // Members

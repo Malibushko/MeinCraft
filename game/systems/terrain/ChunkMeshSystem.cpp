@@ -71,7 +71,6 @@ void CChunkMeshSystem::RecreateChunkMesh(registry_t & Registry_, entity_t ChunkE
       continue;
 
     TGLUnbakedSolidMeshComponent BlockMesh     = CBlockFactory::GetMeshForBlock(Block, Faces.Faces);
-    std::vector<glm::vec2>       BlockUV       = CBlockFactory::GetUVForBlock(Block, Faces.Faces);
     EMeshType                    BlockMeshType = CBlockFactory::GetMeshTypeForBlock(Block);
     const glm::ivec3             BlockPosition = BlockIndexToPosition(Index);
 
@@ -107,7 +106,7 @@ void CChunkMeshSystem::RecreateChunkMesh(registry_t & Registry_, entity_t ChunkE
 
       ChunkMesh.Vertices.insert(ChunkMesh.Vertices.end(), BlockMesh.Vertices.begin(), BlockMesh.Vertices.end());
       ChunkMesh.Indices.insert(ChunkMesh.Indices.end(), BlockMesh.Indices.begin(), BlockMesh.Indices.end());
-      ChunkMesh.UV.insert(ChunkMesh.UV.end(), BlockUV.begin(), BlockUV.end());
+      ChunkMesh.UV.insert(ChunkMesh.UV.end(), BlockMesh.UV.begin(), BlockMesh.UV.end());
       ChunkMesh.Normals.insert(ChunkMesh.Normals.end(), BlockMesh.Normals.begin(), BlockMesh.Normals.end());
     };
 
