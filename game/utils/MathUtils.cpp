@@ -59,3 +59,34 @@ glm::vec3 GetFaceDirection(EBlockFace Face)
   assert(false);
   return {};
 }
+
+double TrigonometricInterpolation(const std::vector<std::pair<float, float>> & _Values)
+{
+  static constexpr float PI = 3.14159265;
+
+  const std::size_t N = _Values.size();
+
+  auto Tau = [=](float x) {
+    if (x == 0.0f) {
+      return 1.0f;
+    }
+    else
+    {
+      const float Denominator = (N % 2 == 1) ? (N * std::sin(PI * x / 2)) : (N * std::tan(PI * x / 2));
+
+      return std::sin(N * PI * x / 2) / Denominator;
+    }
+  };
+
+  double Result = 0.0;
+  for (std::size_t K = 0; K < N; ++K)
+  {
+    const float T = _Values[K].first;
+    const float Y = _Values[K].second;
+
+    Result += Y * Tau(T);
+  }
+
+  return Result;
+}
+

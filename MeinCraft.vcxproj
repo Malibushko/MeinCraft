@@ -222,6 +222,7 @@
     <ClInclude Include="game\systems\render\GLRenderDirectedLightDepthPassSystem.h" />
     <ClInclude Include="game\systems\render\GLRenderPostEffectsPassSystem.h" />
     <ClInclude Include="game\systems\render\GLRenderScreenPassSystem.h" />
+    <ClInclude Include="game\systems\render\GLRenderSkyboxSystem.h" />
     <ClInclude Include="game\systems\render\GLRenderSolidPassSystem.h" />
     <ClInclude Include="game\systems\render\GLRenderSSAOPassSystem.h" />
     <ClInclude Include="game\systems\render\GLRenderTransparentPassSystem.h" />
@@ -235,6 +236,16 @@
     <ClInclude Include="game\systems\terrain\ChunkSpawnerSystem.h" />
     <ClInclude Include="game\systems\terrain\FlatTerrainGenerator.h" />
     <ClInclude Include="game\systems\terrain\NoiseTerrainGenerator.h" />
+    <ClInclude Include="game\systems\terrain\voronoi\BiomeConfig.h" />
+    <ClInclude Include="game\systems\terrain\voronoi\BiomeGenerator.h" />
+    <ClInclude Include="game\systems\terrain\voronoi\BiomeGeneratorFactory.h" />
+    <ClInclude Include="game\systems\terrain\voronoi\biomes\DesertBiomeGenerator.h" />
+    <ClInclude Include="game\systems\terrain\voronoi\biomes\MissingBlockBiomeGenerator.h" />
+    <ClInclude Include="game\systems\terrain\voronoi\biomes\MountainBiomeGenerator.h" />
+    <ClInclude Include="game\systems\terrain\voronoi\biomes\OceanBiomeGenerator.h" />
+    <ClInclude Include="game\systems\terrain\voronoi\biomes\PlainsBiomeGenerator.h" />
+    <ClInclude Include="game\systems\terrain\voronoi\MinecraftTerrainGenerator.h" />
+    <ClInclude Include="game\systems\terrain\voronoi\TerrainGeneratorUtils.h" />
     <ClInclude Include="game\systems\ui\gui\HUDItemsPanelItem.h" />
     <ClInclude Include="game\systems\ui\gui\HUDDataModel.h" />
     <ClInclude Include="game\systems\ui\gui\NoesisUIHUDSystem.h" />
@@ -269,6 +280,7 @@
     <ClCompile Include="game\systems\render\GLRenderDirectedLightDepthPassSystem.cpp" />
     <ClCompile Include="game\systems\render\GLRenderPostEffectsPassSystem.cpp" />
     <ClCompile Include="game\systems\render\GLRenderScreenPassSystem.cpp" />
+    <ClCompile Include="game\systems\render\GLRenderSkyboxSystem.cpp" />
     <ClCompile Include="game\systems\render\GLRenderSolidPassSystem.cpp" />
     <ClCompile Include="game\systems\render\GLRenderSSAOPassSystem.cpp" />
     <ClCompile Include="game\systems\render\GLRenderTransparentPassSystem.cpp" />
@@ -282,6 +294,14 @@
     <ClCompile Include="game\systems\terrain\ChunkSpawnerSystem.cpp" />
     <ClCompile Include="game\systems\terrain\FlatTerrainGenerator.cpp" />
     <ClCompile Include="game\systems\terrain\NoiseTerrainGenerator.cpp" />
+    <ClCompile Include="game\systems\terrain\voronoi\BiomeGeneratorFactory.cpp" />
+    <ClCompile Include="game\systems\terrain\voronoi\biomes\DesertBiomeGenerator.cpp" />
+    <ClCompile Include="game\systems\terrain\voronoi\biomes\MissingBlockBiomeGenerator.cpp" />
+    <ClCompile Include="game\systems\terrain\voronoi\biomes\MountainBiomeGenerator.cpp" />
+    <ClCompile Include="game\systems\terrain\voronoi\biomes\OceanBiomeGenerator.cpp" />
+    <ClCompile Include="game\systems\terrain\voronoi\biomes\PlainsBiomeGenerator.cpp" />
+    <ClCompile Include="game\systems\terrain\voronoi\MinecraftTerrainGenerator.cpp" />
+    <ClCompile Include="game\systems\terrain\voronoi\TerrainGeneratorUtils.cpp" />
     <ClCompile Include="game\systems\ui\gui\HUDItemsPanelItem.cpp" />
     <ClCompile Include="game\systems\ui\gui\HUDDataModel.cpp" />
     <ClCompile Include="game\systems\ui\gui\NoesisUIHUDSystem.cpp" />

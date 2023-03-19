@@ -154,6 +154,12 @@
     <Filter Include="game\components\tags">
       <UniqueIdentifier>{a54457bd-1eeb-430a-ab22-88204164e5cb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="game\systems\terrain\voronoi">
+      <UniqueIdentifier>{e4d6aded-7346-42a8-a0ee-dce207a557a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\systems\terrain\voronoi\biomes">
+      <UniqueIdentifier>{a8e0bfaf-78a5-4cfe-94fd-b11a5f9d33d8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\entity\Entity.h">
@@ -432,6 +438,39 @@
     <ClInclude Include="game\systems\render\GLRenderSSAOPassSystem.h">
       <Filter>game\systems\render</Filter>
     </ClInclude>
+    <ClInclude Include="game\systems\render\GLRenderSkyboxSystem.h">
+      <Filter>game\systems\render</Filter>
+    </ClInclude>
+    <ClInclude Include="game\systems\terrain\voronoi\MinecraftTerrainGenerator.h">
+      <Filter>game\systems\terrain\voronoi</Filter>
+    </ClInclude>
+    <ClInclude Include="game\systems\terrain\voronoi\BiomeConfig.h">
+      <Filter>game\systems\terrain\voronoi</Filter>
+    </ClInclude>
+    <ClInclude Include="game\systems\terrain\voronoi\BiomeGeneratorFactory.h">
+      <Filter>game\systems\terrain\voronoi</Filter>
+    </ClInclude>
+    <ClInclude Include="game\systems\terrain\voronoi\biomes\MissingBlockBiomeGenerator.h">
+      <Filter>game\systems\terrain\voronoi\biomes</Filter>
+    </ClInclude>
+    <ClInclude Include="game\systems\terrain\voronoi\biomes\OceanBiomeGenerator.h">
+      <Filter>game\systems\terrain\voronoi\biomes</Filter>
+    </ClInclude>
+    <ClInclude Include="game\systems\terrain\voronoi\biomes\PlainsBiomeGenerator.h">
+      <Filter>game\systems\terrain\voronoi\biomes</Filter>
+    </ClInclude>
+    <ClInclude Include="game\systems\terrain\voronoi\biomes\DesertBiomeGenerator.h">
+      <Filter>game\systems\terrain\voronoi\biomes</Filter>
+    </ClInclude>
+    <ClInclude Include="game\systems\terrain\voronoi\biomes\MountainBiomeGenerator.h">
+      <Filter>game\systems\terrain\voronoi\biomes</Filter>
+    </ClInclude>
+    <ClInclude Include="game\systems\terrain\voronoi\BiomeGenerator.h">
+      <Filter>game\systems\terrain\voronoi\biomes</Filter>
+    </ClInclude>
+    <ClInclude Include="game\systems\terrain\voronoi\TerrainGeneratorUtils.h">
+      <Filter>game\systems\terrain\voronoi</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="game\Main.cpp">
@@ -563,6 +602,33 @@
     <ClCompile Include="game\systems\render\GLRenderSSAOPassSystem.cpp">
       <Filter>game\systems\render</Filter>
     </ClCompile>
+    <ClCompile Include="game\systems\render\GLRenderSkyboxSystem.cpp">
+      <Filter>game\systems\render</Filter>
+    </ClCompile>
+    <ClCompile Include="game\systems\terrain\voronoi\MinecraftTerrainGenerator.cpp">
+      <Filter>game\systems\terrain\voronoi</Filter>
+    </ClCompile>
+    <ClCompile Include="game\systems\terrain\voronoi\BiomeGeneratorFactory.cpp">
+      <Filter>game\systems\terrain\voronoi</Filter>
+    </ClCompile>
+    <ClCompile Include="game\systems\terrain\voronoi\biomes\MissingBlockBiomeGenerator.cpp">
+      <Filter>game\systems\terrain\voronoi\biomes</Filter>
+    </ClCompile>
+    <ClCompile Include="game\systems\terrain\voronoi\biomes\OceanBiomeGenerator.cpp">
+      <Filter>game\systems\terrain\voronoi\biomes</Filter>
+    </ClCompile>
+    <ClCompile Include="game\systems\terrain\voronoi\biomes\PlainsBiomeGenerator.cpp">
+      <Filter>game\systems\terrain\voronoi\biomes</Filter>
+    </ClCompile>
+    <ClCompile Include="game\systems\terrain\voronoi\biomes\DesertBiomeGenerator.cpp">
+      <Filter>game\systems\terrain\voronoi\biomes</Filter>
+    </ClCompile>
+    <ClCompile Include="game\systems\terrain\voronoi\biomes\MountainBiomeGenerator.cpp">
+      <Filter>game\systems\terrain\voronoi\biomes</Filter>
+    </ClCompile>
+    <ClCompile Include="game\systems\terrain\voronoi\TerrainGeneratorUtils.cpp">
+      <Filter>game\systems\terrain\voronoi</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\blocks_shader.frag">
@@ -653,6 +719,14 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
+    <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.lib" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.lib" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.lib" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.lib" />
     <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.dll" />
     <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.lib" />
     <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.dll" />

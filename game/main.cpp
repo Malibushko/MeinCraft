@@ -41,6 +41,7 @@
 #include "systems/render/GLRenderBufferObjectsSystem.h"
 #include "systems/render/GLRenderCompositePassSystem.h"
 #include "systems/render/GLRenderPostEffectsPassSystem.h"
+#include "systems/render/GLRenderSkyboxSystem.h"
 #include "systems/render/GLRenderSSAOPassSystem.h"
 
 #include "systems/requests/RequestsSystem.h"
@@ -53,6 +54,7 @@
 
 #include "systems/terrain/NoiseTerrainGenerator.h"
 #include "systems/terrain/FlatTerrainGenerator.h"
+#include "systems/terrain/voronoi/MinecraftTerrainGenerator.h"
 
 #include "systems/ui/NoesisUISystem.h"
 #include "systems/ui/gui/NoesisUIHUDSystem.h"
@@ -136,6 +138,7 @@ void InitCoreSystems(World & World_)
         .AddSystem<GLRenderLightAccumulationPassSystem>()
         .AddSystem<GLRenderSolidPassSystem>()
         .AddSystem<GLRenderTransparentPassSystem>()
+        .AddSystem<GLRenderSkyboxSystem>()
         .AddSystem<GLRenderSSAOPassSystem>()
         .AddSystem<GLRenderCompositePassSystem>()
         .AddSystem<GLRenderPostEffectsPassSystem>()
@@ -151,7 +154,7 @@ void InitTerrain(World & World_)
   {
     .TerrainGenerationStrategy = [](const glm::vec3 & _Position) -> TBlockComponent
     {
-      static CNoiseTerrainGenerator Generator(time(nullptr));
+      static CMinecraftTerrainGenerator Generator(time(nullptr));
 
       return Generator.Generate(_Position);
     }
@@ -201,7 +204,7 @@ void InitInventory(World & World_)
 
   std::array BlockTypes =
   {
-    EBlockType::Grass,
+    EBlockType::GrassBlock,
     EBlockType::CobbleStone,
     EBlockType::Sand,
     EBlockType::GlowStone

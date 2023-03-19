@@ -39,8 +39,9 @@ canvas.addEventListener('contextmenu', (e) => {
 });
 
 document.getElementById('exportJson').addEventListener('click', () => {
-    const json = JSON.stringify(points);
-
+    const modifiedPoints = points.map(point => ({ X: point.x, Y: point.y }));
+    const json = JSON.stringify(modifiedPoints);
+    
     // Use the Clipboard API to write the JSON data to the clipboard
     navigator.clipboard.writeText(json).then(() => {
         alert('Spline data copied to clipboard.');

@@ -79,11 +79,11 @@ TBlockComponent CNoiseTerrainGenerator::GenerateImpl(glm::vec3 _Position)
       else if (m_Noise.GetNoise(_Position.x * 45.f, _Position.z * 6.f) > 0.43f)
         SpawnFlowerAt(EBlockType::RedFlower, _Position);
 
-      return TBlockComponent{ .Type = EBlockType::Grass };
+      return TBlockComponent{ .Type = EBlockType::GrassBlock };
     }
     else
-    if (Type == EBlockType::GrassDecoration || Type == EBlockType::YellowFlower || Type == EBlockType::RedFlower)
-      return TBlockComponent{.Type = EBlockType::Grass };
+    if (Type == EBlockType::Grass || Type == EBlockType::YellowFlower || Type == EBlockType::RedFlower)
+      return TBlockComponent{.Type = EBlockType::GrassBlock };
 
     return TBlockComponent{ .Type = EBlockType::Dirt };
   }
@@ -137,7 +137,7 @@ void CNoiseTerrainGenerator::SpawnGrassAt(glm::vec3 _Position)
 {
   _Position.y += 1.f;
 
-  m_PredefinedBlocks.emplace(_Position, TBlockComponent{ .Type = EBlockType::GrassDecoration });
+  m_PredefinedBlocks.emplace(_Position, TBlockComponent{ .Type = EBlockType::Grass });
 }
 
 void CNoiseTerrainGenerator::SpawnFlowerAt(EBlockType FlowerBlock, glm::vec3 _Position)

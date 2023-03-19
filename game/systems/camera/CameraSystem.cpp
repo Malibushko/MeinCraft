@@ -16,7 +16,7 @@
 // Config
 //
 
-static constexpr int CAMERA_SPEED    = 10;
+static constexpr int CAMERA_SPEED    = 50;
 static constexpr int MOUSE_SENSIVITY = 10;
 
 //

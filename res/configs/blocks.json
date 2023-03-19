@@ -11569,6 +11569,20 @@
       "resistance": 0.5
     },
     {
+      "id": 254,
+      "displayName": "Missing Block",
+      "name": "missing_block",
+      "hardness": null,
+      "stackSize": 64,
+      "diggable": false,
+      "boundingBox": "block",
+      "drops": [],
+      "transparent": false,
+      "emitLight": 0,
+      "filterLight": 15,
+      "resistance": 3600000
+    },
+    {
       "id": 255,
       "displayName": "Structure Block",
       "name": "structure_block",
