@@ -15,8 +15,6 @@
 #include "game/components/terrain/BlockComponent.h"
 #include "game/factory/BlockFactory.h"
 
-static constexpr int ITEMS_PANEL_ITEMS_COUNT = 9;
-
 //
 // Construction/Destruction
 //
@@ -74,7 +72,7 @@ void CNoesisUIHUDSystem::InitItemsPanel(registry_t & Registry)
 {
   TInventoryComponent & Inventory = QuerySingle<TInventoryComponent>(Registry);
 
-  for (int i = 0; i < ITEMS_PANEL_ITEMS_COUNT; i++)
+  for (int i = 0; i < Inventory.ItemsPanel.size(); i++)
   {
     const auto     ItemData   = Noesis::MakePtr<THUDItemsPanelItem>();
     const entity_t ItemEntity = Inventory.ItemsPanel[i];
@@ -99,14 +97,16 @@ void CNoesisUIHUDSystem::InitItemsPanel(registry_t & Registry)
 
 void CNoesisUIHUDSystem::ProcessInput(registry_t & Registry)
 {
+  auto & Inventory = QuerySingle<TInventoryComponent>(Registry);
+
   for (auto && [Entity, Wheel] : Registry.view<TMouseWheelData>().each())
   {
     const size_t ActiveIndex = m_DataModel->GetActiveItemsPanelItemIndex();
 
     if (Wheel.DeltaY > 0)
-      m_DataModel->SetActiveItemsPanelItem((ActiveIndex - 1) % ITEMS_PANEL_ITEMS_COUNT);
+      m_DataModel->SetActiveItemsPanelItem((ActiveIndex - 1) % Inventory.ItemsPanel.size());
     else
-      m_DataModel->SetActiveItemsPanelItem((ActiveIndex + 1) % ITEMS_PANEL_ITEMS_COUNT);
+      m_DataModel->SetActiveItemsPanelItem((ActiveIndex + 1) % Inventory.ItemsPanel.size());
   }
 
   const auto & Keyboard = QuerySingle<TKeyboardState>(Registry);
@@ -132,7 +132,11 @@ void CNoesisUIHUDSystem::UpdateDebugPanel(registry_t & Registry)
 {
   auto [Transform, Position] = QuerySingle<TGlobalTransformComponent, TPositionComponent>(Registry);
   auto & Target              = QuerySingle<TCameraTargetComponent>(Registry);
+  auto & TerrainMap          = QuerySingle<TTerrainMap>(Registry);
+
+  const TTerrainBlockInfo & CurrentBlockInfo = TerrainMap.Blocks[glm::ivec2(Position.Position.x, Position.Position.z)];
 
   m_DataModel->SetDebugPosition(Position.Position);
   m_DataModel->SetDebugTargetPosition(Target.TargetWorldPosition);
+  m_DataModel->SetDebugBlockInfo(CurrentBlockInfo);
 }

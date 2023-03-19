@@ -32,10 +32,16 @@
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
-        <Border Width="400" Height="60" Margin="10" VerticalAlignment="Top" HorizontalAlignment="Left">
+        <Border Width="400" Height="300" Margin="10" VerticalAlignment="Top" HorizontalAlignment="Left">
             <StackPanel>
                 <TextBlock Text="{Binding DebugPosition, FallbackValue=''}" FontFamily="fonts/#minecraftia" Foreground="White"/>
                 <TextBlock Text="{Binding DebugTargetPosition, FallbackValue=''}" FontFamily="fonts/#minecraftia" Foreground="White" />
+                <TextBlock Text="{Binding DebugHeight, FallbackValue=''}" FontFamily="fonts/#minecraftia" Foreground="White" />
+                <TextBlock Text="{Binding DebugContinentalness, FallbackValue=''}" FontFamily="fonts/#minecraftia" Foreground="White" />
+                <TextBlock Text="{Binding DebugErosion, FallbackValue=''}" FontFamily="fonts/#minecraftia" Foreground="White" />
+                <TextBlock Text="{Binding DebugPeaksValleys, FallbackValue=''}" FontFamily="fonts/#minecraftia" Foreground="White" />
+                <TextBlock Text="{Binding DebugTemperature, FallbackValue=''}" FontFamily="fonts/#minecraftia" Foreground="White" />
+                <TextBlock Text="{Binding DebugHumidity, FallbackValue=''}" FontFamily="fonts/#minecraftia" Foreground="White" />
             </StackPanel>
         </Border>
     </Grid>

@@ -8,10 +8,16 @@
 
 NS_IMPLEMENT_REFLECTION(CHUDDataModel)
 {
-  NsProp("Items",               &CHUDDataModel::m_ItemsPanel);
-  NsProp("ActivePanelItem",     &CHUDDataModel::m_ActiveItemsPanelItem);
-  NsProp("DebugPosition",       &CHUDDataModel::m_DebugPosition);
-  NsProp("DebugTargetPosition", &CHUDDataModel::m_DebugTargetPosition);
+  NsProp("Items",                &CHUDDataModel::m_ItemsPanel);
+  NsProp("ActivePanelItem",      &CHUDDataModel::m_ActiveItemsPanelItem);
+  NsProp("DebugPosition",        &CHUDDataModel::m_DebugPosition);
+  NsProp("DebugTargetPosition",  &CHUDDataModel::m_DebugTargetPosition);
+  NsProp("DebugHeight",          &CHUDDataModel::m_DebugHeight);
+  NsProp("DebugContinentalness", &CHUDDataModel::m_DebugContinentalness);
+  NsProp("DebugErosion",         &CHUDDataModel::m_DebugErosion);
+  NsProp("DebugPeaksValleys",    &CHUDDataModel::m_DebugPeaksValleys);
+  NsProp("DebugTemperature",     &CHUDDataModel::m_DebugTemperature);
+  NsProp("DebugHumidity",        &CHUDDataModel::m_DebugHumidity);
 }
 
 //
@@ -81,4 +87,21 @@ void CHUDDataModel::SetDebugTargetPosition(glm::vec3 TargetPosition)
   m_DebugTargetPosition = std::format("Target Position: ({:.2f}, {:.2f}, {:.2f})", TargetPosition.x, TargetPosition.y, TargetPosition.z).data();
 
   OnPropertyChanged("DebugTargetPosition");
+}
+
+void CHUDDataModel::SetDebugBlockInfo(const TTerrainBlockInfo& BlockInfo)
+{
+  m_DebugHeight          = std::format("Height: {:.2f}", BlockInfo.Height).data();
+  m_DebugContinentalness = std::format("Continentalness: {:.2f}", BlockInfo.Continentalness).data();
+  m_DebugErosion         = std::format("Erosion: {:.2f}", BlockInfo.Erosion).data();
+  m_DebugPeaksValleys    = std::format("PeaksValleys: {:.2f}", BlockInfo.PeaksValleys).data();
+  m_DebugTemperature     = std::format("Temperature: {:.2f}", BlockInfo.Temperature).data();
+  m_DebugHumidity        = std::format("Humidity: {:.2f}", BlockInfo.Humidity).data();
+
+  OnPropertyChanged("DebugHeight");
+  OnPropertyChanged("DebugContinentalness");
+  OnPropertyChanged("DebugErosion");
+  OnPropertyChanged("DebugPeaksValleys");
+  OnPropertyChanged("DebugTemperature");
+  OnPropertyChanged("DebugHumidity");
 }

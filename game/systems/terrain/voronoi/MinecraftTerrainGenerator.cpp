@@ -14,10 +14,14 @@ static constexpr std::string_view GENERATOR_CONFIG_PATH = "res/configs/world_gen
 // Construction/Destruction
 //
 
-CMinecraftTerrainGenerator::CMinecraftTerrainGenerator(int Seed) :
+CMinecraftTerrainGenerator::CMinecraftTerrainGenerator(registry_t & Registry, int Seed) :
   m_Seed(Seed)
 {
   m_RandomEngine.seed(Seed);
+
+  auto && Map = QueryOrCreate<TTerrainMap>(Registry);
+
+  m_ParametersMap = &Map;
 
   LoadConfigs();
 }
@@ -55,18 +59,26 @@ TBlockComponent CMinecraftTerrainGenerator::Generate(glm::vec3 _Position)
 
 float CMinecraftTerrainGenerator::GetHeightAt(glm::vec3 _Position) const
 {
-  if (const auto Iterator = m_HeightMap.find(glm::ivec2(_Position.x, _Position.z)); Iterator != m_HeightMap.cend())
-    return Iterator->second;
+  if (const auto Iterator = m_ParametersMap->Blocks.find(glm::ivec2(_Position.x, _Position.z)); Iterator != m_ParametersMap->Blocks.cend())
+    return Iterator->second.Height;
 
   const float ContinentalnessFactor = GetNoiseValueAtSmoothed(m_ContinentalnessMapNoise, _Position, m_ContinentalnessSplineNoise, m_ContinentalnessSplines);
   const float ErosionFactor         = GetNoiseValueAtSmoothed(m_ErosionNoise, _Position, m_ErosionSplineNoise, m_ErosionSplines);
   const float PeaksValleysFactor    = GetNoiseValueAtSmoothed(m_PeaksValleysNoise, _Position, m_PeaksValleysSplineNoise, m_PeaksValleysSplines);
 
-  const float Height = (ContinentalnessFactor - ErosionFactor) + ToNegative11(PeaksValleysFactor);
+  const float Height = std::clamp((ContinentalnessFactor - ErosionFactor) + ToNegative11(PeaksValleysFactor), -1.f, 1.f);
 
-  m_HeightMap[glm::ivec2(_Position.x, _Position.z)] = Height;
+  m_ParametersMap->Blocks[glm::ivec2(_Position.x, _Position.z)] = TTerrainBlockInfo
+  {
+    .Continentalness = ContinentalnessFactor,
+    .Erosion         = ErosionFactor,
+    .PeaksValleys     = PeaksValleysFactor,
+    .Height          = Height,
+    .Temperature     = m_TemperatureNoise.GetNoise(_Position.x, _Position.z),
+    .Humidity        = m_HumidityNoise.GetNoise(_Position.x, _Position.z)
+  };
 
-  return std::clamp(Height, -1.f, 1.f);
+  return Height;
 }
 
 //
@@ -125,7 +137,7 @@ std::vector<TBiomeConfig> CMinecraftTerrainGenerator::LoadConfig(std::string_vie
 int CMinecraftTerrainGenerator::GetBiomeIDAt(glm::vec3 _Position)
 {
   const float Temperature   = m_TemperatureNoise.GetNoise(_Position.x, _Position.z);
-  const float Precipitation = m_PrecipitationNoise.GetNoise(_Position.x, _Position.z);
+  const float Precipitation = m_HumidityNoise.GetNoise(_Position.x, _Position.z);
 
   int   ID         = 1;
   float BestSuit   = 0.f;
@@ -154,6 +166,8 @@ void CMinecraftTerrainGenerator::LoadConfigs()
       m_BiomeGenerators[BiomeConfig.ID] = CBiomeGeneratorFactory::Create(BiomeConfig);
   }
 
+  int Seed = m_Seed;
+
   nlohmann::json Config = nlohmann::json::parse(Utils::ReadFile(GENERATOR_CONFIG_PATH));
 
   m_TerrainLevel         = Config["terrain_level"];
@@ -161,15 +175,15 @@ void CMinecraftTerrainGenerator::LoadConfigs()
   m_LowerGenerationBound = Config["lower_generation_bound"];
   m_UpperGenerationBound = Config["upper_generation_bound"];
 
-  m_ContinentalnessMapNoise.SetSeed(m_Seed);
+  m_ContinentalnessMapNoise.SetSeed(Seed++);
   m_ContinentalnessMapNoise.SetFrequency(Config["continentalness_noise"]["frequency"]);
   m_ContinentalnessMapNoise.SetNoiseType(FastNoiseLite::NoiseType_Perlin);
 
-  m_ErosionNoise.SetSeed(m_Seed + 1);
+  m_ErosionNoise.SetSeed(m_Seed++);
   m_ErosionNoise.SetFrequency(Config["erosion_noise"]["frequency"]);
   m_ErosionNoise.SetNoiseType(FastNoiseLite::NoiseType_Perlin);
 
-  m_PeaksValleysNoise.SetSeed(m_Seed + 2);
+  m_PeaksValleysNoise.SetSeed(m_Seed++);
   m_PeaksValleysNoise.SetFrequency(Config["peaks_valleys_noise"]["frequency"]);
   m_PeaksValleysNoise.SetFractalType(FastNoiseLite::FractalType_Ridged);
   m_PeaksValleysNoise.SetFractalOctaves(Config["peaks_valleys_noise"]["fractal_octaves"]);
@@ -177,18 +191,24 @@ void CMinecraftTerrainGenerator::LoadConfigs()
   m_PeaksValleysNoise.SetFractalLacunarity(Config["peaks_valleys_noise"]["fractal_lacunarity"]);
   m_PeaksValleysNoise.SetNoiseType(FastNoiseLite::NoiseType_Perlin);
 
-  m_TerrainShapeNoise.SetSeed(m_Seed + 3);
+  m_TerrainShapeNoise.SetSeed(m_Seed++);
   m_TerrainShapeNoise.SetFrequency(Config["terrain_shape_noise"]["frequency"]);
   m_TerrainShapeNoise.SetNoiseType(FastNoiseLite::NoiseType_Perlin);
 
-  m_ContinentalnessSplineNoise.SetSeed(m_Seed + 4);
+  m_ContinentalnessSplineNoise.SetSeed(m_Seed++);
   m_ContinentalnessSplineNoise.SetFrequency(Config["spline_noise"]["frequency"]);
 
-  m_ErosionSplineNoise.SetSeed(m_Seed + 5);
+  m_ErosionSplineNoise.SetSeed(m_Seed++);
   m_ErosionSplineNoise.SetFrequency(Config["spline_noise"]["frequency"]);
 
-  m_PeaksValleysSplineNoise.SetSeed(m_Seed + 6);
+  m_PeaksValleysSplineNoise.SetSeed(m_Seed++);
   m_PeaksValleysSplineNoise.SetFrequency(Config["spline_noise"]["frequency"]);
+
+  m_TemperatureNoise.SetSeed(m_Seed++);
+  m_TemperatureNoise.SetFrequency(Config["temperature_noise"]["frequency"]);
+
+  m_HumidityNoise.SetSeed(m_Seed++);
+  m_HumidityNoise.SetFrequency(Config["precipitation_noise"]["frequency"]);
 
   LoadSplines(Config);
 }

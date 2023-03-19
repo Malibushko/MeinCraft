@@ -196,6 +196,7 @@
     <ClInclude Include="game\components\requests\PlayerHitRequest.h" />
     <ClInclude Include="game\components\requests\RaycastRequest.h" />
     <ClInclude Include="game\components\tags\InvisibleMeshTag.h" />
+    <ClInclude Include="game\components\terrain\TerrainMap.h" />
     <ClInclude Include="game\components\terrain\VisibleBlockFacesComponent.h" />
     <ClInclude Include="game\components\terrain\BlockComponent.h" />
     <ClInclude Include="game\components\terrain\ChunkComponent.h" />

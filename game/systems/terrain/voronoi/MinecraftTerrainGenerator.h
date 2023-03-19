@@ -1,7 +1,6 @@
 #pragma once
 #include <map>
 #include <random>
-#include <glm/gtx/hash.hpp>
 #include <unordered_set>
 #include <glm/vec3.hpp>
 #include <nlohmann/json.hpp>
@@ -12,11 +11,14 @@
 #include "BiomeGenerator.h"
 #include <tinysplinecxx.h>
 
+#include "core/entity/Registry.h"
+#include "game/components/terrain/TerrainMap.h"
+
 class CMinecraftTerrainGenerator
 {
 public: // Construction/Destruction
 
-  CMinecraftTerrainGenerator(int Seed = 0);
+  CMinecraftTerrainGenerator(registry_t & Registry, int Seed = 0);
 
   ~CMinecraftTerrainGenerator() = default;
 
@@ -75,12 +77,12 @@ protected: // Members
 
   // 2D noises for biome selection
   FastNoiseLite m_TemperatureNoise;
-  FastNoiseLite m_PrecipitationNoise;
+  FastNoiseLite m_HumidityNoise;
 
   int m_TerrainLevel{};
   int m_WaterLevel{};
   int m_LowerGenerationBound{};
   int m_UpperGenerationBound{};
 
-  mutable tsl::robin_map<glm::ivec2, float> m_HeightMap;
+  TTerrainMap * m_ParametersMap = nullptr;
 };

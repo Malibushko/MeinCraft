@@ -72,5 +72,16 @@
     "spline_noise" : 
     {
         "frequency" : 0.00055
-    }
+    },
+    
+    "temperature_noise":
+    {
+        "frequency": 0.005
+    },
+    
+    "humidity_noise":
+    {
+        "frequency": 0.005
+    },
+    
 }

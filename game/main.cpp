@@ -152,9 +152,9 @@ void InitTerrain(World & World_)
 {
   World_.Spawn(TTerrainComponent
   {
-    .TerrainGenerationStrategy = [](const glm::vec3 & _Position) -> TBlockComponent
+    .TerrainGenerationStrategy = [&](const glm::vec3 & _Position) -> TBlockComponent
     {
-      static CMinecraftTerrainGenerator Generator(time(nullptr));
+      static CMinecraftTerrainGenerator Generator(World_.Registry(), time(nullptr));
 
       return Generator.Generate(_Position);
     }

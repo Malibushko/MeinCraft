@@ -471,6 +471,9 @@
     <ClInclude Include="game\systems\terrain\voronoi\TerrainGeneratorUtils.h">
       <Filter>game\systems\terrain\voronoi</Filter>
     </ClInclude>
+    <ClInclude Include="game\components\terrain\TerrainMap.h">
+      <Filter>game\components\terrain</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="game\Main.cpp">
@@ -719,6 +722,8 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
+    <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.lib" />
     <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.dll" />
     <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.lib" />
     <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.dll" />

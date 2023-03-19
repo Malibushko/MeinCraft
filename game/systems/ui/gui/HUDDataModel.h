@@ -5,6 +5,7 @@
 #include <NsCore/BaseComponent.h>
 #include <NsGui/ObservableCollection.h>
 #include "HUDItemsPanelItem.h"
+#include "game/components/terrain/TerrainMap.h"
 
 class CHUDDataModel final : public NoesisApp::NotifyPropertyChangedBase
 {
@@ -32,6 +33,8 @@ public: // Debug interface
 
   void SetDebugTargetPosition(glm::vec3 TargetPosition);
 
+  void SetDebugBlockInfo(const TTerrainBlockInfo & BlockInfo);
+
 private: // Members
 
   Noesis::Ptr<Noesis::ObservableCollection<THUDItemsPanelItem>> m_ItemsPanel;
@@ -39,6 +42,12 @@ private: // Members
 
   Noesis::String m_DebugPosition;
   Noesis::String m_DebugTargetPosition;
+  Noesis::String m_DebugHeight;
+  Noesis::String m_DebugContinentalness;
+  Noesis::String m_DebugErosion;
+  Noesis::String m_DebugPeaksValleys;
+  Noesis::String m_DebugTemperature;
+  Noesis::String m_DebugHumidity;
 
   NS_DECLARE_REFLECTION(CHUDDataModel, NotifyPropertyChangedBase)
 };
