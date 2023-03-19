@@ -1,5 +1,5 @@
 {
-    "terrain_level" : 64,
+    "terrain_level" : 164,
     "water_level"   : 32,
     "lower_generation_bound": 0,
     "upper_generation_bound" : 384,
@@ -71,6 +71,6 @@
 
     "spline_noise" : 
     {
-        "frequency" : 0.001
+        "frequency" : 0.00055
     }
 }

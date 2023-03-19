@@ -7,5 +7,5 @@ public: // IBiomeGenerator
 
   using CBiomeGenerator::CBiomeGenerator;
 
-  EBlockType GetBlockAt(int Elevation, int X_, int Y_) override;
+  EBlockType GetBlockAt(int BaseHeight, int Elevation, int X_, int Y_) override;
 };

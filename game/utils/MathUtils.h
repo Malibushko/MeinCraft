@@ -16,3 +16,7 @@ EBlockFace GetBlockFaceIntersectingRay(glm::vec3 RayOrigin, glm::vec3 BlockPosit
 glm::vec3 GetFaceDirection(EBlockFace Face);
 
 double TrigonometricInterpolation(const std::vector<std::pair<float, float>> & _Values);
+
+float To01(float Value);
+
+float ToNegative11(float Value);

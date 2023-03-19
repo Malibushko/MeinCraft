@@ -31,7 +31,7 @@ public: // Interface
     return m_Config.ID;
   }
 
-  virtual EBlockType GetBlockAt(int Elevation, int X_, int Y_) = 0;
+  virtual EBlockType GetBlockAt(int BaseHeight, int Elevation, int X_, int Y_) = 0;
 
 protected: // Members
 

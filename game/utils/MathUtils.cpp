@@ -90,3 +90,13 @@ double TrigonometricInterpolation(const std::vector<std::pair<float, float>> & _
   return Result;
 }
 
+float To01(float Value)
+{
+  return std::clamp((Value + 1.f) / 2.f, 0.f, 1.f);
+}
+
+float ToNegative11(float Value)
+{
+  return std::clamp(Value * 2.f - 1.f, -1.f, 1.f);
+}
+

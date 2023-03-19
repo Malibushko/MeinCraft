@@ -30,9 +30,9 @@ protected: // Service
 
   std::vector<TBiomeConfig> LoadConfig(std::string_view _Path);
 
-  int GetBiomeIDAt(float Height, glm::vec3 _Position);
+  int GetBiomeIDAt(glm::vec3 _Position);
 
-  CBiomeGenerator * GetBiomeGeneratorAt(float Height, glm::vec3 _Position);
+  CBiomeGenerator * GetBiomeGeneratorAt(glm::vec3 _Position);
 
   void LoadConfigs();
 

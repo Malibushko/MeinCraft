@@ -5,6 +5,7 @@
 
 #include "BiomeGeneratorFactory.h"
 #include "game/utils/FileUtils.h"
+#include "game/utils/MathUtils.h"
 
 static constexpr std::string_view BIOMES_CONFIG_PATH    = "res/configs/biomes.json";
 static constexpr std::string_view GENERATOR_CONFIG_PATH = "res/configs/world_generation.json";
@@ -33,14 +34,20 @@ TBlockComponent CMinecraftTerrainGenerator::Generate(glm::vec3 _Position)
   if (static_cast<int>(_Position.y) >= m_UpperGenerationBound) // $FIXME: probably wrong for underworld but need revision later
     return TBlockComponent{ .Type = EBlockType::Air };
 
-  const float Height = GetHeightAt(_Position) - (_Position.y - m_TerrainLevel) / m_TerrainLevel;
+  const float Height    = GetHeightAt(_Position);
+  const int   Elevation = m_TerrainLevel / 2.f + (m_TerrainLevel / 2.f) * Height;
 
-  if (Height < 0)
+  if (_Position.y > Elevation)
   {
-    if (static_cast<int>(_Position.y) <= m_WaterLevel)
+    if (_Position.y < m_WaterLevel)
       return TBlockComponent{ .Type = EBlockType::StationaryWater };
+  }
 
-    return TBlockComponent{ .Type = EBlockType::Air };
+  if (static_cast<int>(_Position.y) > Elevation)
+  {
+    const auto Generator = GetBiomeGeneratorAt(_Position);
+
+    return TBlockComponent{ .Type = Generator->GetBlockAt(Elevation, _Position.y, _Position.x, _Position.z) };
   }
 
   return TBlockComponent{ .Type = EBlockType::Stone };
@@ -55,11 +62,11 @@ float CMinecraftTerrainGenerator::GetHeightAt(glm::vec3 _Position) const
   const float ErosionFactor         = GetNoiseValueAtSmoothed(m_ErosionNoise, _Position, m_ErosionSplineNoise, m_ErosionSplines);
   const float PeaksValleysFactor    = GetNoiseValueAtSmoothed(m_PeaksValleysNoise, _Position, m_PeaksValleysSplineNoise, m_PeaksValleysSplines);
 
-  const float Height = (ContinentalnessFactor - ErosionFactor) + (PeaksValleysFactor - 0.5) * 2;
+  const float Height = (ContinentalnessFactor - ErosionFactor) + ToNegative11(PeaksValleysFactor);
 
   m_HeightMap[glm::ivec2(_Position.x, _Position.z)] = Height;
 
-  return Height;
+  return std::clamp(Height, -1.f, 1.f);
 }
 
 //
@@ -115,32 +122,21 @@ std::vector<TBiomeConfig> CMinecraftTerrainGenerator::LoadConfig(std::string_vie
   return BiomeConfigs;
 }
 
-int CMinecraftTerrainGenerator::GetBiomeIDAt(float Height, glm::vec3 _Position)
+int CMinecraftTerrainGenerator::GetBiomeIDAt(glm::vec3 _Position)
 {
   const float Temperature   = m_TemperatureNoise.GetNoise(_Position.x, _Position.z);
   const float Precipitation = m_PrecipitationNoise.GetNoise(_Position.x, _Position.z);
 
-  int   ID         = -1;
+  int   ID         = 1;
   float BestSuit   = 0.f;
   float BiomeDepth = 0.f;
-  /*
-  for (const int BiomeID : GetBiomeIDsForDepth(Height, std::numeric_limits<float>::epsilon()))
-  {
-    const auto & BiomeGenerator = m_BiomeGenerators.at(BiomeID);
 
-    if (const float SuitFactor = BiomeGenerator->Suit(Temperature, Precipitation); SuitFactor > BestSuit)
-    {
-      ID         = BiomeGenerator->GetID();
-      BestSuit   = SuitFactor;
-    }
-  }
-  */
   return ID;
 }
 
-CBiomeGenerator * CMinecraftTerrainGenerator::GetBiomeGeneratorAt(float Height, glm::vec3 _Position)
+CBiomeGenerator * CMinecraftTerrainGenerator::GetBiomeGeneratorAt(glm::vec3 _Position)
 {
-  if (const int BiomeID = GetBiomeIDAt(Height, _Position); BiomeID != -1)
+  if (const int BiomeID = GetBiomeIDAt(_Position); BiomeID != -1)
     return m_BiomeGenerators.at(BiomeID).get();
 
   return nullptr;
@@ -245,9 +241,9 @@ float CMinecraftTerrainGenerator::GetNoiseValueAtSmoothed(
   {
     for (int j = -NeighbourCount / 2; j < NeighbourCount / 2; j++)
     {
-      const int    SplineIndex = (SplineNoise.GetNoise(Position.x + i, Position.z + j) * 0.5f + 0.5f) * 10;
+      const int    SplineIndex  = To01(SplineNoise.GetNoise(Position.x + i, Position.z + j)) * 10;
       const auto & Spline       = Splines[SplineIndex];
-      const float  Noise        = Noise_.GetNoise(Position.x + i, Position.y, Position.z + j) * 0.5f + 0.5f;
+      const float  Noise        = To01(Noise_.GetNoise(Position.x + i, Position.y, Position.z + j));
 
       Value += Spline.eval(Noise).result()[1];
 
