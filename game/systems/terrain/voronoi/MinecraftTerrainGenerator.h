@@ -38,6 +38,8 @@ protected: // Service
 
   void LoadConfigs();
 
+  void LoadBiomeGenerationSchemes(const nlohmann::json & Config);
+
   void LoadSplines(const nlohmann::json & Config);
 
   void LoadSplines(const nlohmann::json & Config, std::vector<tinyspline::BSpline> & Splines);
@@ -50,6 +52,10 @@ protected: // Service
       const FastNoiseLite &                    SplineNoise,
       const std::vector<tinyspline::BSpline> & Splines
     ) const;
+
+  int GetContinentalnessIndex(float ContinentalnessValue) const;
+
+  int GetErosionIndex(float ErosinValue) const;
 
 protected: // Members
 
@@ -85,4 +91,6 @@ protected: // Members
   int m_UpperGenerationBound{};
 
   TTerrainMap * m_ParametersMap = nullptr;
+
+  std::map<int, std::vector<int>> m_RegularBiomeGenerationScheme;
 };

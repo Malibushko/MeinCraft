@@ -98,7 +98,7 @@ void InitCamera(World & World_)
     .Camera = TCameraBundle
     {
       .Position = TPositionComponent{
-        .Position = { 0.0f, 1.f, 0.0f }
+        .Position = { 0.0f, 0.f, 0.0f }
       }
     },
     .Perspective =
@@ -154,7 +154,7 @@ void InitTerrain(World & World_)
   {
     .TerrainGenerationStrategy = [&](const glm::vec3 & _Position) -> TBlockComponent
     {
-      static CMinecraftTerrainGenerator Generator(World_.Registry(), time(nullptr));
+      static CFlatTerrainGenerator Generator(time(nullptr));
 
       return Generator.Generate(_Position);
     }

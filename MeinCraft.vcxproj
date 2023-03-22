@@ -241,10 +241,12 @@
     <ClInclude Include="game\systems\terrain\voronoi\BiomeGenerator.h" />
     <ClInclude Include="game\systems\terrain\voronoi\BiomeGeneratorFactory.h" />
     <ClInclude Include="game\systems\terrain\voronoi\biomes\DesertBiomeGenerator.h" />
+    <ClInclude Include="game\systems\terrain\voronoi\biomes\ForestBiomeGenerator.h" />
     <ClInclude Include="game\systems\terrain\voronoi\biomes\MissingBlockBiomeGenerator.h" />
     <ClInclude Include="game\systems\terrain\voronoi\biomes\MountainBiomeGenerator.h" />
     <ClInclude Include="game\systems\terrain\voronoi\biomes\OceanBiomeGenerator.h" />
     <ClInclude Include="game\systems\terrain\voronoi\biomes\PlainsBiomeGenerator.h" />
+    <ClInclude Include="game\systems\terrain\voronoi\biomes\TaigaBiomeGenerator.h" />
     <ClInclude Include="game\systems\terrain\voronoi\MinecraftTerrainGenerator.h" />
     <ClInclude Include="game\systems\terrain\voronoi\TerrainGeneratorUtils.h" />
     <ClInclude Include="game\systems\ui\gui\HUDItemsPanelItem.h" />
@@ -297,10 +299,12 @@
     <ClCompile Include="game\systems\terrain\NoiseTerrainGenerator.cpp" />
     <ClCompile Include="game\systems\terrain\voronoi\BiomeGeneratorFactory.cpp" />
     <ClCompile Include="game\systems\terrain\voronoi\biomes\DesertBiomeGenerator.cpp" />
+    <ClCompile Include="game\systems\terrain\voronoi\biomes\ForestBiomeGenerator.cpp" />
     <ClCompile Include="game\systems\terrain\voronoi\biomes\MissingBlockBiomeGenerator.cpp" />
     <ClCompile Include="game\systems\terrain\voronoi\biomes\MountainBiomeGenerator.cpp" />
     <ClCompile Include="game\systems\terrain\voronoi\biomes\OceanBiomeGenerator.cpp" />
     <ClCompile Include="game\systems\terrain\voronoi\biomes\PlainsBiomeGenerator.cpp" />
+    <ClCompile Include="game\systems\terrain\voronoi\biomes\TaigaBiomeGenerator.cpp" />
     <ClCompile Include="game\systems\terrain\voronoi\MinecraftTerrainGenerator.cpp" />
     <ClCompile Include="game\systems\terrain\voronoi\TerrainGeneratorUtils.cpp" />
     <ClCompile Include="game\systems\ui\gui\HUDItemsPanelItem.cpp" />

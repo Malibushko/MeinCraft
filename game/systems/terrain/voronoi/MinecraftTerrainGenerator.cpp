@@ -41,12 +41,6 @@ TBlockComponent CMinecraftTerrainGenerator::Generate(glm::vec3 _Position)
   const float Height    = GetHeightAt(_Position);
   const int   Elevation = m_TerrainLevel / 2.f + (m_TerrainLevel / 2.f) * Height;
 
-  if (_Position.y > Elevation)
-  {
-    if (_Position.y < m_WaterLevel)
-      return TBlockComponent{ .Type = EBlockType::StationaryWater };
-  }
-
   if (static_cast<int>(_Position.y) > Elevation)
   {
     const auto Generator = GetBiomeGeneratorAt(_Position);
@@ -62,17 +56,17 @@ float CMinecraftTerrainGenerator::GetHeightAt(glm::vec3 _Position) const
   if (const auto Iterator = m_ParametersMap->Blocks.find(glm::ivec2(_Position.x, _Position.z)); Iterator != m_ParametersMap->Blocks.cend())
     return Iterator->second.Height;
 
-  const float ContinentalnessFactor = GetNoiseValueAtSmoothed(m_ContinentalnessMapNoise, _Position, m_ContinentalnessSplineNoise, m_ContinentalnessSplines);
-  const float ErosionFactor         = GetNoiseValueAtSmoothed(m_ErosionNoise, _Position, m_ErosionSplineNoise, m_ErosionSplines);
-  const float PeaksValleysFactor    = GetNoiseValueAtSmoothed(m_PeaksValleysNoise, _Position, m_PeaksValleysSplineNoise, m_PeaksValleysSplines);
+  const float ContinentalnessFactor = m_ContinentalnessMapNoise.GetNoise(_Position.x, _Position.z);
+  const float ErosionFactor         = m_ErosionSplines[GetContinentalnessIndex(ContinentalnessFactor)].eval(To01(m_ErosionNoise.GetNoise(_Position.x, _Position.z))).result()[1];
+  const float PeaksValleysFactor    = m_PeaksValleysSplines[GetErosionIndex(ErosionFactor)].eval(To01(m_PeaksValleysNoise.GetNoise(_Position.x, _Position.z))).result()[1];
 
-  const float Height = std::clamp((ContinentalnessFactor - ErosionFactor) + ToNegative11(PeaksValleysFactor), -1.f, 1.f);
+  const float Height = ToNegative11(PeaksValleysFactor);
 
   m_ParametersMap->Blocks[glm::ivec2(_Position.x, _Position.z)] = TTerrainBlockInfo
   {
     .Continentalness = ContinentalnessFactor,
     .Erosion         = ErosionFactor,
-    .PeaksValleys     = PeaksValleysFactor,
+    .PeaksValleys    = PeaksValleysFactor,
     .Height          = Height,
     .Temperature     = m_TemperatureNoise.GetNoise(_Position.x, _Position.z),
     .Humidity        = m_HumidityNoise.GetNoise(_Position.x, _Position.z)
@@ -136,14 +130,14 @@ std::vector<TBiomeConfig> CMinecraftTerrainGenerator::LoadConfig(std::string_vie
 
 int CMinecraftTerrainGenerator::GetBiomeIDAt(glm::vec3 _Position)
 {
-  const float Temperature   = m_TemperatureNoise.GetNoise(_Position.x, _Position.z);
-  const float Precipitation = m_HumidityNoise.GetNoise(_Position.x, _Position.z);
+  const TTerrainBlockInfo & Info = m_ParametersMap->Blocks.at(glm::ivec2(_Position.x, _Position.z));
 
-  int   ID         = 1;
-  float BestSuit   = 0.f;
-  float BiomeDepth = 0.f;
+  return 0;
 
-  return ID;
+  const int ContinentalnessIndex = Info.GetContinentalnessIndex();
+  const int Erosion              = Info.GetErosionIndex();
+
+  return m_RegularBiomeGenerationScheme.at(ContinentalnessIndex).at(Erosion);
 }
 
 CBiomeGenerator * CMinecraftTerrainGenerator::GetBiomeGeneratorAt(glm::vec3 _Position)
@@ -196,21 +190,40 @@ void CMinecraftTerrainGenerator::LoadConfigs()
   m_TerrainShapeNoise.SetNoiseType(FastNoiseLite::NoiseType_Perlin);
 
   m_ContinentalnessSplineNoise.SetSeed(m_Seed++);
+  m_TerrainShapeNoise.SetNoiseType(FastNoiseLite::NoiseType_Perlin);
   m_ContinentalnessSplineNoise.SetFrequency(Config["spline_noise"]["frequency"]);
 
   m_ErosionSplineNoise.SetSeed(m_Seed++);
+  m_ErosionSplineNoise.SetNoiseType(FastNoiseLite::NoiseType_ValueCubic);
   m_ErosionSplineNoise.SetFrequency(Config["spline_noise"]["frequency"]);
 
   m_PeaksValleysSplineNoise.SetSeed(m_Seed++);
+  m_PeaksValleysSplineNoise.SetNoiseType(FastNoiseLite::NoiseType_Perlin);
   m_PeaksValleysSplineNoise.SetFrequency(Config["spline_noise"]["frequency"]);
 
   m_TemperatureNoise.SetSeed(m_Seed++);
+  m_TemperatureNoise.SetNoiseType(FastNoiseLite::NoiseType_Perlin);
   m_TemperatureNoise.SetFrequency(Config["temperature_noise"]["frequency"]);
 
   m_HumidityNoise.SetSeed(m_Seed++);
-  m_HumidityNoise.SetFrequency(Config["precipitation_noise"]["frequency"]);
+  m_HumidityNoise.SetNoiseType(FastNoiseLite::NoiseType_Perlin);
+  m_HumidityNoise.SetFrequency(Config["humidity_noise"]["frequency"]);
 
   LoadSplines(Config);
+  LoadBiomeGenerationSchemes(Config);
+}
+
+void CMinecraftTerrainGenerator::LoadBiomeGenerationSchemes(const nlohmann::json & Config)
+{
+  const auto RegularSchemeConfig = Config["biome_generation_schemes"]["regular"];
+
+  for (int TerrainLevel = 0; TerrainLevel < RegularSchemeConfig.size(); TerrainLevel++)
+  {
+    const auto LevelBiomes = RegularSchemeConfig[TerrainLevel];
+
+    for (int Humidity = 0; Humidity < LevelBiomes.size(); Humidity++)
+      m_RegularBiomeGenerationScheme[TerrainLevel].push_back(LevelBiomes[Humidity]);
+  }
 }
 
 void CMinecraftTerrainGenerator::LoadSplines(const nlohmann::json & Config)
@@ -272,4 +285,30 @@ float CMinecraftTerrainGenerator::GetNoiseValueAtSmoothed(
   }
 
   return Value /= Count;
+}
+
+int CMinecraftTerrainGenerator::GetContinentalnessIndex(float ContinentalnessValue) const
+{
+  static std::array ContinentalnessIndexes{ -1.2,-1.05,-0.455,-0.19,-0.11,0.03,0.3,0.8,1.0 };
+
+  for (int i = 0; i < ContinentalnessIndexes.size(); i++)
+  {
+    if (ContinentalnessValue < ContinentalnessIndexes[i])
+      return i;
+  }
+
+  return -1;
+}
+
+int CMinecraftTerrainGenerator::GetErosionIndex(float ErosinValue) const
+{
+  static std::array ErosionIndexes{ -1.0, -0.78, -0.375, -0.2225, 0.05, 0.45, 0.55, 1.0 };
+
+  for (int i = 0; i < ErosionIndexes.size(); i++)
+  {
+    if (ErosinValue < ErosionIndexes[i])
+      return i;
+  }
+
+  return -1;
 }

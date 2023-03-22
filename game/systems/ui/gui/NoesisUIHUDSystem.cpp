@@ -132,11 +132,16 @@ void CNoesisUIHUDSystem::UpdateDebugPanel(registry_t & Registry)
 {
   auto [Transform, Position] = QuerySingle<TGlobalTransformComponent, TPositionComponent>(Registry);
   auto & Target              = QuerySingle<TCameraTargetComponent>(Registry);
-  auto & TerrainMap          = QuerySingle<TTerrainMap>(Registry);
-
-  const TTerrainBlockInfo & CurrentBlockInfo = TerrainMap.Blocks[glm::ivec2(Position.Position.x, Position.Position.z)];
 
   m_DataModel->SetDebugPosition(Position.Position);
   m_DataModel->SetDebugTargetPosition(Target.TargetWorldPosition);
-  m_DataModel->SetDebugBlockInfo(CurrentBlockInfo);
+
+  if (HasComponent<TTerrainMap>(Registry))
+  {
+    auto & TerrainMap = QuerySingle<TTerrainMap>(Registry);
+
+    const TTerrainBlockInfo & CurrentBlockInfo = TerrainMap.Blocks[glm::ivec2(Position.Position.x, Position.Position.z)];
+
+    m_DataModel->SetDebugBlockInfo(CurrentBlockInfo);
+  }
 }

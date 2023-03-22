@@ -474,6 +474,12 @@
     <ClInclude Include="game\components\terrain\TerrainMap.h">
       <Filter>game\components\terrain</Filter>
     </ClInclude>
+    <ClInclude Include="game\systems\terrain\voronoi\biomes\ForestBiomeGenerator.h">
+      <Filter>game\systems\terrain\voronoi\biomes</Filter>
+    </ClInclude>
+    <ClInclude Include="game\systems\terrain\voronoi\biomes\TaigaBiomeGenerator.h">
+      <Filter>game\systems\terrain\voronoi\biomes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="game\Main.cpp">
@@ -631,6 +637,12 @@
     </ClCompile>
     <ClCompile Include="game\systems\terrain\voronoi\TerrainGeneratorUtils.cpp">
       <Filter>game\systems\terrain\voronoi</Filter>
+    </ClCompile>
+    <ClCompile Include="game\systems\terrain\voronoi\biomes\ForestBiomeGenerator.cpp">
+      <Filter>game\systems\terrain\voronoi\biomes</Filter>
+    </ClCompile>
+    <ClCompile Include="game\systems\terrain\voronoi\biomes\TaigaBiomeGenerator.cpp">
+      <Filter>game\systems\terrain\voronoi\biomes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

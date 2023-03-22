@@ -1,10 +1,12 @@
 #include "BiomeGeneratorFactory.h"
 
 #include "biomes/DesertBiomeGenerator.h"
+#include "biomes/ForestBiomeGenerator.h"
 #include "biomes/MissingBlockBiomeGenerator.h"
 #include "biomes/MountainBiomeGenerator.h"
 #include "biomes/OceanBiomeGenerator.h"
 #include "biomes/PlainsBiomeGenerator.h"
+#include "biomes/TaigaBiomeGenerator.h"
 
 enum class EBiomeType : int {
   Ocean = 0,
@@ -90,6 +92,12 @@ std::unique_ptr<CBiomeGenerator> CBiomeGeneratorFactory::Create(const TBiomeConf
 
     case EBiomeType::Mountains:
       return std::make_unique<CMountainBiomeGenerator>(Config);
+
+    case EBiomeType::Forest:
+      return std::make_unique<CForestBiomeGenerator>(Config);
+
+    case EBiomeType::Taiga:
+      return std::make_unique<CTaigaBiomeGenerator>(Config);
   }
 
   return std::make_unique<CMissingBlockBiomeGenerator>(Config);

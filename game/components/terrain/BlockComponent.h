@@ -24,7 +24,7 @@ enum class EBlockType
   GlowStone       = 89,
 
   // Technical blocks
-  Missing         = 1000
+  Missing         = 254
 };
 
 struct TBlockComponent
