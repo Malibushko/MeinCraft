@@ -24,7 +24,7 @@ const float Bias       = 0.025;
 
 void main()
 {
-    vec2       ScreenSize = textureSize(gNoiseTexture, 0);
+    vec2       ScreenSize = textureSize(gPosition, 0);
     const vec2 NoiseScale = vec2(ScreenSize.x / TILE_SIZE, ScreenSize.y / TILE_SIZE);
 
     // get input for SSAO algorithm
@@ -35,7 +35,7 @@ void main()
     // create TBN change-of-basis matrix: from tangent-space to view-space
     vec3 Tangent   = normalize(RandomVec - Normal * dot(RandomVec, Normal));
     vec3 Bitangent = cross(Normal, Tangent);
-    mat3 TBN = mat3(Tangent, Bitangent, Normal);
+    mat3 TBN       = mat3(Tangent, Bitangent, Normal);
 
     // iterate over the sample kernel and calculate occlusion factor
     float Occlusion = 0.0;
