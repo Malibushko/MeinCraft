@@ -103,6 +103,7 @@ void GLMeshSystem::OnUpdate(registry_t & Registry_, float Delta_)
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, UnbakedMesh.Indices.size() * sizeof(UnbakedMesh.Indices[0]), UnbakedMesh.Indices.data(), GL_STATIC_DRAW);
 
     MeshComponent.IndicesCount = static_cast<int>(UnbakedMesh.Indices.size());
+    MeshComponent.MaterialID   = UnbakedMesh.MaterialID;
   };
 
 

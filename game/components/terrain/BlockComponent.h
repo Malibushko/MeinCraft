@@ -3,9 +3,9 @@
 
 #include "core/entity/Component.h"
 
-enum class EBlockType
+enum class EBlockType : uint8_t
 {
-  Invalid         = -1,
+  Invalid         = 255,
   Air             = 0,
   Stone           = 1,
   GrassBlock      = 2,
@@ -27,11 +27,18 @@ enum class EBlockType
   Missing         = 254
 };
 
+enum class EBlockFlags : uint8_t
+{
+  None        = 0x0,
+  LightSource = 0x1
+};
+
 struct TBlockComponent
 {
   static constexpr ComponentTag ComponentTag{};
 
   EBlockType  Type { EBlockType::Invalid };
+  EBlockFlags Flags{ EBlockFlags::None };
 
 public: // Interface
 

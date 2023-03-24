@@ -12,7 +12,8 @@
 
 enum class EUniformLocation
 {
-  Transform = 0
+  Transform = 0,
+  MaterialID = 1
 };
 
 void RenderMeshes(registry_t & Registry, auto && Meshes)
@@ -40,11 +41,16 @@ void RenderMeshes(registry_t & Registry, auto && Meshes)
     }
 
     glUniformMatrix4fv(
-      static_cast<GLint>(EUniformLocation::Transform),
-      1,
-      GL_FALSE,
-      &Transform.Transform[0][0]
-    );
+        static_cast<GLint>(EUniformLocation::Transform),
+        1,
+        GL_FALSE,
+        &Transform.Transform[0][0]
+      );
+
+    glUniform1ui(
+        static_cast<GLint>(EUniformLocation::MaterialID),
+        Mesh.MaterialID
+      );
 
     if (const auto * Texture = Registry.try_get<TGLTextureComponent>(Entity))
     {
@@ -91,11 +97,16 @@ void RenderMeshesWithShader(registry_t & Registry, auto && Meshes, TGLShaderComp
     assert(Mesh.IsBaked());
 
     glUniformMatrix4fv(
-      glGetUniformLocation(ForceShader.ShaderID, "u_Transform"),
-      1,
-      GL_FALSE,
-      &Transform.Transform[0][0]
-    );
+        static_cast<GLint>(EUniformLocation::Transform),
+        1,
+        GL_FALSE,
+        &Transform.Transform[0][0]
+      );
+
+    glUniform1i(
+        static_cast<GLint>(EUniformLocation::MaterialID),
+        Mesh.MaterialID
+      );
 
     if (const auto * Texture = Registry.try_get<TGLTextureComponent>(Entity))
     {

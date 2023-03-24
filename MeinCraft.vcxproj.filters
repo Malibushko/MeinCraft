@@ -480,6 +480,12 @@
     <ClInclude Include="game\systems\terrain\voronoi\biomes\TaigaBiomeGenerator.h">
       <Filter>game\systems\terrain\voronoi\biomes</Filter>
     </ClInclude>
+    <ClInclude Include="game\components\tags\NoShadowCastTag.h">
+      <Filter>game\components\tags</Filter>
+    </ClInclude>
+    <ClInclude Include="game\components\render\MaterialComponent.h">
+      <Filter>game\components\render</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="game\Main.cpp">
@@ -734,6 +740,8 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
+    <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.lib" />
     <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.dll" />
     <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.lib" />
     <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.dll" />

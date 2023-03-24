@@ -17,6 +17,8 @@ struct TGLUnbakedMeshComponent
   std::vector<glm::vec3>      Normals;
   std::vector<glm::vec2>      UV;
 
+  unsigned int                MaterialID = 0;
+
   [[nodiscard]] std::pair<glm::vec3, glm::vec3> GetBounds() const
   {
     if (Vertices.empty())

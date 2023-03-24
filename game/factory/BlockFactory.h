@@ -6,6 +6,7 @@
 #include "game/components/render/GLShaderComponent.h"
 #include "game/components/render/GLTextureComponent.h"
 #include "game/components/render/GLUnbakedMeshComponent.h"
+#include "game/components/render/MaterialComponent.h"
 #include "game/components/terrain/BlockComponent.h"
 #include "game/components/terrain/VisibleBlockFacesComponent.h"
 
@@ -49,6 +50,8 @@ public: // Interface
 
   static int GetBlockEmitLightFactor(TBlockComponent Block);
 
+  static const std::vector<TMaterialComponent> & GetBlockMaterials();
+
 protected: // Service
 
   void LoadConfigs();
@@ -56,6 +59,8 @@ protected: // Service
   void LoadBlockConfigs();
 
   void LoadBlockUVs();
+
+  void LoadBlockMaterials();
 
 protected: // Service Structs
 
@@ -82,10 +87,11 @@ protected: // Service Structs
     Cross = 1
   };
 
-  struct TBlockUV
+  struct TBlockMaterialInfo
   {
     std::array<glm::vec2, 6> Faces;
     EBlockMeshType           MeshType;
+    unsigned int             MaterialID;
   };
 
 protected: // Members
@@ -96,6 +102,7 @@ protected: // Members
   glm::vec2 m_BlockAtlasSize;
   glm::vec2 m_BlockQuadSize;
 
-  std::map<EBlockType, TBlockUV>   m_BlockUVs;
-  std::map<EBlockType, TBlockInfo> m_BlockInfos;
+  std::map<EBlockType, TBlockMaterialInfo> m_BlockUVs;
+  std::map<EBlockType, TBlockInfo>         m_BlockInfos;
+  std::vector<TMaterialComponent>          m_BlockMaterials;
 };

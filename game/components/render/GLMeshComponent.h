@@ -21,6 +21,7 @@ struct TGLMeshComponent
   unsigned int VBO           = INVALID_ID;
   unsigned int EBO           = INVALID_ID;
   unsigned int IndicesCount  = 0;
+  unsigned int MaterialID    = 0;
 
   [[nodiscard]] bool IsBaked() const
   {

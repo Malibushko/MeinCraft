@@ -1,6 +1,8 @@
 #version 460 core
 #define MAX_LIGHTS 1024
 #define TILE_SIZE 16
+#define LIGHT_SOURCE_BRIGHT_FACTOR 2.0
+#define EPS 0.0001
 
 out vec4 FragColor;
 
@@ -13,6 +15,8 @@ layout(binding = 0) uniform sampler2D       u_Texture_0;
 layout(binding = 1) uniform sampler2DShadow u_DepthMap;
 layout(binding = 2) uniform sampler2DShadow u_DirectedLightShadowMap;
 
+layout(location = 1) uniform unsigned int u_MaterialID;
+
 struct TPointLight
 {
   vec4  Position;
@@ -22,6 +26,14 @@ struct TPointLight
   float Linear;
   float Quadratic;
   float Radius;
+};
+
+struct TMaterial
+{
+  float Metallic;
+  float Roughness;
+  float Emissive;
+  vec4  EmissiveColor;
 };
 
 layout(std430, binding = 0) readonly buffer MatricesBuffer
@@ -55,6 +67,11 @@ layout(std430, binding = 4) readonly buffer VisiblePointLightsIndicesBuffer
 {
 	int Indices[];
 } IndicesBuffer;
+
+layout(std430, binding = 5) readonly buffer MaterialsBuffer
+{
+  TMaterial Materials[];
+} Materials;
 
 vec4 ApplyFog(in vec4 Color)
 {
@@ -126,24 +143,26 @@ void main()
 	  int         LightIndex = IndicesBuffer.Indices[i + Offset];
 	  TPointLight Light      = LightBuffer.Lights[LightIndex];
 
-	  vec3 LightDirection = Light.Position.xyz - Position;
-	  float Attenuation   = Attenuate(LightDirection, Light.Radius);
+	  vec3  LightDirection   = Light.Position.xyz - Position;
+	  float LightDistance    = length(LightDirection);
+	  float Attenuation      = Attenuate(LightDirection, Light.Radius);
+	  vec3  NormalizedNormal = normalize(Normal);
 
 	  LightDirection = normalize(LightDirection);
 
-	  float Diffuse = max(dot(LightDirection, normalize(Normal)), 0.0);
-
-	  if (length(LightDirection) < 0.5)
-		Diffuse = 1.0;
-
-	  // TODO: add specular component
-
+	  float Diffuse   = max(dot(LightDirection, NormalizedNormal), 0.0);
 	  vec3 Irradiance = Color.rgb * Diffuse * Attenuation;
 
 	  Color.rgb += Irradiance;
 	}
 
-	Color = ApplyLights(Color);
+	TMaterial Material = Materials.Materials[u_MaterialID];
+
+	if (Material.Emissive > 0.0)
+		Color += Material.EmissiveColor * Material.Emissive;
+	else
+		Color = ApplyLights(Color);
+
 	Color = ApplyFog(Color);
 
 	FragColor = Color;

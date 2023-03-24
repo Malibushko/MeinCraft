@@ -191,11 +191,13 @@
     <ClInclude Include="game\components\render\GLShaderComponent.h" />
     <ClInclude Include="game\components\render\GLTextureComponent.h" />
     <ClInclude Include="game\components\render\GLUnbakedMeshComponent.h" />
+    <ClInclude Include="game\components\render\MaterialComponent.h" />
     <ClInclude Include="game\components\requests\BlockCreateRequest.h" />
     <ClInclude Include="game\components\requests\ItemUseRequest.h" />
     <ClInclude Include="game\components\requests\PlayerHitRequest.h" />
     <ClInclude Include="game\components\requests\RaycastRequest.h" />
     <ClInclude Include="game\components\tags\InvisibleMeshTag.h" />
+    <ClInclude Include="game\components\tags\NoShadowCastTag.h" />
     <ClInclude Include="game\components\terrain\TerrainMap.h" />
     <ClInclude Include="game\components\terrain\VisibleBlockFacesComponent.h" />
     <ClInclude Include="game\components\terrain\BlockComponent.h" />

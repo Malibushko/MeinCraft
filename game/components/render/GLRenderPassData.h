@@ -15,6 +15,7 @@ struct TGLRenderPassData
   GLuint DirectedLightBuffer{ 0 };
   GLuint PointLightsBuffer{ 0 };
   GLuint PointLightIndicesBuffer{ 0 };
+  GLuint MaterialsBuffer{ 0 };
 
   // Forward+ data
   GLuint LightCullingWorkGroupsX = 0;

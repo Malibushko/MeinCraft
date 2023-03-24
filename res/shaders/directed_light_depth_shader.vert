@@ -25,6 +25,7 @@ layout(std430, binding = 2) readonly buffer DirectedLightBuffer
 };
 
 layout(location=0) uniform mat4 u_Transform;
+layout(location=1) uniform unsigned int u_MaterialID;
 
 out vec2 TextureCoords;
 void main()

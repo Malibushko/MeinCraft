@@ -13,7 +13,7 @@ void main()
 	vec3  Color      = texture(u_ScreenTexture, TexCoords).rgb;
 	float SSAOFactor = texture(u_SSAOTexture, TexCoords).r;
 
-	vec3 FinalColor = Color * clamp(SSAOFactor - SSAO_STRENGTH, 0, 1);
+	vec3 FinalColor = Color ;//* clamp(SSAOFactor - SSAO_STRENGTH, 0, 1);
 
 	FragColor = vec4(FinalColor, 1.0);
 }

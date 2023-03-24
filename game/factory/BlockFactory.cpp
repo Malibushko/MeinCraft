@@ -13,15 +13,17 @@
 #include "game/components/terrain/BlockComponent.h"
 #include "game/resources/ShaderLibrary.h"
 #include "game/resources/TextureLibrary.h"
+#include "game/utils/FileUtils.h"
 
 
 //
 // Config
 //
 
-static constexpr std::string_view BLOCK_UV_CONFIG_PATH   = "res/configs/blocks_uv.json";
-static constexpr std::string_view BLOCK_INFO_CONFIG_PATH = "res/configs/blocks.json";
-static constexpr std::string_view BLOCK_ICONS_CACHE_PATH = "res/icons/";
+static constexpr std::string_view BLOCK_UV_CONFIG_PATH        = "res/configs/blocks_materials_data.json";
+static constexpr std::string_view BLOCK_INFO_CONFIG_PATH      = "res/configs/blocks.json";
+static constexpr std::string_view BLOCK_MATERIALS_CONFIG_PATH = "res/configs/block_materials.json";
+static constexpr std::string_view BLOCK_ICONS_CACHE_PATH      = "res/icons/";
 
 static constexpr std::array<glm::vec3, 4> CUBE_FACES[]
 {
@@ -80,24 +82,24 @@ static constexpr std::array<glm::vec3, 4> CUBE_NORMALS[]  =
   },
   // Back
   {
-    glm::vec3{  0.f,  0.f, -1.f },
-    glm::vec3{  0.f,  0.f, -1.f },
-    glm::vec3{  0.f,  0.f, -1.f },
-    glm::vec3{  0.f,  0.f, -1.f },
+    glm::vec3{ 0.f,  0.f,  -1.f },
+    glm::vec3{ 0.f,  0.f,  -1.f },
+    glm::vec3{ 0.f,  0.f,  -1.f },
+    glm::vec3{ 0.f,  0.f,  -1.f },
   },
   // Left
   {
-    glm::vec3{ -1.f,  0.f,  0.f },
-    glm::vec3{ -1.f,  0.f,  0.f },
-    glm::vec3{ -1.f,  0.f,  0.f },
-    glm::vec3{ -1.f,  0.f,  0.f },
+    glm::vec3{  -1.f,  0.f,  0.f },
+    glm::vec3{  -1.f,  0.f,  0.f },
+    glm::vec3{  -1.f,  0.f,  0.f },
+    glm::vec3{  -1.f,  0.f,  0.f },
   },
   // Right
   {
-    glm::vec3{  1.f,  0.f,  0.f },
-    glm::vec3{  1.f,  0.f,  0.f },
-    glm::vec3{  1.f,  0.f,  0.f },
-    glm::vec3{  1.f,  0.f,  0.f },
+    glm::vec3{  1.f,  0.f, 0.f},
+    glm::vec3{  1.f,  0.f, 0.f},
+    glm::vec3{  1.f,  0.f, 0.f},
+    glm::vec3{  1.f,  0.f, 0.f},
   },
   // Top
   {
@@ -185,6 +187,8 @@ TGLUnbakedSolidMeshComponent CBlockFactory::GetCubeMeshForBlock(const TBlockComp
       Mesh.Normals.insert(Mesh.Normals.end(), CUBE_NORMALS[FaceIndex].begin(), CUBE_NORMALS[FaceIndex].end());
     }
   }
+
+  Mesh.MaterialID = Instance().m_BlockUVs[Block.Type].MaterialID;
 
   return Mesh;
 }
@@ -274,6 +278,8 @@ TGLUnbakedSolidMeshComponent CBlockFactory::GetCrossMeshForBlock(const TBlockCom
   Mesh.UV.insert(Mesh.UV.end(), UV.begin(), UV.end());
   Mesh.UV.insert(Mesh.UV.end(), UV.begin(), UV.end());
   Mesh.UV.insert(Mesh.UV.end(), UV.begin(), UV.end());
+
+  Mesh.MaterialID = Instance().m_BlockUVs[Block.Type].MaterialID;
 
   return Mesh;
 }
@@ -386,10 +392,16 @@ int CBlockFactory::GetBlockEmitLightFactor(TBlockComponent Block)
   return Instance().m_BlockInfos[Block.Type].EmitLight;
 }
 
+const std::vector<TMaterialComponent> & CBlockFactory::GetBlockMaterials()
+{
+  return Instance().m_BlockMaterials;
+}
+
 void CBlockFactory::LoadConfigs()
 {
   LoadBlockConfigs();
   LoadBlockUVs();
+  LoadBlockMaterials();
 }
 
 void CBlockFactory::LoadBlockConfigs()
@@ -472,7 +484,7 @@ void CBlockFactory::LoadBlockUVs()
   {
     auto && UVConfig = BlockUV["uv"];
 
-    TBlockUV UV{};
+    TBlockMaterialInfo UV{};
 
     for (size_t Index = 0; auto FaceID : {"front", "back", "left", "right", "top", "bottom"})
     {
@@ -486,10 +498,41 @@ void CBlockFactory::LoadBlockUVs()
       UV.Faces[Index++] = { FaceUV.first / m_BlockAtlasSize.x, FaceUV.second / m_BlockAtlasSize.y };
     }
 
-    UV.MeshType = static_cast<EBlockMeshType>(BlockUV["mesh"].get<int>());
+    UV.MeshType   = static_cast<EBlockMeshType>(BlockUV["mesh"].get<int>());
+    UV.MaterialID = BlockUV["material_id"].get<int>();
 
     m_BlockUVs[static_cast<EBlockType>(BlockUV["id"].get<int>())] = UV;
   }
 
   spdlog::info("Successfully loaded block UV config file");
+}
+
+void CBlockFactory::LoadBlockMaterials()
+{
+  nlohmann::json Config = nlohmann::json::parse(Utils::ReadFile(BLOCK_MATERIALS_CONFIG_PATH));
+
+  if (Config.empty())
+  {
+    spdlog::critical("Failed to load block materials config file");
+    return;
+  }
+
+  for (const auto & MaterialConfig : Config)
+  {
+    TMaterialComponent Material;
+
+    Material.Metallic  = MaterialConfig["metallic"];
+    Material.Roughness = MaterialConfig["roughness"];
+    Material.Emissive  = MaterialConfig["emissive"];
+
+    if (MaterialConfig.find("emissive_color") != MaterialConfig.end())
+    {
+      const auto EmissiveColor = MaterialConfig["emissive_color"];
+
+      for (int i = 0; i < 4; i++)
+        Material.EmissiveColor[i] = EmissiveColor[i];
+    }
+
+    m_BlockMaterials.push_back(std::move(Material));
+  }
 }

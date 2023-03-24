@@ -9,6 +9,7 @@ layout(std430, binding = 0) readonly buffer MatricesBuffer
 };
 
 layout(location=0) uniform mat4 u_Transform;
+layout(location=1) uniform unsigned int u_MaterialID;
 
 void main()
 {

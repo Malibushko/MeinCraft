@@ -13,6 +13,8 @@
 #include "game/components/lightning/PointLightComponent.h"
 #include "game/components/render/GLRenderPassData.h"
 #include "game/components/render/GLShaderComponent.h"
+#include "game/components/render/MaterialComponent.h"
+#include "game/factory/BlockFactory.h"
 #include "game/utils/GLRenderUtils.h"
 
 static constexpr int MAX_LIGHTS_COUNT = 1024;
@@ -25,6 +27,8 @@ static constexpr int POINT_LIGHT_TILE_SIZE = 16;
 void GLRenderBufferObjectsSystem::OnCreate(registry_t & Registry_)
 {
   UpdateStorageBuffers(Registry_);
+
+  UpdateMaterialsBuffer(Registry_);
 }
 
 void GLRenderBufferObjectsSystem::OnUpdate(registry_t & Registry_, float Delta_)
@@ -216,6 +220,47 @@ void GLRenderBufferObjectsSystem::UpdatePointLightsBuffer(registry_t & Registry)
 
     if (++LightsCount >= MAX_LIGHTS_COUNT)
       break;
+  }
+
+  glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
+  glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+}
+
+void GLRenderBufferObjectsSystem::UpdateMaterialsBuffer(registry_t & Registry)
+{
+  struct TMaterial
+  {
+    float                                Metallic;
+    float                                Roughness;
+    float                                Emissive;
+    alignas(sizeof(float) * 4) glm::vec4 EmissiveColor;
+  };
+
+  auto & RenderData = QuerySingle<TGLRenderPassData>(Registry);
+  auto & Materials  = CBlockFactory::GetBlockMaterials();
+
+  if (RenderData.MaterialsBuffer == 0)
+  {
+    glGenBuffers(1, &RenderData.MaterialsBuffer);
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER, RenderData.MaterialsBuffer);
+    glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(TMaterial) * Materials.size(), nullptr, GL_STATIC_DRAW);
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, static_cast<GLuint>(EShaderBuffer::MaterialsBuffer), RenderData.MaterialsBuffer);
+  }
+
+  glBindBuffer(GL_SHADER_STORAGE_BUFFER, RenderData.MaterialsBuffer);
+
+  TMaterial * MaterialsData = static_cast<TMaterial *>(glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_WRITE));
+
+  int MaterialIndex = 0;
+
+  for (const auto & Material : Materials)
+  {
+    MaterialsData[MaterialIndex].Metallic      = Material.Metallic;
+    MaterialsData[MaterialIndex].Roughness     = Material.Roughness;
+    MaterialsData[MaterialIndex].Emissive      = Material.Emissive;
+    MaterialsData[MaterialIndex].EmissiveColor = Material.EmissiveColor;
+
+    MaterialIndex++;
   }
 
   glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);

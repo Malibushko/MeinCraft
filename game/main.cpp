@@ -98,7 +98,7 @@ void InitCamera(World & World_)
     .Camera = TCameraBundle
     {
       .Position = TPositionComponent{
-        .Position = { 0.0f, 0.f, 0.0f }
+        .Position = { 0.0f, 1.f, 0.0f }
       }
     },
     .Perspective =

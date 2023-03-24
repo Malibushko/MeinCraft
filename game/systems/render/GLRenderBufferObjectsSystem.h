@@ -11,7 +11,8 @@ enum class EShaderBuffer
   CameraBuffer,
   DirectedLightBuffer,
   PointLightsBuffer,
-  VisiblePointLightsIndicesBuffer
+  VisiblePointLightsIndicesBuffer,
+  MaterialsBuffer
 };
 
 class GLRenderBufferObjectsSystem : public ISystem
@@ -35,6 +36,8 @@ protected: // Service
   void UpdateDirectedLightBuffer(registry_t & Registry_);
 
   void UpdatePointLightsBuffer(registry_t & Registry);
+
+  void UpdateMaterialsBuffer(registry_t & Registry);
 
 protected: // Service
 

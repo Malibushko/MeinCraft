@@ -5,6 +5,7 @@
 #include "game/components/lightning/LightComponent.h"
 #include "game/components/lightning/PointLightComponent.h"
 #include "game/components/physics/BoundingVolume.h"
+#include "game/components/tags/NoShadowCastTag.h"
 #include "game/components/terrain/BlockComponent.h"
 #include "game/components/terrain/ChunkComponent.h"
 #include "game/factory/BlockFactory.h"
@@ -50,9 +51,8 @@ void CChunkMeshSystem::RecreateChunkMesh(registry_t & Registry_, entity_t ChunkE
 {
   DestroyChunkMesh(Registry_, Chunk);
 
-  // TODO: support multiple meshes per chunk and allow and group them by shader
-  TGLUnbakedSolidMeshComponent       SolidMeshComponent;
-  TGLUnbakedTranslucentMeshComponent TranslucentMeshComponent;
+  std::unordered_map<int, TGLUnbakedSolidMeshComponent      > SolidMeshComponents;
+  std::unordered_map<int, TGLUnbakedTranslucentMeshComponent> TranslucentMeshComponents;
 
   TGLShaderComponent SolidMeshShader, TransclucentMeshShader;
 
@@ -78,8 +78,9 @@ void CChunkMeshSystem::RecreateChunkMesh(registry_t & Registry_, entity_t ChunkE
     {
       if (Registry_.try_get<TLightComponent>(Chunk.Blocks[Index]) == nullptr)
       {
-        AddComponent<TPositionComponent>(Registry_, Chunk.Blocks[Index], TPositionComponent{ .Position = ChunkPosition + glm::vec3(BlockPosition)});
+        AddComponent<TPositionComponent>(Registry_, Chunk.Blocks[Index], TPositionComponent{ .Position = ChunkPosition + glm::vec3(BlockPosition) });
         AddComponent<TLightComponent>(Registry_, Chunk.Blocks[Index], TLightComponent{ .Color = glm::vec4(0.5f) });
+        AddTag<TNoShadowCastTag>(Registry_, Chunk.Blocks[Index]);
 
         const float Constant  = 1.0f  ;
         const float Linear    = 0.09f ;
@@ -96,7 +97,7 @@ void CChunkMeshSystem::RecreateChunkMesh(registry_t & Registry_, entity_t ChunkE
       }
     }
 
-    const auto AppendToMesh = [&]<EMeshType T>(TGLUnbakedMeshComponent<T> &ChunkMesh)
+    const auto AppendToMesh = [&]<EMeshType T>(TGLUnbakedMeshComponent<T> & ChunkMesh)
     {
       for (auto & Vertex : BlockMesh.Vertices)
         Vertex += BlockPosition;
@@ -114,13 +115,13 @@ void CChunkMeshSystem::RecreateChunkMesh(registry_t & Registry_, entity_t ChunkE
     switch (BlockMeshType)
     {
       case EMeshType::Translucent:
-        AppendToMesh(TranslucentMeshComponent);
+        AppendToMesh(TranslucentMeshComponents[BlockMesh.MaterialID]);
 
         TransclucentMeshShader = CBlockFactory::GetShaderForBlock(Block);
         break;
 
       default:
-        AppendToMesh(SolidMeshComponent);
+        AppendToMesh(SolidMeshComponents[BlockMesh.MaterialID]);
 
         SolidMeshShader = CBlockFactory::GetShaderForBlock(Block);
         break;
@@ -132,32 +133,36 @@ void CChunkMeshSystem::RecreateChunkMesh(registry_t & Registry_, entity_t ChunkE
     .TextureID = CTextureLibrary::Load("res/textures/blocks_atlas.png").TextureID
   };
 
-  if (!SolidMeshComponent.Vertices.empty())
+  for (auto & [MaterialID, Mesh] : SolidMeshComponents)
   {
     entity_t SolidMeshEntity = Registry_.create();
 
-    auto [Min, Max] = SolidMeshComponent.GetBounds();
+    Mesh.MaterialID = MaterialID;
 
-    Registry_.emplace<TGLUnbakedSolidMeshComponent>(SolidMeshEntity, std::move(SolidMeshComponent));
+    auto [Min, Max] = Mesh.GetBounds();
+
+    Registry_.emplace<TGLUnbakedSolidMeshComponent>(SolidMeshEntity, std::move(Mesh));
     Registry_.emplace<TGLShaderComponent>(SolidMeshEntity, SolidMeshShader);
     Registry_.emplace<TGLTextureComponent>(SolidMeshEntity, Texture);
     Registry_.emplace<TBoundingVolumeComponent>(SolidMeshEntity, TBoundingVolumeComponent
-    {
-      .Volume = TAABBVolumeComponent{.Min = Min + glm::vec3(ChunkTransform.Transform[3]), .Max = Max + glm::vec3(ChunkTransform.Transform[3])}
-    });
+      {
+        .Volume = TAABBVolumeComponent{.Min = Min + glm::vec3(ChunkTransform.Transform[3]), .Max = Max + glm::vec3(ChunkTransform.Transform[3])}
+      });
 
     Registry_.emplace<TTransformComponent>(SolidMeshEntity, ChunkTransform);
 
     Chunk.Meshes.emplace_back(SolidMeshEntity);
   }
 
-  if (!TranslucentMeshComponent.Vertices.empty())
+  for (auto & [MaterialID, Mesh] : TranslucentMeshComponents)
   {
     entity_t TranslucentMeshEntity = Registry_.create();
 
-    auto [Min, Max] = TranslucentMeshComponent.GetBounds();
+    Mesh.MaterialID = MaterialID;
 
-    Registry_.emplace<TGLUnbakedTranslucentMeshComponent>(TranslucentMeshEntity, std::move(TranslucentMeshComponent));
+    auto [Min, Max] = Mesh.GetBounds();
+
+    Registry_.emplace<TGLUnbakedTranslucentMeshComponent>(TranslucentMeshEntity, std::move(Mesh));
     Registry_.emplace<TGLShaderComponent>(TranslucentMeshEntity, TransclucentMeshShader);
     Registry_.emplace<TGLTextureComponent>(TranslucentMeshEntity, Texture);
     Registry_.emplace<TBoundingVolumeComponent>(TranslucentMeshEntity, TBoundingVolumeComponent
