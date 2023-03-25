@@ -176,6 +176,8 @@
     <ClInclude Include="game\components\display\DisplayComponent.h" />
     <ClInclude Include="game\components\display\GLFWWindowComponent.h" />
     <ClInclude Include="game\components\events\CameraChangedEvent.h" />
+    <ClInclude Include="game\components\events\ChunkChangedEvent.h" />
+    <ClInclude Include="game\components\events\ChunkSpawnedEvent.h" />
     <ClInclude Include="game\components\input\KeyboardState.h" />
     <ClInclude Include="game\components\input\MouseClickData.h" />
     <ClInclude Include="game\components\input\MouseMovementData.h" />

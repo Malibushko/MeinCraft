@@ -486,6 +486,12 @@
     <ClInclude Include="game\components\render\MaterialComponent.h">
       <Filter>game\components\render</Filter>
     </ClInclude>
+    <ClInclude Include="game\components\events\ChunkSpawnedEvent.h">
+      <Filter>game\components\events</Filter>
+    </ClInclude>
+    <ClInclude Include="game\components\events\ChunkChangedEvent.h">
+      <Filter>game\components\events</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="game\Main.cpp">
@@ -740,6 +746,8 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
+    <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.lib" />
     <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.dll" />
     <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.lib" />
     <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.dll" />

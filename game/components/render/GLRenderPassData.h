@@ -16,6 +16,9 @@ struct TGLRenderPassData
   GLuint PointLightsBuffer{ 0 };
   GLuint PointLightIndicesBuffer{ 0 };
   GLuint MaterialsBuffer{ 0 };
+  GLuint TerrainBuffer{ 0 };
+
+  GLuint TerrainTexture3D{ 0 };
 
   // Forward+ data
   GLuint LightCullingWorkGroupsX = 0;

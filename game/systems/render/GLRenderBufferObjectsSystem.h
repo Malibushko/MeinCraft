@@ -4,6 +4,8 @@
 #include "core/entity/System.h"
 #include "game/components/render/GLShaderComponent.h"
 #include <glad/glad.h>
+#include <glm/vec2.hpp>
+#include <glm/vec3.hpp>
 
 enum class EShaderBuffer
 {
@@ -12,7 +14,8 @@ enum class EShaderBuffer
   DirectedLightBuffer,
   PointLightsBuffer,
   VisiblePointLightsIndicesBuffer,
-  MaterialsBuffer
+  MaterialsBuffer,
+  TerrainBuffer
 };
 
 class GLRenderBufferObjectsSystem : public ISystem
@@ -39,7 +42,22 @@ protected: // Service
 
   void UpdateMaterialsBuffer(registry_t & Registry);
 
+  void UpdateTerrainBuffer(registry_t & Registry);
+
+  void RebuildTerrainMap(registry_t & Registry);
+
+  void SetTerrainMapValue(registry_t & Registry, glm::vec3 WorldPosition, uint8_t Value);
+
+protected: // Service events
+
+  void OnChunkCreated(registry_t & Registry, glm::ivec2 ChunkCoordinates);
+
+  void OnChunkBlockCreated(registry_t & Registry, glm::ivec2 ChunkCoordinates, glm::ivec3 BlockCoordinates);
+
+  void OnChunkBlockDeleted(registry_t & Registry, glm::ivec2 ChunkCoordinates, glm::ivec3 BlockCoordinates);
+
 protected: // Service
 
   std::set<GLuint> m_UpdatedShaders;
+  bool m_NeedToUpdateTerrainTexture{false};
 };

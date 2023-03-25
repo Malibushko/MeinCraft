@@ -152,6 +152,8 @@ void InitTerrain(World & World_)
 {
   World_.Spawn(TTerrainComponent
   {
+    .MaxChunksX = 10,
+    .MaxChunksZ = 10,
     .TerrainGenerationStrategy = [&](const glm::vec3 & _Position) -> TBlockComponent
     {
       static CFlatTerrainGenerator Generator(time(nullptr));

@@ -107,9 +107,7 @@ vec4 ApplyLights(in vec4 Color)
   vec3 AmbientComponent = Color.xyz * vec3(0.1);
   vec3 DiffuseComponent = Color.xyz * Diffuse * DirectedLightColor;
 
-  float Shadow = ShadowCalculation(LightFragmentPosition);
-
-  return vec4(AmbientComponent + (Shadow * DiffuseComponent), 1.0);
+  return vec4(AmbientComponent + DiffuseComponent, 1.0);
 }
 
 // Attenuate the point light intensity

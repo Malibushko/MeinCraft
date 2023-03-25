@@ -9,9 +9,11 @@
 
 struct TTerrainComponent
 {
+  int                                               MaxChunksX;
+  int                                               MaxChunksZ;
+
   std::function<TBlockComponent(const glm::vec3 &)> TerrainGenerationStrategy;
   std::unordered_map<glm::ivec2, entity_t>          Chunks;
-
 
   entity_t GetChunkAt(glm::ivec2 ChunkCoordinates) const
   {

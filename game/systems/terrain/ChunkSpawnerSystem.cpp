@@ -8,6 +8,7 @@
 #include "core/components/TransformComponent.h"
 
 #include "game/components/camera/CameraBasisComponent.h"
+#include "game/components/events/ChunkSpawnedEvent.h"
 #include "game/components/physics/BoundingVolume.h"
 #include "game/components/terrain/BlockComponent.h"
 #include "game/components/terrain/ChunkComponent.h"
@@ -15,13 +16,6 @@
 #include "game/components/terrain/VisibleBlockFacesComponent.h"
 #include "game/factory/BlockFactory.h"
 
-//
-// Config
-//
-
-static constexpr int CHUNK_SPAWN_RADIUS = 5;
-
-static_assert((CHUNK_SPAWN_RADIUS & 1) && "Spawn Distance must be odd!");
 
 //
 // Construction/Destruction
@@ -42,6 +36,8 @@ void CChunkSpawnerSystem::OnCreate(registry_t & Registry_)
 
 void CChunkSpawnerSystem::OnUpdate(registry_t & Registry_, float Delta_)
 {
+  Registry_.clear<TChunkSpawnedEvent>();
+
   auto & Terrain     = QuerySingle<TTerrainComponent>(Registry_);
   auto   CameraViews = Registry_.view<TGlobalTransformComponent, TPositionComponent>().each();
 
@@ -51,9 +47,9 @@ void CChunkSpawnerSystem::OnUpdate(registry_t & Registry_, float Delta_)
     {
       glm::ivec2 PlayerPosition = ToChunkCoordinates(Position.Position);
 
-      for (int X = -CHUNK_SPAWN_RADIUS / 2; X < CHUNK_SPAWN_RADIUS / 2; X++)
+      for (int X = -Terrain.MaxChunksX / 2; X < Terrain.MaxChunksX / 2; X++)
       {
-        for (int Y = -CHUNK_SPAWN_RADIUS / 2; Y < CHUNK_SPAWN_RADIUS / 2; Y++)
+        for (int Y = -Terrain.MaxChunksZ / 2; Y < Terrain.MaxChunksZ / 2; Y++)
         {
           const glm::ivec2 ChunkPosition = PlayerPosition + glm::ivec2(X, Y);
 
@@ -124,5 +120,10 @@ void CChunkSpawnerSystem::SpawnChunkAt(
   AddComponent(Registry_, Entity, std::move(ChunkTransform));
 
   Terrain.Chunks[ChunkPosition] = Entity;
+
+  Spawn<TChunkSpawnedEvent>(Registry_, TChunkSpawnedEvent
+  {
+    .ChunkCoordinates = ChunkPosition
+  });
 }
 
