@@ -9,11 +9,10 @@ out vec4 FragColor;
 in vec2 TextureCoords;
 in vec3 Position;
 in vec3 Normal;
-in vec4 LightFragmentPosition;
 
 layout(binding = 0) uniform sampler2D       u_Texture_0;
 layout(binding = 1) uniform sampler2DShadow u_DepthMap;
-layout(binding = 2) uniform sampler2DShadow u_DirectedLightShadowMap;
+layout(binding = 2) uniform sampler3D       u_WorldMap;
 
 layout(location = 1) uniform unsigned int u_MaterialID;
 
@@ -41,6 +40,7 @@ layout(std430, binding = 0) readonly buffer MatricesBuffer
   mat4 Projection;
   mat4 View;
   mat4 MVP;
+  mat4 InverseMVP;
 };
 
 layout(std430, binding = 1) readonly buffer CameraBuffer
@@ -88,16 +88,62 @@ vec4 ApplyFog(in vec4 Color)
   return vec4(mix(Color.rgb, mix(FOG_COLOR, DirectedLightColor, 0.3 * DirectedLightIntensity), FogAmount), Color.w);
 }
 
-float ShadowCalculation(vec4 LightSpaceFragmentPosition)
+vec3 GetWorldPosition(vec4 FragmentPosition)
 {
-  vec3 LightSpaceFragmentPosition3D = LightSpaceFragmentPosition.xyz / LightSpaceFragmentPosition.w;
+	vec4 NDC = vec4(
+        (FragmentPosition.x / textureSize(u_DepthMap, 0).x - 0.5) * 2.0,
+        (FragmentPosition.y / textureSize(u_DepthMap, 0).y - 0.5) * 2.0,
+        (FragmentPosition.z - 0.5) * 2.0,
+        1.0
+	  );
 
-  LightSpaceFragmentPosition3D = LightSpaceFragmentPosition3D * 0.5f + 0.5f;
+	vec4 Clip   = InverseMVP * NDC;
+    vec3 Vertex = Clip.xyz / Clip.w;
 
-  if (LightSpaceFragmentPosition3D.z > 1.0)
-  	return 1.0;
+	return Vertex;
+}
 
-  return texture(u_DirectedLightShadowMap, LightSpaceFragmentPosition3D);
+vec3 GetTerrainMapPosition(vec3 WorldPosition)
+{
+	vec3 WorldMapSize = textureSize(u_WorldMap, 0);
+
+	WorldPosition += vec3(WorldMapSize.x / 2, 0, WorldMapSize.z / 2);
+
+	return WorldPosition;
+}
+
+bool HasVoxelAt(vec3 WorldPosition)
+{
+	return texelFetch(u_WorldMap, ivec3(GetTerrainMapPosition(WorldPosition)), 0).r > 0.0;
+}
+
+bool RayCast(const vec3 ro, const vec3 rd)
+{
+  float t = 0.0;
+  for (int i = 0; i < 100; i++)
+  {
+	vec3 pos = floor(ro + t * rd);
+	if (HasVoxelAt(pos))
+	  return true;
+
+	t += 1;
+  }
+
+  return false;
+}
+
+float ShadowCalculation()
+{
+  int HitCount = 0;
+  int CastCount = 0;
+
+  for (int i = -1; i != 1; i++)
+  {
+	HitCount += RayCast(GetWorldPosition(gl_FragCoord + EPS * i), normalize(DirectedLightDirection)) ? 1 : 0;
+	CastCount++;
+  }
+
+  return HitCount == CastCount ? 1.0 : 0.0;
 }
 
 vec4 ApplyLights(in vec4 Color)
@@ -107,7 +153,7 @@ vec4 ApplyLights(in vec4 Color)
   vec3 AmbientComponent = Color.xyz * vec3(0.1);
   vec3 DiffuseComponent = Color.xyz * Diffuse * DirectedLightColor;
 
-  return vec4(AmbientComponent + DiffuseComponent, 1.0);
+  return vec4(AmbientComponent + (1.0 - ShadowCalculation()) * DiffuseComponent, 1.0);
 }
 
 // Attenuate the point light intensity
@@ -163,5 +209,5 @@ void main()
 
 	Color = ApplyFog(Color);
 
-	FragColor = Color;
+	FragColor = Color;//HasVoxelAt(GetWorldPosition(gl_FragCoord)) ? vec4(1.0) : vec4(0.0);
 }

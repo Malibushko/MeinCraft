@@ -46,7 +46,7 @@ protected: // Service
 
   void RebuildTerrainMap(registry_t & Registry);
 
-  void SetTerrainMapValue(registry_t & Registry, glm::vec3 WorldPosition, uint8_t Value);
+  void SetTerrainMapValue(registry_t & Registry, glm::vec3 WorldPosition, GLubyte Value);
 
 protected: // Service events
 

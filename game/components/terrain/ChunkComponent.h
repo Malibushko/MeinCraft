@@ -99,3 +99,8 @@ inline glm::ivec3 BlockIndexToPosition(size_t Index)
 
   return { X, Y, Z };
 }
+
+inline size_t PositionToIndex(glm::ivec3 Position)
+{
+  return Position.x + TChunkComponent::CHUNK_SIZE_X * (Position.y + TChunkComponent::CHUNK_SIZE_Y * Position.z);
+}

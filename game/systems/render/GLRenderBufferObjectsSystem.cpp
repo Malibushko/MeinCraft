@@ -79,6 +79,7 @@ void GLRenderBufferObjectsSystem::UpdateMatricesBuffer(registry_t & Registry_)
     alignas(sizeof(float) * 4) glm::mat4 Projection;
     alignas(sizeof(float) * 4) glm::mat4 View;
     alignas(sizeof(float) * 4) glm::mat4 MVP;
+    alignas(sizeof(float) * 4) glm::mat4 InverseMVP;
   } UBO;
 
   static_assert(std::is_standard_layout_v<TMatricesUBO>);
@@ -89,6 +90,7 @@ void GLRenderBufferObjectsSystem::UpdateMatricesBuffer(registry_t & Registry_)
   UBO.Projection = Transform.Projection;
   UBO.View       = Transform.View;
   UBO.MVP        = Transform.Projection * Transform.View * Transform.Model;
+  UBO.InverseMVP = glm::inverse(Transform.Model) * glm::inverse(Transform.View) * glm::inverse(Transform.Projection);
 
   if (RenderData.MatricesBuffer == 0)
   {
@@ -308,8 +310,8 @@ void GLRenderBufferObjectsSystem::UpdateTerrainBuffer(registry_t & Registry)
   {
     glGenTextures(1, &RenderData.TerrainTexture3D);
     glBindTexture(GL_TEXTURE_3D, RenderData.TerrainTexture3D);
-    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_REPEAT);
@@ -325,6 +327,8 @@ void GLRenderBufferObjectsSystem::UpdateTerrainBuffer(registry_t & Registry)
         GL_UNSIGNED_BYTE,
         nullptr
       );
+
+    glGenerateMipmap(GL_TEXTURE_3D);
 
     *TerrainTexture = RenderData.TerrainTexture3D;
   }
@@ -344,7 +348,7 @@ void GLRenderBufferObjectsSystem::RebuildTerrainMap(registry_t & Registry)
   glBindTexture(GL_TEXTURE_3D, RenderData.TerrainTexture3D);
   glClearTexImage(RenderData.TerrainTexture3D, 0, GL_RED, GL_UNSIGNED_BYTE, nullptr);
 
-  glm::ivec2 CurrentChunkCoord    = ToChunkCoordinates(CameraPosition.Position);
+  glm::ivec2 CurrentChunkCoord = glm::ivec2(0, 0);// ToChunkCoordinates(CameraPosition.Position);
   glm::vec3  CurrentChunkPosition = FromChunkCoordinates(CurrentChunkCoord);
 
   const glm::vec3 TextureOffset = glm::vec3(
@@ -368,17 +372,14 @@ void GLRenderBufferObjectsSystem::RebuildTerrainMap(registry_t & Registry)
 
       std::array<GLubyte, TChunkComponent::BLOCKS_COUNT> Pixels{};
 
-      for (int ChunkX = 0; ChunkX < TChunkComponent::CHUNK_SIZE_X; ChunkX++)
+      for (int Index = 0; Index < TChunkComponent::BLOCKS_COUNT; Index++)
       {
-        for (int ChunkY = 0; ChunkY < TChunkComponent::CHUNK_SIZE_Y; ChunkY++)
-        {
-          for (int ChunkZ = 0; ChunkZ < TChunkComponent::CHUNK_SIZE_Z; ChunkZ++)
-          {
-            const entity_t BlockEntity = ChunkComponent.GetBlockAt(glm::ivec3(ChunkX, ChunkY, ChunkZ));
+        const entity_t BlockEntity = ChunkComponent.GetBlockAt(BlockIndexToPosition(Index));
 
-            Pixels[ChunkX + ChunkY * TChunkComponent::CHUNK_SIZE_X + ChunkZ * TChunkComponent::CHUNK_SIZE_X * TChunkComponent::CHUNK_SIZE_Y] = BlockEntity == entt::null ? 0 : 1;
-          }
-        }
+        if (Index == 0 && X == 0 && Z == 0)
+          Pixels[Index] = 0;
+        else
+          Pixels[Index] = BlockEntity == entt::null ? 0 : 1;
       }
 
       assert(ChunkPosition.x >= 0);
@@ -402,7 +403,7 @@ void GLRenderBufferObjectsSystem::RebuildTerrainMap(registry_t & Registry)
   }
 }
 
-void GLRenderBufferObjectsSystem::SetTerrainMapValue(registry_t & Registry, glm::vec3 WorldPosition, uint8_t Value)
+void GLRenderBufferObjectsSystem::SetTerrainMapValue(registry_t & Registry, glm::vec3 WorldPosition, GLubyte Value)
 {
   auto &        RenderData                              = QuerySingle<TGLRenderPassData>(Registry);
   auto &        Terrain                                 = QuerySingle<TTerrainComponent>(Registry);
@@ -410,7 +411,7 @@ void GLRenderBufferObjectsSystem::SetTerrainMapValue(registry_t & Registry, glm:
 
   glBindTexture(GL_TEXTURE_3D, RenderData.TerrainTexture3D);
 
-  glm::ivec2 CurrentChunkCoord    = ToChunkCoordinates(CameraPosition.Position);
+  glm::ivec2 CurrentChunkCoord    = glm::ivec2(0, 0); //ToChunkCoordinates(CameraPosition.Position);
   glm::vec3  CurrentChunkPosition = FromChunkCoordinates(CurrentChunkCoord);
 
   const glm::vec3 TextureOffset = glm::vec3(
@@ -420,9 +421,9 @@ void GLRenderBufferObjectsSystem::SetTerrainMapValue(registry_t & Registry, glm:
     );
 
   WorldPosition += TextureOffset;
-  
-  glTexSubImage3D(GL_TEXTURE_3D, 0, WorldPosition.x, 0, WorldPosition.z, 1, 1, 1, GL_RED, GL_UNSIGNED_BYTE, &Value);
+  GLubyte Data[] = { Value };
 
+  glTexSubImage3D(GL_TEXTURE_3D, 0, WorldPosition.x, WorldPosition.y, WorldPosition.z, 1, 1, 1, GL_RED, GL_UNSIGNED_BYTE, Data);
   glBindTexture(GL_TEXTURE_3D, 0);
 }
 

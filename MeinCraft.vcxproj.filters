@@ -411,9 +411,6 @@
     <ClInclude Include="game\systems\render\GLRenderTransparentPassSystem.h">
       <Filter>game\systems\render</Filter>
     </ClInclude>
-    <ClInclude Include="game\systems\render\GLRenderDirectedLightDepthPassSystem.h">
-      <Filter>game\systems\render</Filter>
-    </ClInclude>
     <ClInclude Include="game\systems\render\GLRenderScreenPassSystem.h">
       <Filter>game\systems\render</Filter>
     </ClInclude>
@@ -600,9 +597,6 @@
       <Filter>game\systems\render</Filter>
     </ClCompile>
     <ClCompile Include="game\systems\render\GLRenderTransparentPassSystem.cpp">
-      <Filter>game\systems\render</Filter>
-    </ClCompile>
-    <ClCompile Include="game\systems\render\GLRenderDirectedLightDepthPassSystem.cpp">
       <Filter>game\systems\render</Filter>
     </ClCompile>
     <ClCompile Include="game\systems\render\GLRenderScreenPassSystem.cpp">
