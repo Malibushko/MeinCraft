@@ -51,7 +51,7 @@ void GLRenderSolidPassSystem::OnCreate(registry_t & Registry_)
 void GLRenderSolidPassSystem::OnUpdate(registry_t & Registry_, float Delta_)
 {
   glBindFramebuffer(GL_FRAMEBUFFER, m_FBO);
-  glClearColor(0.52f, 0.807f, 0.92f, 1.f);
+  glClearColor(0.02f, 0.25f, 0.47f, 1.f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   RenderMeshes(Registry_, Registry_.view<TGLSolidMeshComponent, TGLShaderComponent, TTransformComponent>().each());

@@ -112,18 +112,6 @@ vec4 ApplyLights(in vec4 Color)
   return vec4(AmbientComponent + (Shadow * DiffuseComponent), 1.0);
 }
 
-// Attenuate the point light intensity
-float Attenuate(vec3 LightDirection, float Radius)
-{
-	const float Cutoff = 0.5;
-
-	float Attenuation = dot(LightDirection, LightDirection) / (100.0 * Radius);
-	Attenuation = 1.0 / (Attenuation * 15.0 + 1.0);
-	Attenuation = (Attenuation - Cutoff) / (1.0 - Cutoff);
-
-	return clamp(Attenuation, 0.0, 1.0);
-}
-
 void main()
 {
 	vec4 Color = texture(u_Texture_0, TextureCoords);
@@ -145,7 +133,7 @@ void main()
 
 	  vec3  LightDirection   = Light.Position.xyz - Position;
 	  float LightDistance    = length(LightDirection);
-	  float Attenuation      = Attenuate(LightDirection, Light.Radius);
+	  float Attenuation      = 1.0 / (Light.Constant + Light.Linear * LightDistance + Light.Quadratic * (LightDistance * LightDistance));
 	  vec3  NormalizedNormal = normalize(Normal);
 
 	  LightDirection = normalize(LightDirection);
@@ -159,7 +147,7 @@ void main()
 	TMaterial Material = Materials.Materials[u_MaterialID];
 
 	if (Material.Emissive > 0.0)
-		Color += Material.EmissiveColor * Material.Emissive;
+		Color = mix(Color, Material.EmissiveColor, 0.1) * Material.Emissive;
 	else
 		Color = ApplyLights(Color);
 
