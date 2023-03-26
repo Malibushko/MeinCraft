@@ -25,49 +25,48 @@ static constexpr std::string_view BLOCK_INFO_CONFIG_PATH      = "res/configs/blo
 static constexpr std::string_view BLOCK_MATERIALS_CONFIG_PATH = "res/configs/block_materials.json";
 static constexpr std::string_view BLOCK_ICONS_CACHE_PATH      = "res/icons/";
 
-static constexpr std::array<glm::vec3, 4> CUBE_FACES[]
-{
+static constexpr std::array<glm::vec3, 4> CUBE_FACES[]{
   {
     // Front
-    glm::vec3(-0.5f, -0.5f,  0.5f),
-    glm::vec3(0.5f, -0.5f,  0.5f),
-    glm::vec3(0.5f,  0.5f,  0.5f),
-    glm::vec3(-0.5f,  0.5f,  0.5f)
+    glm::vec3(0.0f, 0.0f, 1.0f),
+    glm::vec3(1.0f, 0.0f, 1.0f),
+    glm::vec3(1.0f, 1.0f, 1.0f),
+    glm::vec3(0.0f, 1.0f, 1.0f)
   },
   {
     // Back
-    glm::vec3(-0.5f, -0.5f, -0.5f),
-    glm::vec3(-0.5f,  0.5f, -0.5f),
-    glm::vec3(0.5f,  0.5f, -0.5f),
-    glm::vec3(0.5f, -0.5f, -0.5f)
+    glm::vec3(0.0f, 0.0f, 0.0f),
+    glm::vec3(0.0f, 1.0f, 0.0f),
+    glm::vec3(1.0f, 1.0f, 0.0f),
+    glm::vec3(1.0f, 0.0f, 0.0f)
   },
-  // Left
   {
-    glm::vec3(-0.5f, -0.5f, -0.5f),
-    glm::vec3(-0.5f, -0.5f,  0.5f),
-    glm::vec3(-0.5f,  0.5f,  0.5f),
-    glm::vec3(-0.5f,  0.5f, -0.5f)
+    // Left
+    glm::vec3(0.0f, 0.0f, 0.0f),
+    glm::vec3(0.0f, 0.0f, 1.0f),
+    glm::vec3(0.0f, 1.0f, 1.0f),
+    glm::vec3(0.0f, 1.0f, 0.0f)
   },
   {
     // Right
-    glm::vec3(0.5f, -0.5f, -0.5f),
-    glm::vec3(0.5f,  0.5f, -0.5f),
-    glm::vec3(0.5f,  0.5f,  0.5f),
-    glm::vec3(0.5f, -0.5f,  0.5f)
+    glm::vec3(1.0f, 0.0f, 0.0f),
+    glm::vec3(1.0f, 1.0f, 0.0f),
+    glm::vec3(1.0f, 1.0f, 1.0f),
+    glm::vec3(1.0f, 0.0f, 1.0f)
   },
   {
     // Top
-    glm::vec3(-0.5f,  0.5f, -0.5f),
-    glm::vec3(-0.5f,  0.5f,  0.5f),
-    glm::vec3(0.5f,  0.5f,  0.5f),
-    glm::vec3(0.5f,  0.5f, -0.5f)
+    glm::vec3(0.0f, 1.0f, 0.0f),
+    glm::vec3(0.0f, 1.0f, 1.0f),
+    glm::vec3(1.0f, 1.0f, 1.0f),
+    glm::vec3(1.0f, 1.0f, 0.0f)
   },
   {
     // Bottom
-    glm::vec3(-0.5f, -0.5f, -0.5f),
-    glm::vec3(0.5f, -0.5f, -0.5f),
-    glm::vec3(0.5f, -0.5f,  0.5f),
-    glm::vec3(-0.5f, -0.5f,  0.5f)
+    glm::vec3(0.0f, 0.0f, 0.0f),
+    glm::vec3(1.0f, 0.0f, 0.0f),
+    glm::vec3(1.0f, 0.0f, 1.0f),
+    glm::vec3(0.0f, 0.0f, 1.0f)
   }
 };
 
@@ -200,19 +199,20 @@ TGLUnbakedSolidMeshComponent CBlockFactory::GetCrossMeshForBlock(const TBlockCom
   static constexpr glm::vec3 FirstQuadVertices[] =
   {
     // Front face
-    glm::vec3(-0.5f, -0.5f, 0.5f),
-    glm::vec3(0.5f, -0.5f, -0.5f),
-    glm::vec3(0.5f, 0.5f, -0.5f),
-    glm::vec3(-0.5f, 0.5f, 0.5f)
+    glm::vec3(0.0f, 0.0f, 1.0f),
+    glm::vec3(1.0f, 0.0f, 0.0f),
+    glm::vec3(1.0f, 1.0f, 0.0f),
+    glm::vec3(0.0f, 1.0f, 1.0f)
   };
 
   static constexpr glm::vec3 SecondQuadVertices[] =
   {
-    glm::vec3(-0.5f, -0.5f, -0.5f),
-    glm::vec3(0.5f, -0.5f,  0.5f),
-    glm::vec3(0.5f, 0.5f,   0.5f),
-    glm::vec3(-0.5f, 0.5f, -0.5f)
+    glm::vec3(0.0f, 0.0f, 0.0f),
+    glm::vec3(1.0f, 0.0f, 1.0f),
+    glm::vec3(1.0f, 1.0f, 1.0f),
+    glm::vec3(0.0f, 1.0f, 0.0f)
   };
+
 
   static constexpr glm::vec3 FirstQuadNormals[] =
   {

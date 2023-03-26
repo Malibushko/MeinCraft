@@ -32,6 +32,8 @@ struct TGLRenderPassData
   GLuint NormalTexture{};
   GLuint PositionsTexture{};
 
+  GLuint BloomTexture{};
+
   // Shadowing data
   GLuint DirectedLightDepthTexture{};
 

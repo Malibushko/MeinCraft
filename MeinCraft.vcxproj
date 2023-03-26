@@ -220,6 +220,7 @@
     <ClInclude Include="game\systems\lightning\DirectedLightMovementSystem.h" />
     <ClInclude Include="game\systems\physics\PhysicsSystem.h" />
     <ClInclude Include="game\systems\render\GLMeshSystem.h" />
+    <ClInclude Include="game\systems\render\GLRenderBloomPassSystem.h" />
     <ClInclude Include="game\systems\render\GLRenderCompositePassSystem.h" />
     <ClInclude Include="game\systems\render\GLRenderLightAccumulationPassSystem.h" />
     <ClInclude Include="game\systems\render\GLRenderDirectedLightDepthPassSystem.h" />
@@ -280,6 +281,7 @@
     <ClCompile Include="game\systems\lightning\DirectedLightMovementSystem.cpp" />
     <ClCompile Include="game\systems\physics\PhysicsSystem.cpp" />
     <ClCompile Include="game\systems\render\GLMeshSystem.cpp" />
+    <ClCompile Include="game\systems\render\GLRenderBloomPassSystem.cpp" />
     <ClCompile Include="game\systems\render\GLRenderCompositePassSystem.cpp" />
     <ClCompile Include="game\systems\render\GLRenderLightAccumulationPassSystem.cpp" />
     <ClCompile Include="game\systems\render\GLRenderDirectedLightDepthPassSystem.cpp" />
@@ -340,6 +342,10 @@
     <None Include="res\shaders\blocks_outline_shader.vert" />
     <None Include="res\shaders\blocks_shader.frag" />
     <None Include="res\shaders\blocks_shader.vert" />
+    <None Include="res\shaders\bloom_blur_shader.frag" />
+    <None Include="res\shaders\bloom_blur_shader.vert" />
+    <None Include="res\shaders\bloom_shader.frag" />
+    <None Include="res\shaders\bloom_shader.vert" />
     <None Include="res\shaders\composite_shader.frag" />
     <None Include="res\shaders\composite_shader.vert" />
     <None Include="res\shaders\debug_depth_shader.frag" />

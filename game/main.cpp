@@ -6,15 +6,9 @@
 #include "components/display/DisplayComponent.h"
 #include "components/display/GLFWWindowComponent.h"
 #include "components/lightning/DirectedLightBundle.h"
-#include "components/render/GLMeshComponent.h"
-#include "components/render/GLShaderComponent.h"
 #include "components/render/GLTextureComponent.h"
-#include "components/render/GLUnbakedMeshComponent.h"
 #include "components/terrain/TerrainComponent.h"
-#include "components/terrain/VisibleBlockFacesComponent.h"
 #include "factory/BlockFactory.h"
-#include "resources/ShaderLibrary.h"
-#include "resources/TextureLibrary.h"
 
 #include "systems/camera/CameraSystem.h"
 
@@ -32,6 +26,7 @@
 #include "systems/physics/PhysicsSystem.h"
 
 #include "systems/render/GLMeshSystem.h"
+#include "systems/render/GLRenderBloomPassSystem.h"
 #include "systems/render/GLRenderDirectedLightDepthPassSystem.h"
 #include "systems/render/GLRenderLightAccumulationPassSystem.h"
 #include "systems/render/GLRenderScreenPassSystem.h"
@@ -54,7 +49,6 @@
 
 #include "systems/terrain/NoiseTerrainGenerator.h"
 #include "systems/terrain/FlatTerrainGenerator.h"
-#include "systems/terrain/voronoi/MinecraftTerrainGenerator.h"
 
 #include "systems/ui/NoesisUISystem.h"
 #include "systems/ui/gui/NoesisUIHUDSystem.h"
@@ -98,7 +92,7 @@ void InitCamera(World & World_)
     .Camera = TCameraBundle
     {
       .Position = TPositionComponent{
-        .Position = { 0.0f, 1.f, 0.0f }
+        .Position = { 0.0f, 2.f, 0.0f }
       }
     },
     .Perspective =
@@ -141,6 +135,7 @@ void InitCoreSystems(World & World_)
         .AddSystem<GLRenderSkyboxSystem>()
         .AddSystem<GLRenderSSAOPassSystem>()
         .AddSystem<GLRenderCompositePassSystem>()
+        .AddSystem<GLRenderBloomPassSystem>()
         .AddSystem<GLRenderPostEffectsPassSystem>()
         .AddSystem<GLRenderScreenPassSystem>()
 
@@ -154,7 +149,7 @@ void InitTerrain(World & World_)
   {
     .TerrainGenerationStrategy = [&](const glm::vec3 & _Position) -> TBlockComponent
     {
-      static CFlatTerrainGenerator Generator(time(nullptr));
+      static CNoiseTerrainGenerator Generator(time(nullptr));
 
       return Generator.Generate(_Position);
     }

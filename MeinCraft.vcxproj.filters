@@ -486,6 +486,9 @@
     <ClInclude Include="game\components\render\MaterialComponent.h">
       <Filter>game\components\render</Filter>
     </ClInclude>
+    <ClInclude Include="game\systems\render\GLRenderBloomPassSystem.h">
+      <Filter>game\systems\render</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="game\Main.cpp">
@@ -650,6 +653,9 @@
     <ClCompile Include="game\systems\terrain\voronoi\biomes\TaigaBiomeGenerator.cpp">
       <Filter>game\systems\terrain\voronoi\biomes</Filter>
     </ClCompile>
+    <ClCompile Include="game\systems\render\GLRenderBloomPassSystem.cpp">
+      <Filter>game\systems\render</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\blocks_shader.frag">
@@ -730,6 +736,18 @@
     <None Include="res\shaders\posteffects_shader.vert">
       <Filter>res\shaders</Filter>
     </None>
+    <None Include="res\shaders\bloom_blur_shader.frag">
+      <Filter>res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\bloom_blur_shader.vert">
+      <Filter>res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\bloom_shader.frag">
+      <Filter>res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\bloom_shader.vert">
+      <Filter>res\shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\textures\blocks_atlas.png">
@@ -740,6 +758,8 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
+    <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.dll" />
+    <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.lib" />
     <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.dll" />
     <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.lib" />
     <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.dll" />

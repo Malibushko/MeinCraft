@@ -78,7 +78,7 @@ void CChunkMeshSystem::RecreateChunkMesh(registry_t & Registry_, entity_t ChunkE
     {
       if (Registry_.try_get<TLightComponent>(Chunk.Blocks[Index]) == nullptr)
       {
-        AddComponent<TPositionComponent>(Registry_, Chunk.Blocks[Index], TPositionComponent{ .Position = ChunkPosition + glm::vec3(BlockPosition) });
+        AddComponent<TPositionComponent>(Registry_, Chunk.Blocks[Index], TPositionComponent{ .Position = ChunkPosition + glm::vec3(BlockPosition) + glm::vec3(0.5)});
         AddComponent<TLightComponent>(Registry_, Chunk.Blocks[Index], TLightComponent{ .Color = glm::vec4(0.5f) });
         AddTag<TNoShadowCastTag>(Registry_, Chunk.Blocks[Index]);
 

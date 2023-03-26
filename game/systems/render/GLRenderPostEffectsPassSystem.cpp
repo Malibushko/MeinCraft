@@ -78,6 +78,9 @@ void GLRenderPostEffectsPassSystem::OnUpdate(registry_t & Registry_, float Delta
   glActiveTexture(GL_TEXTURE1);
   glBindTexture(GL_TEXTURE_2D, RenderData.SSAOTexture);
 
+  glActiveTexture(GL_TEXTURE2);
+  glBindTexture(GL_TEXTURE_2D, RenderData.BloomTexture);
+
   glBindVertexArray(m_ScreenQuadVAO);
   glDrawArrays(GL_TRIANGLES, 0, 6);
 

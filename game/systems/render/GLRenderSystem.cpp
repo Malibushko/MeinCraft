@@ -29,6 +29,7 @@ void GLRenderSystem::OnCreate(registry_t & Registry_)
 
   glViewport(0, 0, static_cast<int>(Display.Width), static_cast<int>(Display.Height));
   glEnable(GL_FRAMEBUFFER_SRGB);
+  glEnable(GL_MULTISAMPLE);
 
 #ifndef NDEBUG
 

@@ -98,8 +98,7 @@ glm::vec3 CPhysicsSystem::CalculateDefaultRayPosition(registry_t & Registry) con
 {
   const auto & [Transform, Position] = QuerySingle<TGlobalTransformComponent, TPositionComponent>(Registry);
 
-  // replace with implementation from some physics system
-  return Position.Position + glm::vec3(0.5);
+  return Position.Position;
 }
 
 glm::vec3 CPhysicsSystem::CalculateDefaultRayDirection(registry_t & Registry) const

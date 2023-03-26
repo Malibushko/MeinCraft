@@ -225,7 +225,7 @@ void CGLFWWindowSystem::InitGLFWWindow(registry_t & Registry, TGLFWWindowCompone
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-  glfwWindowHint(GLFW_SAMPLES, 1);
+  glfwWindowHint(GLFW_SAMPLES, 4);
 
   Window.Window = glfwCreateWindow(
       static_cast<int>(Display.Width),
