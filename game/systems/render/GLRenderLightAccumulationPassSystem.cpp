@@ -78,13 +78,6 @@ void GLRenderLightAccumulationPassSystem::OnCreate(registry_t & Registry_)
 
 void GLRenderLightAccumulationPassSystem::OnUpdate(registry_t & Registry_, float Delta_)
 {
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LESS);
-	glDepthMask(GL_TRUE);
-
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
-
 	glBindFramebuffer(GL_FRAMEBUFFER, m_FBO);
 
 	const auto & RenderData = QuerySingle<TGLRenderPassData>(Registry_);

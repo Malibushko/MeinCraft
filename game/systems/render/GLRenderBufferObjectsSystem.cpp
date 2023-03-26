@@ -4,22 +4,16 @@
 #include <spdlog/spdlog.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <magic_enum.hpp>
-#include <span>
 
-#include "core/components/TransformComponent.h"
 #include "game/components/camera/CameraBasisComponent.h"
 #include "game/components/display/DisplayComponent.h"
 #include "game/components/events/CameraChangedEvent.h"
-#include "game/components/events/ChunkChangedEvent.h"
-#include "game/components/events/ChunkSpawnedEvent.h"
 #include "game/components/lightning/DirectedLightComponent.h"
 #include "game/components/lightning/LightComponent.h"
 #include "game/components/lightning/PointLightComponent.h"
 #include "game/components/render/GLRenderPassData.h"
 #include "game/components/render/GLShaderComponent.h"
 #include "game/components/render/MaterialComponent.h"
-#include "game/components/terrain/ChunkComponent.h"
-#include "game/components/terrain/TerrainComponent.h"
 #include "game/factory/BlockFactory.h"
 #include "game/utils/GLRenderUtils.h"
 
@@ -33,8 +27,8 @@ static constexpr int POINT_LIGHT_TILE_SIZE = 16;
 void GLRenderBufferObjectsSystem::OnCreate(registry_t & Registry_)
 {
   UpdateStorageBuffers(Registry_);
+
   UpdateMaterialsBuffer(Registry_);
-  UpdateTerrainBuffer(Registry_);
 }
 
 void GLRenderBufferObjectsSystem::OnUpdate(registry_t & Registry_, float Delta_)
@@ -43,20 +37,6 @@ void GLRenderBufferObjectsSystem::OnUpdate(registry_t & Registry_, float Delta_)
     UpdateStorageBuffers(Registry_);
   else
     UpdateDirectedLightBuffer(Registry_);
-
-  m_NeedToUpdateTerrainTexture = HasComponent<TChunkSpawnedEvent>(Registry_);
-
-  for (auto [Entity, Event] : Registry_.view<TChunkSpawnedEvent>().each())
-    OnChunkCreated(Registry_, Event.ChunkCoordinates);
-
-  for (auto [Entity, Event] : Registry_.view<TChunkChangedEvent>().each())
-  {
-    if (Event.ChangeType == EChunkChangeType::BlockCreated)
-      OnChunkBlockCreated(Registry_, Event.ChunkCoordinates, Event.ChangedBlockCoordinates);
-
-    if (Event.ChangeType == EChunkChangeType::BlockDeleted)
-      OnChunkBlockDeleted(Registry_, Event.ChunkCoordinates, Event.ChangedBlockCoordinates);
-  }
 }
 
 void GLRenderBufferObjectsSystem::OnDestroy(registry_t & Registry_)
@@ -79,7 +59,6 @@ void GLRenderBufferObjectsSystem::UpdateMatricesBuffer(registry_t & Registry_)
     alignas(sizeof(float) * 4) glm::mat4 Projection;
     alignas(sizeof(float) * 4) glm::mat4 View;
     alignas(sizeof(float) * 4) glm::mat4 MVP;
-    alignas(sizeof(float) * 4) glm::mat4 InverseMVP;
   } UBO;
 
   static_assert(std::is_standard_layout_v<TMatricesUBO>);
@@ -90,7 +69,6 @@ void GLRenderBufferObjectsSystem::UpdateMatricesBuffer(registry_t & Registry_)
   UBO.Projection = Transform.Projection;
   UBO.View       = Transform.View;
   UBO.MVP        = Transform.Projection * Transform.View * Transform.Model;
-  UBO.InverseMVP = glm::inverse(Transform.Model) * glm::inverse(Transform.View) * glm::inverse(Transform.Projection);
 
   if (RenderData.MatricesBuffer == 0)
   {
@@ -159,8 +137,9 @@ void GLRenderBufferObjectsSystem::UpdateDirectedLightBuffer(registry_t & Registr
   static_assert(std::is_standard_layout_v<TLightUBO>);
   static_assert(sizeof(TLightUBO) % 16 == 0);
 
-  auto &&      [DirectedLight, Light] = QuerySingle<TDirectedLightComponent, TLightComponent>(Registry_);
-  auto &       RenderData             = QuerySingle<TGLRenderPassData>(Registry_);
+  auto &&      [DirectedLight, Light]             = QuerySingle<TDirectedLightComponent, TLightComponent>(Registry_);
+  const auto & [CameraBasis, Position, Transform] = QuerySingle<TCameraBasisComponent, TPositionComponent, TGlobalTransformComponent>(Registry_);
+  auto &       RenderData                         = QuerySingle<TGLRenderPassData>(Registry_);
 
   const glm::mat4 LightProjection = glm::ortho(-100.f, 100.f, -100.f, 100.f, 0.1f, 250.f);
   const glm::mat4 LightView       = glm::lookAt(DirectedLight.Direction, glm::vec3(0.f), glm::vec3(0.f, 1.f, 0.f));
@@ -286,171 +265,4 @@ void GLRenderBufferObjectsSystem::UpdateMaterialsBuffer(registry_t & Registry)
 
   glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
   glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-}
-
-void GLRenderBufferObjectsSystem::UpdateTerrainBuffer(registry_t & Registry)
-{
-  auto &        RenderData                              = QuerySingle<TGLRenderPassData>(Registry);
-  auto &        Terrain                                 = QuerySingle<TTerrainComponent>(Registry);
-  const auto & [CameraBasis, CameraPosition, Transform] = QuerySingle<TCameraBasisComponent, TPositionComponent, TGlobalTransformComponent>(Registry);
-
-  if (RenderData.TerrainBuffer == 0)
-  {
-    glGenBuffers(1, &RenderData.TerrainBuffer);
-    glBindBuffer(GL_SHADER_STORAGE_BUFFER, RenderData.TerrainBuffer);
-    glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(GLuint), nullptr, GL_STATIC_DRAW);
-    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, static_cast<GLuint>(EShaderBuffer::TerrainBuffer), RenderData.TerrainBuffer);
-  }
-
-  glBindBuffer(GL_SHADER_STORAGE_BUFFER, RenderData.TerrainBuffer);
-
-  GLuint * TerrainTexture = static_cast<GLuint *>(glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_WRITE));
-
-  if (RenderData.TerrainTexture3D == 0)
-  {
-    glGenTextures(1, &RenderData.TerrainTexture3D);
-    glBindTexture(GL_TEXTURE_3D, RenderData.TerrainTexture3D);
-    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_REPEAT);
-    glTexImage3D(
-        GL_TEXTURE_3D,
-        0,
-        GL_RED,
-        TChunkComponent::CHUNK_SIZE_X * Terrain.MaxChunksX,
-        TChunkComponent::CHUNK_SIZE_Y,
-        TChunkComponent::CHUNK_SIZE_Z * Terrain.MaxChunksZ,
-        0,
-        GL_RED,
-        GL_UNSIGNED_BYTE,
-        nullptr
-      );
-
-    glGenerateMipmap(GL_TEXTURE_3D);
-
-    *TerrainTexture = RenderData.TerrainTexture3D;
-  }
-
-  RebuildTerrainMap(Registry);
-
-  glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
-  glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-}
-
-void GLRenderBufferObjectsSystem::RebuildTerrainMap(registry_t & Registry)
-{
-  auto &        RenderData                              = QuerySingle<TGLRenderPassData>(Registry);
-  auto &        Terrain                                 = QuerySingle<TTerrainComponent>(Registry);
-  const auto & [CameraBasis, CameraPosition, Transform] = QuerySingle<TCameraBasisComponent, TPositionComponent, TGlobalTransformComponent>(Registry);
-
-  glBindTexture(GL_TEXTURE_3D, RenderData.TerrainTexture3D);
-  glClearTexImage(RenderData.TerrainTexture3D, 0, GL_RED, GL_UNSIGNED_BYTE, nullptr);
-
-  glm::ivec2 CurrentChunkCoord = glm::ivec2(0, 0);// ToChunkCoordinates(CameraPosition.Position);
-  glm::vec3  CurrentChunkPosition = FromChunkCoordinates(CurrentChunkCoord);
-
-  const glm::vec3 TextureOffset = glm::vec3(
-      TChunkComponent::CHUNK_SIZE_X * Terrain.MaxChunksX / 2 - CurrentChunkPosition.x,
-      0,
-      TChunkComponent::CHUNK_SIZE_Z * Terrain.MaxChunksZ / 2 - CurrentChunkPosition.z
-    );
-
-  for (int X = -Terrain.MaxChunksX / 2; X < Terrain.MaxChunksX / 2; X++)
-  {
-    for (int Z = -Terrain.MaxChunksZ / 2; Z < Terrain.MaxChunksZ / 2; Z++)
-    {
-      const entity_t Chunk = Terrain.GetChunkAt(glm::ivec2(X, Z) + CurrentChunkCoord);
-
-      if (Chunk == entt::null)
-        continue;
-
-      auto && [ChunkComponent, TransformComponent] = Registry.get<TChunkComponent, TTransformComponent>(Chunk);
-
-      const glm::vec3 ChunkPosition = glm::vec3(TransformComponent.Transform[3]) + TextureOffset;
-
-      std::array<GLubyte, TChunkComponent::BLOCKS_COUNT> Pixels{};
-
-      for (int Index = 0; Index < TChunkComponent::BLOCKS_COUNT; Index++)
-      {
-        const entity_t BlockEntity = ChunkComponent.GetBlockAt(BlockIndexToPosition(Index));
-
-        if (Index == 0 && X == 0 && Z == 0)
-          Pixels[Index] = 0;
-        else
-          Pixels[Index] = BlockEntity == entt::null ? 0 : 1;
-      }
-
-      assert(ChunkPosition.x >= 0);
-      assert(ChunkPosition.y >= 0);
-      assert(ChunkPosition.z >= 0);
-
-      glTexSubImage3D(
-        GL_TEXTURE_3D,
-        0,
-        ChunkPosition.x,
-        0,
-        ChunkPosition.z,
-        TChunkComponent::CHUNK_SIZE_X,
-        TChunkComponent::CHUNK_SIZE_Y,
-        TChunkComponent::CHUNK_SIZE_Z,
-        GL_RED,
-        GL_UNSIGNED_BYTE,
-        Pixels.data()
-      );
-    }
-  }
-}
-
-void GLRenderBufferObjectsSystem::SetTerrainMapValue(registry_t & Registry, glm::vec3 WorldPosition, GLubyte Value)
-{
-  auto &        RenderData                              = QuerySingle<TGLRenderPassData>(Registry);
-  auto &        Terrain                                 = QuerySingle<TTerrainComponent>(Registry);
-  const auto & [CameraBasis, CameraPosition, Transform] = QuerySingle<TCameraBasisComponent, TPositionComponent, TGlobalTransformComponent>(Registry);
-
-  glBindTexture(GL_TEXTURE_3D, RenderData.TerrainTexture3D);
-
-  glm::ivec2 CurrentChunkCoord    = glm::ivec2(0, 0); //ToChunkCoordinates(CameraPosition.Position);
-  glm::vec3  CurrentChunkPosition = FromChunkCoordinates(CurrentChunkCoord);
-
-  const glm::vec3 TextureOffset = glm::vec3(
-      TChunkComponent::CHUNK_SIZE_X * Terrain.MaxChunksX / 2 - CurrentChunkPosition.x,
-      0,
-      TChunkComponent::CHUNK_SIZE_Z * Terrain.MaxChunksZ / 2 - CurrentChunkPosition.z
-    );
-
-  WorldPosition += TextureOffset;
-  GLubyte Data[] = { Value };
-
-  glTexSubImage3D(GL_TEXTURE_3D, 0, WorldPosition.x, WorldPosition.y, WorldPosition.z, 1, 1, 1, GL_RED, GL_UNSIGNED_BYTE, Data);
-  glBindTexture(GL_TEXTURE_3D, 0);
-}
-
-//
-// Service events
-//
-
-void GLRenderBufferObjectsSystem::OnChunkCreated(registry_t & Registry, glm::ivec2 ChunkCoordinates)
-{
-  if (!m_NeedToUpdateTerrainTexture)
-    return;
-
-  RebuildTerrainMap(Registry);
-
-  m_NeedToUpdateTerrainTexture = false;
-}
-
-void GLRenderBufferObjectsSystem::OnChunkBlockCreated(
-    registry_t & Registry, glm::ivec2 ChunkCoordinates, glm::ivec3 BlockCoordinates
-  )
-{
-  SetTerrainMapValue(Registry, glm::vec3(FromChunkCoordinates(ChunkCoordinates) + BlockCoordinates), 1);
-}
-
-void GLRenderBufferObjectsSystem::OnChunkBlockDeleted(
-    registry_t & Registry, glm::ivec2 ChunkCoordinates, glm::ivec3 BlockCoordinates
-  )
-{
-  SetTerrainMapValue(Registry, glm::vec3(FromChunkCoordinates(ChunkCoordinates) + BlockCoordinates), 0);
 }

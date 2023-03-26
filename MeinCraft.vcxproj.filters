@@ -411,6 +411,9 @@
     <ClInclude Include="game\systems\render\GLRenderTransparentPassSystem.h">
       <Filter>game\systems\render</Filter>
     </ClInclude>
+    <ClInclude Include="game\systems\render\GLRenderDirectedLightDepthPassSystem.h">
+      <Filter>game\systems\render</Filter>
+    </ClInclude>
     <ClInclude Include="game\systems\render\GLRenderScreenPassSystem.h">
       <Filter>game\systems\render</Filter>
     </ClInclude>
@@ -482,12 +485,6 @@
     </ClInclude>
     <ClInclude Include="game\components\render\MaterialComponent.h">
       <Filter>game\components\render</Filter>
-    </ClInclude>
-    <ClInclude Include="game\components\events\ChunkSpawnedEvent.h">
-      <Filter>game\components\events</Filter>
-    </ClInclude>
-    <ClInclude Include="game\components\events\ChunkChangedEvent.h">
-      <Filter>game\components\events</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -597,6 +594,9 @@
       <Filter>game\systems\render</Filter>
     </ClCompile>
     <ClCompile Include="game\systems\render\GLRenderTransparentPassSystem.cpp">
+      <Filter>game\systems\render</Filter>
+    </ClCompile>
+    <ClCompile Include="game\systems\render\GLRenderDirectedLightDepthPassSystem.cpp">
       <Filter>game\systems\render</Filter>
     </ClCompile>
     <ClCompile Include="game\systems\render\GLRenderScreenPassSystem.cpp">
@@ -740,8 +740,6 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.dll" />
-    <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.lib" />
     <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.dll" />
     <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.lib" />
     <CopyFileToFolders Include="third_party\NoesisGUI\**\windows_x86_64\*.dll" />

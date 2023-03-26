@@ -1,7 +1,6 @@
 ﻿#include "ChunkBlocksControllerSystem.h"
 
 #include "core/components/PositionComponent.h"
-#include "game/components/events/ChunkChangedEvent.h"
 #include "game/components/requests/BlockCreateRequest.h"
 #include "game/components/requests/PlayerHitRequest.h"
 #include "game/components/terrain/BlockComponent.h"
@@ -27,8 +26,6 @@ void CChunkBlocksControllerSystem::OnCreate(registry_t & Registry_)
 
 void CChunkBlocksControllerSystem::OnUpdate(registry_t & Registry_, float Delta_)
 {
-  Registry_.clear<TChunkChangedEvent>();
-
   ProcessRequests(Registry_);
 }
 
@@ -76,13 +73,6 @@ void CChunkBlocksControllerSystem::ProcessBlockCreateRequests(registry_t & Regis
         .Type = CreateRequest.Type
       });
 
-      Spawn<TChunkChangedEvent>(Registry, TChunkChangedEvent
-      {
-        .ChunkCoordinates        = ToChunkCoordinates(CreateRequest.WorldPosition),
-        .ChangeType              = EChunkChangeType::BlockCreated,
-        .ChangedBlockCoordinates = BlockChunkPosition
-      });
-
       Chunk.State = EChunkState::Dirty;
 
       CreateRequest.Status = ERequestStatus::Fulfilled;
@@ -116,13 +106,6 @@ void CChunkBlocksControllerSystem::ProcessBlockHitRequests(registry_t& Registry)
       if (entity_t ChunkEntity = Terrain.GetChunkAt(TargetChunkPosition + ChunkPosition); ChunkEntity != entt::null)
         Registry.get<TChunkComponent>(ChunkEntity).State = EChunkState::Dirty;
     }
-
-    Spawn<TChunkChangedEvent>(Registry, TChunkChangedEvent
-    {
-      .ChunkCoordinates        = TargetChunkPosition,
-      .ChangeType              = EChunkChangeType::BlockDeleted,
-      .ChangedBlockCoordinates = BlockChunkPosition
-    });
 
     HitRequest.Status = ERequestStatus::Fulfilled;
   }

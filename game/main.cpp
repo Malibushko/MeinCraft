@@ -32,6 +32,7 @@
 #include "systems/physics/PhysicsSystem.h"
 
 #include "systems/render/GLMeshSystem.h"
+#include "systems/render/GLRenderDirectedLightDepthPassSystem.h"
 #include "systems/render/GLRenderLightAccumulationPassSystem.h"
 #include "systems/render/GLRenderScreenPassSystem.h"
 #include "systems/render/GLRenderSolidPassSystem.h"
@@ -97,7 +98,7 @@ void InitCamera(World & World_)
     .Camera = TCameraBundle
     {
       .Position = TPositionComponent{
-        .Position = { 0.0f, 2.f, 0.0f }
+        .Position = { 0.0f, 1.f, 0.0f }
       }
     },
     .Perspective =
@@ -133,6 +134,7 @@ void InitCoreSystems(World & World_)
 
         .AddSystem<GLRenderSystem>()
         .AddSystem<GLRenderBufferObjectsSystem>()
+        .AddSystem<GLRenderDirectedLightDepthPassSystem>()
         .AddSystem<GLRenderLightAccumulationPassSystem>()
         .AddSystem<GLRenderSolidPassSystem>()
         .AddSystem<GLRenderTransparentPassSystem>()
@@ -150,11 +152,9 @@ void InitTerrain(World & World_)
 {
   World_.Spawn(TTerrainComponent
   {
-    .MaxChunksX = 10,
-    .MaxChunksZ = 10,
     .TerrainGenerationStrategy = [&](const glm::vec3 & _Position) -> TBlockComponent
     {
-      static CNoiseTerrainGenerator Generator(time(nullptr));
+      static CFlatTerrainGenerator Generator(time(nullptr));
 
       return Generator.Generate(_Position);
     }

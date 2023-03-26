@@ -8,6 +8,7 @@
 #include "game/components/render/GLRenderPassData.h"
 #include "game/components/render/GLShaderComponent.h"
 #include "game/components/render/GLTextureComponent.h"
+#include "game/systems/render/GLRenderBufferObjectsSystem.h"
 
 enum class EUniformLocation
 {
@@ -64,7 +65,7 @@ void RenderMeshes(registry_t & Registry, auto && Meshes)
         glBindTexture(GL_TEXTURE_2D, RenderData.DepthTexture);
 
         glActiveTexture(GL_TEXTURE2);
-        glBindTexture(GL_TEXTURE_3D, RenderData.TerrainTexture3D);
+        glBindTexture(GL_TEXTURE_2D, RenderData.DirectedLightDepthTexture);
 
         PreviousTexture = Texture->TextureID;
       }
@@ -120,7 +121,7 @@ void RenderMeshesWithShader(registry_t & Registry, auto && Meshes, TGLShaderComp
         glBindTexture(GL_TEXTURE_2D, RenderData.DepthTexture);
 
         glActiveTexture(GL_TEXTURE2);
-        glBindTexture(GL_TEXTURE_3D, RenderData.TerrainTexture3D);
+        glBindTexture(GL_TEXTURE_2D, RenderData.DirectedLightDepthTexture);
 
         PreviousTexture = Texture->TextureID;
       }

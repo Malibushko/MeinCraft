@@ -176,8 +176,6 @@
     <ClInclude Include="game\components\display\DisplayComponent.h" />
     <ClInclude Include="game\components\display\GLFWWindowComponent.h" />
     <ClInclude Include="game\components\events\CameraChangedEvent.h" />
-    <ClInclude Include="game\components\events\ChunkChangedEvent.h" />
-    <ClInclude Include="game\components\events\ChunkSpawnedEvent.h" />
     <ClInclude Include="game\components\input\KeyboardState.h" />
     <ClInclude Include="game\components\input\MouseClickData.h" />
     <ClInclude Include="game\components\input\MouseMovementData.h" />
@@ -224,6 +222,7 @@
     <ClInclude Include="game\systems\render\GLMeshSystem.h" />
     <ClInclude Include="game\systems\render\GLRenderCompositePassSystem.h" />
     <ClInclude Include="game\systems\render\GLRenderLightAccumulationPassSystem.h" />
+    <ClInclude Include="game\systems\render\GLRenderDirectedLightDepthPassSystem.h" />
     <ClInclude Include="game\systems\render\GLRenderPostEffectsPassSystem.h" />
     <ClInclude Include="game\systems\render\GLRenderScreenPassSystem.h" />
     <ClInclude Include="game\systems\render\GLRenderSkyboxSystem.h" />
@@ -283,6 +282,7 @@
     <ClCompile Include="game\systems\render\GLMeshSystem.cpp" />
     <ClCompile Include="game\systems\render\GLRenderCompositePassSystem.cpp" />
     <ClCompile Include="game\systems\render\GLRenderLightAccumulationPassSystem.cpp" />
+    <ClCompile Include="game\systems\render\GLRenderDirectedLightDepthPassSystem.cpp" />
     <ClCompile Include="game\systems\render\GLRenderPostEffectsPassSystem.cpp" />
     <ClCompile Include="game\systems\render\GLRenderScreenPassSystem.cpp" />
     <ClCompile Include="game\systems\render\GLRenderSkyboxSystem.cpp" />
