@@ -8,6 +8,8 @@
 #include "core/components/TransformComponent.h"
 
 #include "game/components/camera/CameraBasisComponent.h"
+#include "game/components/lightning/LightComponent.h"
+#include "game/components/lightning/PointLightComponent.h"
 #include "game/components/physics/BoundingVolume.h"
 #include "game/components/terrain/BlockComponent.h"
 #include "game/components/terrain/ChunkComponent.h"

@@ -397,10 +397,20 @@ const std::vector<TMaterialComponent> & CBlockFactory::GetBlockMaterials()
   return Instance().m_BlockMaterials;
 }
 
+TLightComponent CBlockFactory::GetBlockLightComponent(const TBlockComponent & Block)
+{
+  return Instance().m_BlockInfos[Block.Type].Light;
+}
+
+TPointLightComponent CBlockFactory::GetBlockPointLightComponent(const TBlockComponent & Block)
+{
+  return Instance().m_BlockInfos[Block.Type].PointLight;
+}
+
 void CBlockFactory::LoadConfigs()
 {
   LoadBlockConfigs();
-  LoadBlockUVs();
+  LoadBlockMaterialsInfo();
   LoadBlockMaterials();
 }
 
@@ -449,13 +459,29 @@ void CBlockFactory::LoadBlockConfigs()
     if (BlockInfo.contains("translucent") && !BlockInfo["translucent"].is_null())
       BlockInfo["translucent"].get_to(Info.IsTranslucent);
 
+    if (BlockInfo.contains("light"))
+    {
+      BlockInfo["light"]["color"][0].get_to(Info.Light.Color.x);
+      BlockInfo["light"]["color"][1].get_to(Info.Light.Color.y);
+      BlockInfo["light"]["color"][2].get_to(Info.Light.Color.z);
+    }
+
+    if (BlockInfo.contains("point_light"))
+    {
+      BlockInfo["point_light"]["constant"].get_to(Info.PointLight.FadeConstant);
+      BlockInfo["point_light"]["linear"].get_to(Info.PointLight.FadeLinear);
+      BlockInfo["point_light"]["quadratic"].get_to(Info.PointLight.FadeQuadratic);
+
+      Info.PointLight.Radius = Info.EmitLight;
+    }
+
     m_BlockInfos.emplace(Info.Type, std::move(Info));
   }
 
   spdlog::info("Successfully loaded block info config file");
 }
 
-void CBlockFactory::LoadBlockUVs()
+void CBlockFactory::LoadBlockMaterialsInfo()
 {
   spdlog::info("Loading block UVs on path {}", BLOCK_UV_CONFIG_PATH);
 

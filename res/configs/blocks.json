@@ -3568,7 +3568,17 @@
       "transparent": true,
       "emitLight": 15,
       "filterLight": 0,
-      "resistance": 0.3
+      "resistance": 0.3,
+      "light" : 
+      {
+        "color" : [1.0, 0.94, 0.011]
+      },
+      "point_light": 
+      {
+        "constant" : 1.0,
+        "linear" : 0.09,
+        "quadratic": 0.032
+      }
     },
     {
       "id": 90,

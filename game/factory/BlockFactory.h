@@ -3,6 +3,8 @@
 
 #include "core/entity/Entity.h"
 #include "core/entity/Registry.h"
+#include "game/components/lightning/LightComponent.h"
+#include "game/components/lightning/PointLightComponent.h"
 #include "game/components/render/GLShaderComponent.h"
 #include "game/components/render/GLTextureComponent.h"
 #include "game/components/render/GLUnbakedMeshComponent.h"
@@ -52,13 +54,17 @@ public: // Interface
 
   static const std::vector<TMaterialComponent> & GetBlockMaterials();
 
+  static TLightComponent GetBlockLightComponent(const TBlockComponent & Block);
+
+  static TPointLightComponent GetBlockPointLightComponent(const TBlockComponent & Block);
+
 protected: // Service
 
   void LoadConfigs();
 
   void LoadBlockConfigs();
 
-  void LoadBlockUVs();
+  void LoadBlockMaterialsInfo();
 
   void LoadBlockMaterials();
 
@@ -66,19 +72,21 @@ protected: // Service Structs
 
   struct TBlockInfo
   {
-    EBlockType       Type {EBlockType::Invalid};
-    std::string      DisplayName;
-    std::string      Name;
-    float            Hardness{};
-    int              StackSize{};
-    bool             IsDiggable{};
-    std::string      BoundingBoxType;
-    std::vector<int> DropIDs{};
-    bool             IsTranslucent{};
-    bool             IsTransparent{};
-    int              EmitLight{};
-    int              FilterLight{};
-    float            Resistance{};
+    EBlockType           Type {EBlockType::Invalid};
+    std::string          DisplayName;
+    std::string          Name;
+    float                Hardness{};
+    int                  StackSize{};
+    bool                 IsDiggable{};
+    std::string          BoundingBoxType;
+    std::vector<int>     DropIDs{};
+    bool                 IsTranslucent{};
+    bool                 IsTransparent{};
+    int                  EmitLight{};
+    int                  FilterLight{};
+    float                Resistance{};
+    TLightComponent      Light{};
+    TPointLightComponent PointLight{};
   };
 
   enum class EBlockMeshType

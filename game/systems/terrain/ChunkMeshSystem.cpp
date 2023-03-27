@@ -78,22 +78,16 @@ void CChunkMeshSystem::RecreateChunkMesh(registry_t & Registry_, entity_t ChunkE
     {
       if (Registry_.try_get<TLightComponent>(Chunk.Blocks[Index]) == nullptr)
       {
-        AddComponent<TPositionComponent>(Registry_, Chunk.Blocks[Index], TPositionComponent{ .Position = ChunkPosition + glm::vec3(BlockPosition) + glm::vec3(0.5)});
-        AddComponent<TLightComponent>(Registry_, Chunk.Blocks[Index], TLightComponent{ .Color = glm::vec4(0.5f) });
-        AddTag<TNoShadowCastTag>(Registry_, Chunk.Blocks[Index]);
+        // Offset by 0.5 on all axes to center the light in the block
+        const glm::vec3 LightPosition = glm::vec3(ChunkPosition) + glm::vec3(BlockPosition) + glm::vec3(0.5);
 
-        const float Constant  = 1.0f  ;
-        const float Linear    = 0.09f ;
-        const float Quadratic = 0.032f;
-        const float Radius    = Factor;
-
-        AddComponent<TPointLightComponent>(Registry_, Chunk.Blocks[Index], TPointLightComponent
+        AddComponent<TPositionComponent>(Registry_, Chunk.Blocks[Index], TPositionComponent
         {
-          .FadeConstant  = Constant,
-          .FadeLinear    = Linear,
-          .FadeQuadratic = Quadratic,
-          .Radius        = Radius
+          .Position = LightPosition
         });
+
+        AddComponent<TLightComponent>(Registry_, Chunk.Blocks[Index], CBlockFactory::GetBlockLightComponent(Block));
+        AddComponent<TPointLightComponent>(Registry_, Chunk.Blocks[Index], CBlockFactory::GetBlockPointLightComponent(Block));
       }
     }
 

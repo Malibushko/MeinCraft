@@ -139,7 +139,7 @@ void main()
 	  LightDirection = normalize(LightDirection);
 
 	  float Diffuse   = max(dot(LightDirection, NormalizedNormal), 0.0);
-	  vec3 Irradiance = Color.rgb * Diffuse * Attenuation;
+	  vec3 Irradiance = Light.Color.rgb * Diffuse * Attenuation;
 
 	  Color.rgb += Irradiance;
 	}
